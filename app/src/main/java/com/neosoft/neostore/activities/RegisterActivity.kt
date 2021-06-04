@@ -2,13 +2,18 @@ package com.neosoft.neostore.activities
 
 import CustomProgressDialog
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
+import androidx.annotation.RequiresApi
 import com.google.android.material.snackbar.Snackbar
 import com.neosoft.neostore.R
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClient
+import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.models.RegisterationModel
 import com.neosoft.neostore.utilities.Validations
 import kotlinx.android.synthetic.main.activity_login.*
@@ -30,7 +35,7 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
     lateinit var password: String
     lateinit var confirm_password: String
     lateinit var phone: String
-    //lateinit var gender: String
+
 
 
     @ExperimentalTime
@@ -39,63 +44,29 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
         setContentView(R.layout.activity_register)
 
         //for  custom toolbar
-        setSupportActionBar(toolbar)
+        /*setSupportActionBar(toolbar)
         toolbar.title = getString(R.string.register)
         toolbar.setNavigationOnClickListener {
             var intent: Intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
-        }
-
+        }*/
         initialization()
     }
 
-
-
-
-
+    //for handling button clicks
     override fun onClick(view: View){
 
         when(view.id){
 
-            //do registration
-            R.id.btn_register -> {
-                first_name = edt_txt_first_name.text.toString()
-                last_name = edt_txt_last_name.text.toString()
-                password = edt_password.text.toString()
-                confirm_password = ed_txt_con_pass.text.toString()
-                phone = edt_txt_phone_no.text.toString()
-                email = edt_txt_email.text.toString()
-
-
-                if (validate()){
-                    retIn.register(first_name, last_name, email, password, confirm_password, Gender, phone)
-                        .enqueue(object : Callback<RegisterationModel> {
-                            override fun onResponse(
-                                call: Call<RegisterationModel>,
-                                response: Response<RegisterationModel>) {
-                                try {
-                                    if (response.code() == 200) {
-                                        toast(response.body()?.message.toString())
-                                    } else if (response.code() == 500) {
-                                        toast(response.message())
-                                    } else {
-                                        toast(response.body()?.message.toString())
-                                    }
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-                            }
-
-                            override fun onFailure(call: Call<RegisterationModel>, t: Throwable) {
-                                toast(t.message.toString())
-
-                            }
-                        })
-                }
+            //do registration api call
+            R.id.btn_register ->
+            {
+                doRegistration()
             }
-
             }
         }
+
+
 
     //for initializing varables
     private fun initialization() {
@@ -104,9 +75,10 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
             if (checkedId ==R.id.radioButtonMale)
             {
-                Gender = "M"
-            }else{
-                    Gender = "F"
+                Gender = Constants.GENDER_MALE
+            }else
+            {
+                Gender = Constants.GENDER_FEMALE
             }
         }
     }
@@ -167,11 +139,75 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
             return false
         }
         //for check terms and conditions
-        else if (!checkbox_terms_cond.isChecked){
+        else if (!checkbox_terms_cond.isChecked)
+        {
             toast(getString(R.string.check_terms_cond))
             return false
         }
 
             return true
+    }
+
+    private fun doRegistration()
+    {
+
+        first_name = edt_txt_first_name.text.toString()
+        last_name = edt_txt_last_name.text.toString()
+        password = edt_password.text.toString()
+        confirm_password = ed_txt_con_pass.text.toString()
+        phone = edt_txt_phone_no.text.toString()
+        email = edt_txt_email.text.toString()
+
+        if (validate())
+        //call for registraion api
+        {
+            retIn.register(first_name, last_name, email, password, confirm_password, Gender, phone)
+                .enqueue(object : Callback<RegisterationModel> {
+                    @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
+                    override fun onResponse(
+                        call: Call<RegisterationModel>,
+                        response: Response<RegisterationModel>) {
+                        progressDialog.show(this@RegisterActivity, getString(R.string.please_wait))
+                        try {
+                            if (response.code() == Constants.SUCESS_CODE)
+                            {
+                                Handler(Looper.getMainLooper()).postDelayed({
+                                    progressDialog.dialog.dismiss()
+                                }, Constants.DELAY_TIME.toLong())
+
+                                toast(response.body()?.message.toString())
+                                val i :Intent= Intent(this@RegisterActivity,LoginActivity::class.java)
+                                startActivity(i)
+
+                            } else if (response.code() == Constants.Error_CODE)
+                            {
+                                Handler(Looper.getMainLooper()).postDelayed({
+                                    progressDialog.dialog.dismiss()
+                                }, Constants.DELAY_TIME.toLong())
+
+                                toast(response.message())
+                            } else
+                            {
+                                Handler(Looper.getMainLooper()).postDelayed({
+                                    progressDialog.dialog.dismiss()
+                                }, Constants.DELAY_TIME.toLong())
+
+                                toast(response.body()?.message.toString())
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<RegisterationModel>, t: Throwable) {
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            progressDialog.dialog.dismiss()
+                        }, Constants.DELAY_TIME.toLong())
+
+                        toast(t.message.toString())
+
+                    }
+                })
+        }
     }
 }

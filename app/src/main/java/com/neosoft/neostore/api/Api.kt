@@ -1,5 +1,6 @@
 package com.neosoft.neostore.api
 
+import com.neosoft.neostore.constants.ApiEndPoints
 import com.neosoft.neostore.models.Data
 import com.neosoft.neostore.models.ForgotPModel
 import com.neosoft.neostore.models.RegisterationModel
@@ -12,15 +13,15 @@ interface Api {
 
 
     @FormUrlEncoded
-    @POST("register")
+    @POST(ApiEndPoints.REGISTER_KEY)
     fun register(@Field("first_name")first_name:String,@Field("last_name")last_name:String,@Field("email")email:String,@Field("password")password:String,@Field("confirm_password")confirm_password:String,@Field("gender")gender:String,@Field("phone_no")phone_no:String):Call<RegisterationModel>
 
     @FormUrlEncoded
-    @POST("login")
+    @POST(ApiEndPoints.LOGIN_KEY)
     fun doLogin(@Field("email")email:String,@Field("password")password:String):Call<Data>
 
     @FormUrlEncoded
-    @POST("forgot")
+    @POST(ApiEndPoints.FORGOT_PASSWORD_KEY)
     fun forgotPassword(@Field("email")email:String):Call<ForgotPModel>
 }
 

@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import com.neosoft.neostore.R
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClient
+import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.models.Data
 import com.neosoft.neostore.models.ForgotPModel
 import com.neosoft.neostore.utilities.SessionManagement
@@ -30,7 +31,7 @@ import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
+import kotlin.Exception
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -44,110 +45,145 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
         session = SessionManagement(this)
         initialization()
 
     }
 
-    //for button clicks
+    //for managing  button clicks
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onClick(view: View) {
+
         when (view.getId()) {
-            //for forgot password
+
+            //for forgot password api call
             R.id.txt_forgot_password -> {
-                var email: String = ed_txt_username.text.toString()
-                ret.forgotPassword(email).enqueue(object : Callback<ForgotPModel> {
-                    override fun onResponse(
-                        call: Call<ForgotPModel>,
-                        response: Response<ForgotPModel>
-                    ) {
-                        try {
-                            if (response.code() == 200) {
-                                toast(response.body()?.user_msg.toString())
-                            } else if (response.code() == 500) {
-                                toast(response.body()?.user_msg.toString())
-                            } else {
-                                toast(response.message())
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-
-                        }
-                    }
-
-
-                    override fun onFailure(call: Call<ForgotPModel>, t: Throwable) {
-                        toast(t.message.toString())
-                    }
-
-                })
+                doForgotPassword()
             }
 
-            //for register
+            //for register pi call
             R.id.fab_register -> {
-                val intent = Intent(this, RegisterActivity::class.java)
-                startActivity(intent)
+                getRegisteration()
+
             }
 
-            //for login
+            //for login api call
             R.id.btn_login -> {
                 if (validate()) {
-
-                    email = ed_txt_username.text.toString()
-                    password = edt_txt_password.text.toString()
-
-                    ret.doLogin(email, password).enqueue(object : Callback<Data> {
-                        override fun onResponse(call: Call<Data>, response: Response<Data>) {
-                            progressDialog.show(this@LoginActivity, "Please wait...")
-                            if (response.code() == 200) {
-                                Handler(Looper.getMainLooper()).postDelayed({
-                                    progressDialog.dialog.dismiss()
-                                }, 3000)
-
-                                toast(response.body()?.message.toString())
-                                session.createLoginSession(email, password)
-                                val i: Intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                startActivity(i)
-                            } else if (response.code() == 500) {
-
-                                Handler(Looper.getMainLooper()).postDelayed({
-                                    progressDialog.dialog.dismiss()
-                                    toast(response.message().toString())
-                                }, 3000)
-
-
-                            } else {
-                                Handler(Looper.getMainLooper()).postDelayed({
-                                    progressDialog.dialog.dismiss()
-                                    toast(response.message().toString())
-                                }, 3000)
-
-                            }
-                        }
-
-                        override fun onFailure(call: Call<Data>, t: Throwable) {
-                            Handler(Looper.getMainLooper()).postDelayed({
-                                progressDialog.dialog.dismiss()
-                                toast(t.message.toString())
-                            }, 3000)
-
-
-                        }
-
-                    })
+                    doLogin()
                 }
             }
-            else -> {
+            else ->
+            {
+                //do nothing
             }
 
         }
 
     }
 
+    private fun doLogin() {
+        email = ed_txt_username.text.toString()
+        password = edt_txt_password.text.toString()
+
+        ret.doLogin(email, password).enqueue(object : Callback<Data> {
+            @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
+            override fun onResponse(call: Call<Data>, response: Response<Data>) {
+                progressDialog.show(this@LoginActivity, getString(R.string.please_wait))
+                try {
+                    if (response.code() == Constants.SUCESS_CODE) {
+
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            progressDialog.dialog.dismiss()
+                        }, 3000)
+
+                        toast(response.body()?.message.toString())
+                        session.createLoginSession(email, password)
+
+                        val i: Intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        startActivity(i)
+
+                    } else if (response.code() == Constants.Error_CODE) {
+
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            progressDialog.dialog.dismiss()
+                            toast(response.message().toString())
+                        }, 3000)
+
+                    } else {
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            progressDialog.dialog.dismiss()
+                            toast(response.message().toString())
+                        }, 3000)
+
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+            }
+
+            override fun onFailure(call: Call<Data>, t: Throwable) {
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    progressDialog.dialog.dismiss()
+                    toast(t.message.toString())
+                }, 3000)
+
+            }
+        })
+    }
+
+
+    private fun getRegisteration() {
+
+        val intent = Intent(this, RegisterActivity::class.java)
+        startActivity(intent)
+    }
+
+
+    private fun doForgotPassword() {
+        var email: String = ed_txt_username.text.toString()
+        ret.forgotPassword(email).enqueue(object : Callback<ForgotPModel> {
+            override fun onResponse(
+                call: Call<ForgotPModel>,
+                response: Response<ForgotPModel>
+            ) {
+                try {
+                    if (response.code() == Constants.SUCESS_CODE)
+                    {
+
+                        toast(response.body()?.user_msg.toString())
+
+                    } else if (response.code() == Constants.Error_CODE)
+                    {
+                        toast(response.body()?.user_msg.toString())
+
+                    } else
+                    {
+                        toast(response.message())
+                    }
+                } catch (e: Exception)
+                {
+                    e.printStackTrace()
+
+                }
+            }
+
+            override fun onFailure(call: Call<ForgotPModel>, t: Throwable) {
+                toast(t.message.toString())
+            }
+
+        })
+    }
+
+
     private fun initialization() {
 
         //for handling session
-        if (session.isLoggedIn()) {
+        if (session.isLoggedIn())
+        {
             var i: Intent = Intent(this, MainActivity::class.java)
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -156,9 +192,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         //for full screen
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+        {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
-        } else {
+        } else
+        {
             @Suppress("DEPRECATION")
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -174,10 +212,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     //for back press
-    override fun onBackPressed() {
-        if (backPressTime + 1000 > System.currentTimeMillis()) {
+    override fun onBackPressed()
+    {
+        if (backPressTime + 1000 > System.currentTimeMillis())
+        {
             super.onBackPressed()
-        } else {
+        } else
+        {
             toast(getString(R.string.press_back_again))
             backPressTime = System.currentTimeMillis()
         }
@@ -185,13 +226,16 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     //validations for login
-    private fun validate(): Boolean {
+    private fun validate(): Boolean
+    {
         email = ed_txt_username.text.toString()
-        if (!Validations.isValidemail(email)) {
+        if (!Validations.isValidemail(email))
+        {
             ed_txt_username.error = getString(R.string.valid_email)
             return false
 
-        } else if (edt_txt_password.text.toString().isEmpty()) {
+        } else if (edt_txt_password.text.toString().isEmpty())
+        {
             edt_txt_password.error = getString(R.string.canot_be_empty)
             return false
 

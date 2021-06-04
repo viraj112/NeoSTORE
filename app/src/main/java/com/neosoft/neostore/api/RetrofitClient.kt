@@ -14,7 +14,7 @@ class RetrofitClient {
 
 
     companion object {
-        val BASE_URL: String = Constants.Constants.BASE_URL
+        val BASE_URL: String = Constants.BASE_URL
 
         val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
             this.level = HttpLoggingInterceptor.Level.BODY
