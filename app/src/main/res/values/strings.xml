@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">NeoSTORE</string>
+    <string name="user_name">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot Password ?</string>
+    <string name="dont_have_acc">DONT HAVE AN ACCOUNT ?</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="gender">Gender</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="terms_cond"><![CDATA[I agree Terms & Conditions]]></string>
+    <string name="register">Register</string>
+    <string name="are_you_sure">Are you sure !</string>
+    <string name="do_you_want_to_close">do you want to close the app?</string>
+    <string name="press_back_again">Press back again to exit</string>
+    <string name="valid_email">Enter valid email</string>
+    <string name="canot_be_empty">Cannot be empty</string>
+    <string name="password_length">Password should be six character</string>
+    <string name="valid_phone_no">Enter valid phone number</string>
+    <string name="pass_not_match">Password not matching</string>
+</resources>
