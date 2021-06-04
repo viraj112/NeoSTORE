@@ -23,14 +23,14 @@ import kotlin.time.ExperimentalTime
 class RegisterActivity : AppCompatActivity(),View.OnClickListener{
     val retIn = RetrofitClient.getRetrofitInstance().create(Api::class.java)
     val progressDialog = CustomProgressDialog()
-
+    lateinit var Gender :String
     lateinit var first_name: String
     lateinit var last_name: String
     lateinit var email: String
     lateinit var password: String
     lateinit var confirm_password: String
     lateinit var phone: String
-    lateinit var gender: String
+    //lateinit var gender: String
 
 
     @ExperimentalTime
@@ -49,6 +49,10 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
         initialization()
     }
 
+
+
+
+
     override fun onClick(view: View){
 
         when(view.id){
@@ -61,10 +65,10 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
                 confirm_password = ed_txt_con_pass.text.toString()
                 phone = edt_txt_phone_no.text.toString()
                 email = edt_txt_email.text.toString()
-                gender = "M"
+
 
                 if (validate()){
-                    retIn.register(first_name, last_name, email, password, confirm_password, gender, phone)
+                    retIn.register(first_name, last_name, email, password, confirm_password, Gender, phone)
                         .enqueue(object : Callback<RegisterationModel> {
                             override fun onResponse(
                                 call: Call<RegisterationModel>,
@@ -89,14 +93,26 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
                         })
                 }
             }
+
             }
         }
 
-
+    //for initializing varables
     private fun initialization() {
+
         btn_register.setOnClickListener(this)
+        radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            if (checkedId ==R.id.radioButtonMale)
+            {
+                Gender = "M"
+            }else{
+                    Gender = "F"
+            }
+        }
     }
 
+
+    //for validating all fields
     private fun validate(): Boolean {
         email = edt_txt_email.text.toString()
 
@@ -138,10 +154,21 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
             return false
         }
 
+        //for radio button gender
+        else if(radioGroup.checkedRadioButtonId ==-1)
+        {
+            toast("please select gender")
+            return false
+        }
         //for phone number
         else if (edt_txt_phone_no.text.length<10)
         {
             edt_txt_phone_no.error=getString(R.string.valid_phone_no)
+            return false
+        }
+        //for check terms and conditions
+        else if (!checkbox_terms_cond.isChecked){
+            toast(getString(R.string.check_terms_cond))
             return false
         }
 

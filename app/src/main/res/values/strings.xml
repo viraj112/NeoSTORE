@@ -23,4 +23,5 @@
     <string name="password_length">Password should be six character</string>
     <string name="valid_phone_no">Enter valid phone number</string>
     <string name="pass_not_match">Password not matching</string>
+    <string name="check_terms_cond">Please accept terms and condition</string>
 </resources>

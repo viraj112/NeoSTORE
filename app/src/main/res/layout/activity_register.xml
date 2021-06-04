@@ -19,8 +19,7 @@
         android:background="@color/color_red"
         app:titleTextColor="@color/white"
         app:navigationIcon="@drawable/ic_back"
-        android:gravity="fill"
-        />
+        android:layout_gravity="start|center_horizontal" />
 
     <TextView
         android:id="@+id/txt_app_name"
@@ -155,20 +154,22 @@
         app:layout_constraintTop_toBottomOf="@+id/ed_txt_con_pass">
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/radioButtonMale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/gothammedium"
             android:text="@string/male"
+            android:buttonTint="@color/color_white"
             android:textColor="@color/white"
             android:textSize="18dp" />
 
         <RadioButton
-            android:id="@+id/radioButton4"
+            android:id="@+id/radioButtonFemale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/gothammedium"
             android:text="@string/female"
+            android:buttonTint="@color/color_white"
             android:textColor="@color/white"
             android:textSize="18dp" />
 
@@ -212,7 +213,7 @@
         app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
     <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/appCompatCheckBox"
+        android:id="@+id/checkbox_terms_cond"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -221,6 +222,9 @@
         android:text="@string/terms_cond"
         android:textColor="@color/white"
         android:textSize="16dp"
+        android:button="@drawable/checkbox_custom"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         app:layout_constraintEnd_toEndOf="@+id/txt_app_name"
         app:layout_constraintStart_toStartOf="@+id/txt_app_name"
         app:layout_constraintTop_toBottomOf="@+id/edt_txt_phone_no" />
@@ -236,6 +240,6 @@
         android:textColor="@color/color_red"
         app:layout_constraintEnd_toEndOf="@+id/txt_app_name"
         app:layout_constraintStart_toStartOf="@+id/txt_app_name"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatCheckBox" />
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_terms_cond" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
