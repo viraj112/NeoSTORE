@@ -27,7 +27,7 @@
         app:itemTextAppearance="@style/fontstyle">
 
     </com.google.android.material.navigation.NavigationView>
-
+a
 
 </androidx.drawerlayout.widget.DrawerLayout>
 

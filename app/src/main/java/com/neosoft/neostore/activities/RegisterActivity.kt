@@ -166,7 +166,8 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
                     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
                     override fun onResponse(
                         call: Call<RegisterationModel>,
-                        response: Response<RegisterationModel>) {
+                        response: Response<RegisterationModel>)
+                    {
                         progressDialog.show(this@RegisterActivity, getString(R.string.please_wait))
                         try {
                             if (response.code() == Constants.SUCESS_CODE)
@@ -176,6 +177,7 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
                                 }, Constants.DELAY_TIME.toLong())
 
                                 toast(response.body()?.message.toString())
+
                                 val i :Intent= Intent(this@RegisterActivity,LoginActivity::class.java)
                                 startActivity(i)
 
@@ -186,6 +188,7 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
                                 }, Constants.DELAY_TIME.toLong())
 
                                 toast(response.message())
+
                             } else
                             {
                                 Handler(Looper.getMainLooper()).postDelayed({
@@ -194,12 +197,14 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
 
                                 toast(response.body()?.message.toString())
                             }
-                        } catch (e: Exception) {
+                        } catch (e: Exception)
+                        {
                             e.printStackTrace()
                         }
                     }
 
-                    override fun onFailure(call: Call<RegisterationModel>, t: Throwable) {
+                    override fun onFailure(call: Call<RegisterationModel>, t: Throwable)
+                    {
                         Handler(Looper.getMainLooper()).postDelayed({
                             progressDialog.dialog.dismiss()
                         }, Constants.DELAY_TIME.toLong())

@@ -1,33 +1,30 @@
 package com.neosoft.neostore.activities
 
 import CustomProgressDialog
-import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.TextUtils
-import android.util.Patterns
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import com.neosoft.neostore.R
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClient
 import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.models.Data
 import com.neosoft.neostore.models.ForgotPModel
+import com.neosoft.neostore.models.LoginModel
 import com.neosoft.neostore.utilities.SessionManagement
 import com.neosoft.neostore.utilities.Validations
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
-import org.jetbrains.anko.email
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -74,8 +71,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     doLogin()
                 }
             }
-            else ->
-            {
+            else -> {
                 //do nothing
             }
 
@@ -87,52 +83,57 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         email = ed_txt_username.text.toString()
         password = edt_txt_password.text.toString()
 
-        ret.doLogin(email, password).enqueue(object : Callback<Data> {
+        ret.doLogin(email, password).enqueue(object : Callback<LoginModel> {
             @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
-            override fun onResponse(call: Call<Data>, response: Response<Data>) {
+            override fun onResponse(call: Call<LoginModel>, response: Response<LoginModel>) {
                 progressDialog.show(this@LoginActivity, getString(R.string.please_wait))
-                try {
-                    if (response.code() == Constants.SUCESS_CODE) {
 
+                try {
+                    if (response.code() == Constants.SUCESS_CODE)
+                    {
                         Handler(Looper.getMainLooper()).postDelayed({
                             progressDialog.dialog.dismiss()
-                        }, 3000)
+                        }, Constants.DELAY_TIME.toLong())
+
+                        val items = response.body()?.data
+                        var myEmail = items?.email.toString()
 
                         toast(response.body()?.message.toString())
+
                         session.createLoginSession(email, password)
+                        var intent: Intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        intent.putExtra("email",myEmail)
+                        startActivity(intent)
+                    } else if (response.code() == Constants.Error_CODE)
 
-                        val i: Intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        startActivity(i)
-
-                    } else if (response.code() == Constants.Error_CODE) {
-
+                    {
                         Handler(Looper.getMainLooper()).postDelayed({
                             progressDialog.dialog.dismiss()
-                            toast(response.message().toString())
-                        }, 3000)
+                        }, Constants.DELAY_TIME.toLong())
 
-                    } else {
+                        toast(response.message().toString())
+
+                    }else
+                    {
                         Handler(Looper.getMainLooper()).postDelayed({
                             progressDialog.dialog.dismiss()
-                            toast(response.message().toString())
-                        }, 3000)
+                        }, Constants.DELAY_TIME.toLong())
+
+                        toast(response.message().toString())
 
                     }
-                } catch (e: Exception) {
+                } catch (e: Exception)
+                {
                     e.printStackTrace()
                 }
-
             }
 
-            override fun onFailure(call: Call<Data>, t: Throwable) {
-
-                Handler(Looper.getMainLooper()).postDelayed({
-                    progressDialog.dialog.dismiss()
-                    toast(t.message.toString())
-                }, 3000)
-
+            override fun onFailure(call: Call<LoginModel>, t: Throwable)
+            {
+                toast(t.message.toString())
             }
         })
+
     }
 
 
@@ -142,7 +143,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         startActivity(intent)
     }
 
-
+        //forgot password api call
     private fun doForgotPassword() {
         var email: String = ed_txt_username.text.toString()
         ret.forgotPassword(email).enqueue(object : Callback<ForgotPModel> {
@@ -171,7 +172,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
 
-            override fun onFailure(call: Call<ForgotPModel>, t: Throwable) {
+            override fun onFailure(call: Call<ForgotPModel>, t: Throwable)
+            {
                 toast(t.message.toString())
             }
 
@@ -179,11 +181,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    private fun initialization() {
+    private fun initialization()
+    {
 
         //for handling session
-        if (session.isLoggedIn())
-        {
+        if (session.isLoggedIn()) {
             var i: Intent = Intent(this, MainActivity::class.java)
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -214,8 +216,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     //for back press
     override fun onBackPressed()
     {
-        if (backPressTime + 1000 > System.currentTimeMillis())
-        {
+        if (backPressTime + 1000 > System.currentTimeMillis()) {
             super.onBackPressed()
         } else
         {
@@ -229,8 +230,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private fun validate(): Boolean
     {
         email = ed_txt_username.text.toString()
-        if (!Validations.isValidemail(email))
-        {
+        if (!Validations.isValidemail(email)) {
             ed_txt_username.error = getString(R.string.valid_email)
             return false
 

@@ -1,13 +1,9 @@
 package com.neosoft.neostore.api
 
 import com.neosoft.neostore.constants.ApiEndPoints
-import com.neosoft.neostore.models.Data
-import com.neosoft.neostore.models.ForgotPModel
-import com.neosoft.neostore.models.RegisterationModel
+import com.neosoft.neostore.models.*
 import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface Api {
 
@@ -18,10 +14,14 @@ interface Api {
 
     @FormUrlEncoded
     @POST(ApiEndPoints.LOGIN_KEY)
-    fun doLogin(@Field("email")email:String,@Field("password")password:String):Call<Data>
+    fun doLogin(@Field("email")email:String,@Field("password")password:String):Call<LoginModel>
 
     @FormUrlEncoded
     @POST(ApiEndPoints.FORGOT_PASSWORD_KEY)
     fun forgotPassword(@Field("email")email:String):Call<ForgotPModel>
+
+
+    @GET(ApiEndPoints.PRODUCT_LIST)
+    fun getProductList(@Query("product_category_id")product_category_id:Int, @Query("limit")limit:Int, @Query("page")page:Int):Call<ProductListModel>
 }
 

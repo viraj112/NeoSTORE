@@ -1,6 +1,7 @@
 package com.neosoft.neostore.utilities
 
 import android.app.Activity
+import android.os.Message
 import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
@@ -14,6 +15,8 @@ class Validations {
             return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()
         }
 
+
     }
+
 
 }

@@ -9,6 +9,7 @@ class Constants {
         const val GENDER_MALE = "M"
         const val GENDER_FEMALE = "F"
         const val DELAY_TIME = 3000
+        const val NOT_FOUND =401
 
     }
 }
