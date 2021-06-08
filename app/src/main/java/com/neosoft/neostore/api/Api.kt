@@ -22,6 +22,9 @@ interface Api {
 
 
     @GET(ApiEndPoints.PRODUCT_LIST)
-    fun getProductList(@Query("product_category_id")product_category_id:Int, @Query("limit")limit:Int, @Query("page")page:Int):Call<ProductListModel>
+    fun getProductList(@Query("product_category_id")product_category_id:Int,@Query("limit")limit:Int,@Query("page")page:Int):Call<ProductList>
+
+    @GET(ApiEndPoints.PRODUCT_DETAILS)
+    fun getProductDetails(@Query("product_id")product_id:Int):Call<ProductDetailsModel>
 }
 

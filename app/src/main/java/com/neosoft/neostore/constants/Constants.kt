@@ -4,6 +4,7 @@ class Constants {
 
     companion object {
         const val BASE_URL="http://staging.php-dev.in:8844/trainingapp/api/users/"
+        const val PRODUCT_BASE_URL="http://staging.php-dev.in:8844/trainingapp/api/products/"
         const val SUCESS_CODE = 200
         const val Error_CODE = 500
         const val GENDER_MALE = "M"

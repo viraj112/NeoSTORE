@@ -129,7 +129,7 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
         //for radio button gender
         else if(radioGroup.checkedRadioButtonId ==-1)
         {
-            toast("please select gender")
+            toast(getString(R.string.select_gender))
             return false
         }
         //for phone number

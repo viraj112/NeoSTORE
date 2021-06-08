@@ -1,13 +1,14 @@
 package com.neosoft.neostore.activities
 
 import CustomProgressDialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -16,7 +17,6 @@ import com.neosoft.neostore.R
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClient
 import com.neosoft.neostore.constants.Constants
-import com.neosoft.neostore.models.Data
 import com.neosoft.neostore.models.ForgotPModel
 import com.neosoft.neostore.models.LoginModel
 import com.neosoft.neostore.utilities.SessionManagement
@@ -24,7 +24,6 @@ import com.neosoft.neostore.utilities.Validations
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
 import org.jetbrains.anko.toast
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,7 +37,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     lateinit var email: String
     lateinit var password: String
     val progressDialog = CustomProgressDialog()
-
+    lateinit var  myEmail:String
+    lateinit var username:String
+    lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -96,13 +97,16 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         }, Constants.DELAY_TIME.toLong())
 
                         val items = response.body()?.data
-                        var myEmail = items?.email.toString()
-
+                         myEmail= items?.email.toString()
+                        username = items?.first_name.toString()+items?.last_name.toString()
                         toast(response.body()?.message.toString())
 
                         session.createLoginSession(email, password)
                         var intent: Intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        intent.putExtra("email",myEmail)
+                        val editor:SharedPreferences.Editor = sharedPreferences.edit()
+                        editor.putString("email",myEmail)
+                        editor.putString("username",username)
+                        editor.apply()
                         startActivity(intent)
                     } else if (response.code() == Constants.Error_CODE)
 
@@ -211,6 +215,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         btn_login.setOnClickListener(this)
         txt_forgot_password.setOnClickListener(this)
 
+        sharedPreferences =getSharedPreferences("SHARED_PREF",Context.MODE_PRIVATE)
     }
 
     //for back press

@@ -1,14 +1,13 @@
 package com.neosoft.neostore.activities
 
 import CustomProgressDialog
-import android.opengl.Visibility
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,26 +15,15 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.FragmentTransaction
 import com.denzcoskun.imageslider.models.SlideModel
-import com.google.android.gms.dynamic.IFragmentWrapper
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.neosoft.neostore.R
-import com.neosoft.neostore.api.Api
-import com.neosoft.neostore.api.RetrofitClient
 import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.fragments.*
-import com.neosoft.neostore.models.ProductListModel
 import com.neosoft.neostore.utilities.SessionManagement
-import com.neosoft.neostore.utilities.Validations
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.navigation_header.*
-import org.jetbrains.anko.toast
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.android.synthetic.main.navigation_header.view.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     View.OnClickListener
@@ -50,6 +38,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var myAccountFragment: MyAccountFragment
     lateinit var storeLocatorFragment: StoreLocatorFragment
     lateinit var myOrdersFragment: MyOrdersFragment
+    lateinit var preferences: SharedPreferences
     val progressDialog = CustomProgressDialog()
 
 
@@ -74,6 +63,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //for varibales initialization
     private fun initialization()
     {
+
+        preferences = getSharedPreferences("SHARED_PREF",Context.MODE_PRIVATE)
+
+        val email =preferences.getString("email","")
+        val username = preferences.getString("username","")
+
+        //set values for header view
+        val headerView :View = navigation_view.getHeaderView(0)
+        headerView.txt_navigation_email.text=email
+        headerView.txt_navigation_username.text = username
+
+        // set images for slider
         val imageList = ArrayList<SlideModel>()
         imageList.add(SlideModel(R.drawable.ic_slider_image_one, ""))
         imageList.add(SlideModel(R.drawable.ic_slider_image_two, ""))

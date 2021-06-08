@@ -36,4 +36,5 @@
     <string name="store_locator">Store Locator</string>
     <string name="my_orders">My Orders</string>
     <string name="Logout">Logout</string>
+    <string name="select_gender">Please Select Gender</string>
 </resources>
