@@ -37,4 +37,11 @@
     <string name="my_orders">My Orders</string>
     <string name="Logout">Logout</string>
     <string name="select_gender">Please Select Gender</string>
+    <string name="Description">description</string>
+    <string name="buynow">buy now</string>
+    <string name="rate">Rate</string>
+    <string name="catagory">Catagory</string>
+    <string name="ratenow">Rate now</string>
+    <string name="enter_quantity">Enter quantity</string>
+    <string name="submit">Submit</string>
 </resources>

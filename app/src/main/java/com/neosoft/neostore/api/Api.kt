@@ -3,6 +3,7 @@ package com.neosoft.neostore.api
 import com.neosoft.neostore.constants.ApiEndPoints
 import com.neosoft.neostore.models.*
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.http.*
 
 interface Api {
@@ -26,5 +27,13 @@ interface Api {
 
     @GET(ApiEndPoints.PRODUCT_DETAILS)
     fun getProductDetails(@Query("product_id")product_id:Int):Call<ProductDetailsModel>
+
+    @FormUrlEncoded
+    @POST(ApiEndPoints.PRODUCT_RATING)
+    fun productRating(@Field("product_id")product_id:String,@Field("rating")rating:Int):Call<ProductRatingModel>
+
+    @FormUrlEncoded
+    @POST(ApiEndPoints.ADD_TO_CART)
+    fun addToCart(@Field("product_id")product_id:String,@Field("quantity")quantity:Int):Call<AddToCartModel>
 }
 
