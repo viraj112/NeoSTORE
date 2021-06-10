@@ -44,4 +44,6 @@
     <string name="ratenow">Rate now</string>
     <string name="enter_quantity">Enter quantity</string>
     <string name="submit">Submit</string>
+    <string name="total">Total</string>
+    <string name="ordernow">order now</string>
 </resources>

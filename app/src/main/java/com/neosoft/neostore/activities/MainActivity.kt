@@ -1,6 +1,7 @@
 package com.neosoft.neostore.activities
 
 import CustomProgressDialog
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
@@ -8,9 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
@@ -23,6 +23,8 @@ import com.neosoft.neostore.fragments.*
 import com.neosoft.neostore.utilities.SessionManagement
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.cart_count.*
+import kotlinx.android.synthetic.main.cart_count.view.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
@@ -87,6 +89,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val actionBar = supportActionBar
         actionBar?.title = getString(R.string.app_name)
 
+
         val drawerToggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(
             this,
             drawer_layout,
@@ -101,11 +104,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerToggle?.drawerArrowDrawable?.color = ContextCompat.getColor(this, R.color.white)
 
         navigation_view.setNavigationItemSelectedListener(this)
+        navigation_view.menu.findItem(R.id.menu_my_cart).setActionView(R.layout.cart_count)
+
+       countgravity()
 
         cv_tables.setOnClickListener(this)
         cv_chairs.setOnClickListener(this)
         cv_cupboards.setOnClickListener(this)
         cv_sofas.setOnClickListener(this)
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private fun countgravity() {
+        txt_cart_count?.gravity=Gravity.CLIP_HORIZONTAL
+        txt_cart_count?.setTextColor(R.color.white)
+        txt_cart_count?.text =10.toString()
     }
 
     //for  search menu item
@@ -122,6 +135,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             {
                 //mycarts fragment
                 myCartsFragment()
+
             }
             R.id.menu_table ->
             {
@@ -320,4 +334,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             commit()
         }
     }
+
 }

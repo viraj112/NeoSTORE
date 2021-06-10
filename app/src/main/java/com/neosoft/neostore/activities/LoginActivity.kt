@@ -99,6 +99,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         val items = response.body()?.data
                          myEmail= items?.email.toString()
                         username = items?.first_name.toString()+items?.last_name.toString()
+                        val token = items?.access_token.toString()
                         toast(response.body()?.message.toString())
 
                         session.createLoginSession(email, password)
@@ -106,6 +107,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         val editor:SharedPreferences.Editor = sharedPreferences.edit()
                         editor.putString("email",myEmail)
                         editor.putString("username",username)
+                        editor.putString("token",token)
                         editor.apply()
                         startActivity(intent)
                     } else if (response.code() == Constants.Error_CODE)
