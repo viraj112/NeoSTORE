@@ -46,4 +46,19 @@
     <string name="submit">Submit</string>
     <string name="total">Total</string>
     <string name="ordernow">order now</string>
+    <string name="alert">Alert</string>
+    <string name="address">Address</string>
+    <string name="city">CITY</string>
+    <string name="state">STATE</string>
+    <string name="zip_code">ZIP CODE</string>
+    <string name="country">COUNTRY</string>
+    <string name="save_address">SAVE ADDRESS</string>
+    <string name="add_address">Add Address</string>
+    <string name="shipping_address">Shipping Address</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="address_list">Address List</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="update_Profile">Update Profile</string>
 </resources>

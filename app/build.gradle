@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
-
+    id 'kotlin-kapt'
 }
 
 android {
@@ -32,6 +32,15 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+        repositories {
+            jcenter()
+            maven {
+                // For Room Persistence Library
+                url "https://maven.google.com"
+            }
+        }
+
 }
 
 dependencies {
@@ -72,6 +81,8 @@ dependencies {
     //for image slider
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 
+
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     //annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-}
+
+    }

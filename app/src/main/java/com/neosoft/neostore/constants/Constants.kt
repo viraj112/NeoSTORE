@@ -17,6 +17,7 @@ class Constants {
         const val NOT_FOUND =401
         const val TOKEN ="60b86b8f8203c"
          var counter =0
+        const val DATA_MISSING =400
 
     }
 }

@@ -16,12 +16,12 @@
 
     </style>
     <style name="myTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/color_white</item>
+        <item name="colorPrimary">@color/color_red</item>
         <item name="colorPrimaryDark">@color/color_red</item>
-        <item name="colorAccent">@color/color_white</item>
+        <item name="colorAccent">@color/color_red</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/color_red</item>
     </style>
     <style name="appbaroverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 <style name="fontstyle" parent="Widget.AppCompat.TextView">

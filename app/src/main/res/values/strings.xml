@@ -20,7 +20,7 @@
     <string name="press_back_again">Press back again to exit</string>
     <string name="valid_email">Enter valid email</string>
     <string name="canot_be_empty">Cannot be empty</string>
-    <string name="password_length">Password should be six character</string>
+    <string name="password_length">Password should be minimum six character</string>
     <string name="valid_phone_no">Enter valid phone number</string>
     <string name="pass_not_match">Password not matching</string>
     <string name="check_terms_cond">Please accept terms and condition</string>
@@ -49,4 +49,19 @@
     <string name="total">Total</string>
     <string name="ordernow">order now</string>
     <string name="rs">\u20B9</string>
+    <string name="alert">Alert</string>
+    <string name="address">Address</string>
+    <string name="city">CITY</string>
+    <string name="state">STATE</string>
+    <string name="zip_code">ZIP CODE</string>
+    <string name="country">COUNTRY</string>
+    <string name="save_address">SAVE ADDRESS</string>
+    <string name="add_address">Add Address</string>
+    <string name="shipping_address">Shipping Address</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="address_list">Address List</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="update_Profile">Update Profile</string>
 </resources>

@@ -94,38 +94,43 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     {
                         Handler(Looper.getMainLooper()).postDelayed({
                             progressDialog.dialog.dismiss()
+                            val items = response.body()?.data
+                            myEmail= items?.email.toString()
+                            username = items?.first_name.toString()+items?.last_name.toString()
+                            val token = items?.access_token.toString()
+                            toast(response.body()?.message.toString())
+
+                            session.createLoginSession(email, password)
+                            var intent: Intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            val editor:SharedPreferences.Editor = sharedPreferences.edit()
+                            editor.putString("email",myEmail)
+                            editor.putString("username",username)
+                            editor.putString("token",token)
+
+                            editor.apply()
+                            startActivity(intent)
+
                         }, Constants.DELAY_TIME.toLong())
 
-                        val items = response.body()?.data
-                         myEmail= items?.email.toString()
-                        username = items?.first_name.toString()+items?.last_name.toString()
-                        val token = items?.access_token.toString()
-                        toast(response.body()?.message.toString())
 
-                        session.createLoginSession(email, password)
-                        var intent: Intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        val editor:SharedPreferences.Editor = sharedPreferences.edit()
-                        editor.putString("email",myEmail)
-                        editor.putString("username",username)
-                        editor.putString("token",token)
-                        editor.apply()
-                        startActivity(intent)
                     } else if (response.code() == Constants.Error_CODE)
 
                     {
                         Handler(Looper.getMainLooper()).postDelayed({
                             progressDialog.dialog.dismiss()
+                            toast(response.message().toString())
                         }, Constants.DELAY_TIME.toLong())
 
-                        toast(response.message().toString())
+
 
                     }else
                     {
                         Handler(Looper.getMainLooper()).postDelayed({
                             progressDialog.dialog.dismiss()
+                            toast(response.message().toString())
                         }, Constants.DELAY_TIME.toLong())
 
-                        toast(response.message().toString())
+
 
                     }
                 } catch (e: Exception)
