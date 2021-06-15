@@ -2,10 +2,10 @@ package com.neosoft.neostore.api
 
 import com.neosoft.neostore.constants.ApiEndPoints
 import com.neosoft.neostore.models.*
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
+
 
 interface Api {
 
@@ -58,7 +58,8 @@ interface Api {
 
     @FormUrlEncoded
     @POST(ApiEndPoints.EDIT_PROFILE)
-    fun editProfile(@Field ("profile_pic")profile_pic:String, @Header("access_token")access_token:String, @Field("email")email:String, @Field("dob")dob:String, @Field( "phone_no")phone_no:String, @Field("first_name") first_name:String, @Field("last_name")last_name:String):Call<EditProfileModel>
+    fun editProfile(@Header("access_token")access_token: String, @Field("email")email: String, @Field("dob")dob: String
+                    , @Field("phone_no")phone_no: String, @Field("profile_pic")profile_pic:String,@Field("first_name")first_name: String,@Field("last_name")last_name: String):Call<EditProfileModel>
 
 }
 

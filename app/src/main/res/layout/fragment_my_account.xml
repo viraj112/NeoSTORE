@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.MyAccountFragment"
+    android:background="@color/color_red"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_myacc_profile"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+
+        android:layout_marginTop="@dimen/_65sdp"
+        android:src="@drawable/ic_slider_image_two"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginTop="@dimen/_20sdp" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edt_profile_fname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:textColor="@color/color_white"
+        android:enabled="false"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_marginRight="@dimen/_20sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/bg_edit_text"
+        android:padding="@dimen/_10sdp"
+        android:textSize="@dimen/_15ssp"
+        android:fontFamily="@font/gothammedium"
+        android:drawableLeft="@drawable/ic_username"
+        android:drawablePadding="@dimen/_10sdp"
+        app:layout_constraintTop_toBottomOf="@+id/iv_myacc_profile" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edt_profile_lname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:enabled="false"
+        android:inputType="textPersonName"
+        android:padding="@dimen/_10sdp"
+        android:textSize="@dimen/_15ssp"
+        android:textColor="@color/color_white"
+        android:fontFamily="@font/gothammedium"
+        android:drawableLeft="@drawable/ic_username"
+        android:drawablePadding="@dimen/_10sdp"
+        android:background="@drawable/bg_edit_text"
+        app:layout_constraintEnd_toEndOf="@+id/edt_profile_fname"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_goneMarginTop="@dimen/_16sdp"
+        app:layout_constraintStart_toStartOf="@+id/edt_profile_fname"
+        app:layout_constraintTop_toBottomOf="@+id/edt_profile_fname" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edt_profile_email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toEndOf="@+id/edt_profile_lname"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_goneMarginTop="@dimen/_16sdp"
+        android:fontFamily="@font/gothammedium"
+        android:textSize="@dimen/_15ssp"
+       android:padding="@dimen/_10sdp"
+        android:background="@drawable/bg_edit_text"
+        android:drawableLeft="@drawable/ic_email"
+        android:drawablePadding="@dimen/_10sdp"
+        android:textColor="@color/color_white"
+        app:layout_constraintStart_toStartOf="@+id/edt_profile_lname"
+        app:layout_constraintTop_toBottomOf="@+id/edt_profile_lname" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edt_profile_phone"
+        android:layout_width="0dp"
+        android:enabled="false"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/edt_profile_email"
+        app:layout_constraintStart_toStartOf="@+id/edt_profile_email"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:background="@drawable/bg_edit_text"
+        android:padding="@dimen/_10sdp"
+        android:drawableLeft="@drawable/ic_phone"
+        android:drawablePadding="@dimen/_10sdp"
+        android:fontFamily="@font/gothammedium"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/_15ssp"
+        app:layout_constraintTop_toBottomOf="@+id/edt_profile_email" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edt_profile_dob"
+        android:layout_width="0dp"
+        android:enabled="false"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/edt_profile_phone"
+        app:layout_constraintStart_toStartOf="@+id/edt_profile_phone"
+        app:layout_constraintTop_toBottomOf="@+id/edt_profile_phone"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:padding="@dimen/_10sdp"
+        android:background="@drawable/bg_edit_text"
+        android:fontFamily="@font/gothammedium"
+        android:textSize="@dimen/_15ssp"
+        android:drawablePadding="@dimen/_10sdp"
+        android:drawableLeft="@drawable/ic_dob"
+        android:textColor="@color/color_white"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_profile_edit_profile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:padding="@dimen/_10sdp"
+        android:textSize="@dimen/_20ssp"
+        android:textColor="@color/color_red"
+        android:background="@drawable/bg_button"
+        android:text="@string/edit_profile"
+        android:textAllCaps="true"
+        app:layout_constraintEnd_toEndOf="@+id/edt_profile_dob"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/edt_profile_dob"
+        app:layout_constraintTop_toBottomOf="@+id/edt_profile_dob" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_profile_reset_pass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_white"
+        android:fontFamily="@font/gothambook"
+        android:padding="@dimen/_15sdp"
+        android:text="@string/reset_password"
+        android:textColor="@color/color_black_midle"
+        android:textSize="@dimen/_15ssp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
