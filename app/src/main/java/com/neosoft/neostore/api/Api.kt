@@ -61,5 +61,10 @@ interface Api {
     fun editProfile(@Header("access_token")access_token: String, @Field("email")email: String, @Field("dob")dob: String
                     , @Field("phone_no")phone_no: String, @Field("profile_pic")profile_pic:String,@Field("first_name")first_name: String,@Field("last_name")last_name: String):Call<EditProfileModel>
 
+    @GET(ApiEndPoints.ORDER_LIST)
+    fun getOrderList(@Header("access_token")access_token:String):Call<OrderListModel>
+
+    @GET(ApiEndPoints.ORDER_DETAILS)
+    fun getOrderDetails(@Header("access_token")access_token:String,@Query("order_id")order_id:Int):Call<OrderDetailsModel>
 }
 

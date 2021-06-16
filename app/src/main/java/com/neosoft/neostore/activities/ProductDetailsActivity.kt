@@ -44,7 +44,7 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
     lateinit var cost: String
     lateinit var catagory: String
     lateinit var my_product_id :String
-    val progressDialog = CustomProgressDialog()
+
     lateinit var sharedPreferences: SharedPreferences
     var rate :Float = 0.0f
     lateinit var token :String
@@ -59,7 +59,7 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
 
         //initialize variables
 
-        progressDialog.show(this,getString(R.string.please_wait))
+
         initialization()
         getProductDetails()
 
@@ -76,8 +76,6 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                 try {
                     if (response.code() == Constants.SUCESS_CODE)
                     {
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            progressDialog.dialog.dismiss()
                             val items = response.body()?.data
                            // val imageList:List<ProductImages> = response.body()?.data?.product_images!!
 
@@ -97,11 +95,11 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
 
 
 
-                        },Constants.DELAY_TIME.toLong())
+
 
                     } else if (response.code() == Constants.NOT_FOUND)
                     {
-                        progressDialog.dialog.dismiss()
+
                         toast(response.message().toString())
                     }
 
@@ -112,7 +110,7 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
 
             override fun onFailure(call: Call<ProductDetailsModel>, t: Throwable)
             {
-                progressDialog.dialog.dismiss()
+
                 toast(t.message.toString())
             }
         })

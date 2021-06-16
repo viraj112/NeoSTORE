@@ -10,6 +10,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.res.ResourcesCompat
 import com.neosoft.neostore.R
+import android.app.ProgressDialog;
 import kotlinx.android.synthetic.main.progress_dialog.view.*
 
 class CustomProgressDialog {

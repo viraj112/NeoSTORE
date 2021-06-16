@@ -36,9 +36,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     lateinit var session: SessionManagement
     lateinit var email: String
     lateinit var password: String
-    val progressDialog = CustomProgressDialog()
-    lateinit var  myEmail:String
-    lateinit var username:String
+    lateinit var myEmail: String
+    lateinit var username: String
     lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,60 +86,42 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         ret.doLogin(email, password).enqueue(object : Callback<LoginModel> {
             @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
             override fun onResponse(call: Call<LoginModel>, response: Response<LoginModel>) {
-                progressDialog.show(this@LoginActivity, getString(R.string.please_wait))
 
                 try {
-                    if (response.code() == Constants.SUCESS_CODE)
-                    {
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            progressDialog.dialog.dismiss()
-                            val items = response.body()?.data
-                            myEmail= items?.email.toString()
-                            username = items?.first_name.toString()+items?.last_name.toString()
-                            val token = items?.access_token.toString()
-                            toast(response.body()?.message.toString())
+                    if (response.code() == Constants.SUCESS_CODE) {
+                        val items = response.body()?.data
+                        myEmail = items?.email.toString()
+                        username = items?.first_name.toString() + items?.last_name.toString()
+                        val token = items?.access_token.toString()
+                        toast(response.body()?.message.toString())
 
-                            session.createLoginSession(email, password)
-                            var intent: Intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            val editor:SharedPreferences.Editor = sharedPreferences.edit()
-                            editor.putString("email",myEmail)
-                            editor.putString("username",username)
-                            editor.putString("token",token)
+                        session.createLoginSession(email, password)
+                        var intent: Intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                        editor.putString("email", myEmail)
+                        editor.putString("username", username)
+                        editor.putString("token", token)
 
-                            editor.apply()
-                            startActivity(intent)
-
-                        }, Constants.DELAY_TIME.toLong())
+                        editor.apply()
+                        startActivity(intent)
 
 
-                    } else if (response.code() == Constants.Error_CODE)
+                    } else if (response.code() == Constants.Error_CODE) {
 
-                    {
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            progressDialog.dialog.dismiss()
-                            toast(response.message().toString())
-                        }, Constants.DELAY_TIME.toLong())
+                        toast(response.message().toString())
 
 
-
-                    }else
-                    {
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            progressDialog.dialog.dismiss()
-                            toast(response.message().toString())
-                        }, Constants.DELAY_TIME.toLong())
-
+                    } else {
+                        toast(response.message().toString())
 
 
                     }
-                } catch (e: Exception)
-                {
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
 
-            override fun onFailure(call: Call<LoginModel>, t: Throwable)
-            {
+            override fun onFailure(call: Call<LoginModel>, t: Throwable) {
                 toast(t.message.toString())
             }
         })
@@ -154,7 +135,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         startActivity(intent)
     }
 
-        //forgot password api call
+    //forgot password api call
     private fun doForgotPassword() {
         var email: String = ed_txt_username.text.toString()
         ret.forgotPassword(email).enqueue(object : Callback<ForgotPModel> {
@@ -163,28 +144,23 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 response: Response<ForgotPModel>
             ) {
                 try {
-                    if (response.code() == Constants.SUCESS_CODE)
-                    {
+                    if (response.code() == Constants.SUCESS_CODE) {
 
                         toast(response.body()?.user_msg.toString())
 
-                    } else if (response.code() == Constants.Error_CODE)
-                    {
+                    } else if (response.code() == Constants.Error_CODE) {
                         toast(response.body()?.user_msg.toString())
 
-                    } else
-                    {
+                    } else {
                         toast(response.message())
                     }
-                } catch (e: Exception)
-                {
+                } catch (e: Exception) {
                     e.printStackTrace()
 
                 }
             }
 
-            override fun onFailure(call: Call<ForgotPModel>, t: Throwable)
-            {
+            override fun onFailure(call: Call<ForgotPModel>, t: Throwable) {
                 toast(t.message.toString())
             }
 
@@ -192,8 +168,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    private fun initialization()
-    {
+    private fun initialization() {
 
         //for handling session
         if (session.isLoggedIn()) {
@@ -205,11 +180,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         //for full screen
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
-        } else
-        {
+        } else {
             @Suppress("DEPRECATION")
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -222,16 +195,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         btn_login.setOnClickListener(this)
         txt_forgot_password.setOnClickListener(this)
 
-        sharedPreferences =getSharedPreferences("SHARED_PREF",Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
     }
 
     //for back press
-    override fun onBackPressed()
-    {
+    override fun onBackPressed() {
         if (backPressTime + 1000 > System.currentTimeMillis()) {
             super.onBackPressed()
-        } else
-        {
+        } else {
             toast(getString(R.string.press_back_again))
             backPressTime = System.currentTimeMillis()
         }
@@ -239,15 +210,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     //validations for login
-    private fun validate(): Boolean
-    {
+    private fun validate(): Boolean {
         email = ed_txt_username.text.toString()
         if (!Validations.isValidemail(email)) {
             ed_txt_username.error = getString(R.string.valid_email)
             return false
 
-        } else if (edt_txt_password.text.toString().isEmpty())
-        {
+        } else if (edt_txt_password.text.toString().isEmpty()) {
             edt_txt_password.error = getString(R.string.canot_be_empty)
             return false
 

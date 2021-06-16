@@ -22,7 +22,7 @@ import retrofit2.Response
 
 class ResetPasswordActivity : AppCompatActivity(), View.OnClickListener {
     val retrofit = RetrofitClient.getRetrofitInstance().create(Api::class.java)
-    val progressDialog = CustomProgressDialog()
+
     lateinit var old_password: String
     lateinit var new_password: String
     lateinit var confirm_password: String
@@ -67,26 +67,19 @@ class ResetPasswordActivity : AppCompatActivity(), View.OnClickListener {
                     call: Call<ChangePasswordModel>,
                     response: Response<ChangePasswordModel>
                 ) {
-                    progressDialog.show(this@ResetPasswordActivity, getString(R.string.please_wait))
+
                     try {
                         if (response.code() == Constants.SUCESS_CODE) {
-                            Handler(Looper.getMainLooper()).postDelayed({
-                                progressDialog.dialog.dismiss()
                                 toast(response.body()?.user_msg.toString())
-                            }, Constants.DELAY_TIME.toLong())
+
 
                         } else if (response.code() == Constants.DATA_MISSING) {
-                            Handler(Looper.getMainLooper()).postDelayed({
-                                progressDialog.dialog.dismiss()
                                 toast(response.body()?.user_msg.toString())
-                            }, Constants.DELAY_TIME.toLong())
 
                         } else {
 
-                            Handler(Looper.getMainLooper()).postDelayed({
-                                progressDialog.dialog.dismiss()
                                 toast(response.body()?.user_msg.toString())
-                            }, Constants.DELAY_TIME.toLong())
+
                         }
 
                     } catch (e: Exception) {
@@ -96,11 +89,9 @@ class ResetPasswordActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
                 override fun onFailure(call: Call<ChangePasswordModel>, t: Throwable) {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        progressDialog.dialog.dismiss()
                         toast(t.message.toString())
                         clearData()
-                    }, Constants.DELAY_TIME.toLong())
+
 
                 }
             })

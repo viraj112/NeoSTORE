@@ -39,7 +39,7 @@ class MyCartFragment : Fragment(), View.OnClickListener {
     lateinit var total: String
     lateinit var sharedPreferences: SharedPreferences
     lateinit var count: String
-    val progressDialog = CustomProgressDialog()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

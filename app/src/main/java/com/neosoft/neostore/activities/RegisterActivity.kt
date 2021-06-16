@@ -27,7 +27,7 @@ import kotlin.time.ExperimentalTime
 
 class RegisterActivity : AppCompatActivity(),View.OnClickListener{
     val retIn = RetrofitClient.getRetrofitInstance().create(Api::class.java)
-    val progressDialog = CustomProgressDialog()
+
     lateinit var Gender :String
     lateinit var first_name: String
     lateinit var last_name: String
@@ -168,13 +168,10 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
                         call: Call<RegisterationModel>,
                         response: Response<RegisterationModel>)
                     {
-                        progressDialog.show(this@RegisterActivity, getString(R.string.please_wait))
+
                         try {
                             if (response.code() == Constants.SUCESS_CODE)
                             {
-                                Handler(Looper.getMainLooper()).postDelayed({
-                                    progressDialog.dialog.dismiss()
-                                }, Constants.DELAY_TIME.toLong())
 
                                 toast(response.body()?.message.toString())
 
@@ -183,17 +180,11 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
 
                             } else if (response.code() == Constants.Error_CODE)
                             {
-                                Handler(Looper.getMainLooper()).postDelayed({
-                                    progressDialog.dialog.dismiss()
-                                }, Constants.DELAY_TIME.toLong())
 
                                 toast(response.message())
 
                             } else
                             {
-                                Handler(Looper.getMainLooper()).postDelayed({
-                                    progressDialog.dialog.dismiss()
-                                }, Constants.DELAY_TIME.toLong())
 
                                 toast(response.body()?.message.toString())
                             }
@@ -205,9 +196,6 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
 
                     override fun onFailure(call: Call<RegisterationModel>, t: Throwable)
                     {
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            progressDialog.dialog.dismiss()
-                        }, Constants.DELAY_TIME.toLong())
 
                         toast(t.message.toString())
 

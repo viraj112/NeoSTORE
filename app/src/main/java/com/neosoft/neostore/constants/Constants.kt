@@ -18,6 +18,10 @@ class Constants {
         const val TOKEN ="60b86b8f8203c"
          var counter =0
         const val DATA_MISSING =400
+        const val TYPE_READ = 0
+        const val TYPE_CREATE =1
+        const val INVAILD_DATA =402
+
 
     }
 }

@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -50,7 +51,8 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
     lateinit var mphone:String
     lateinit var mdob:String
     lateinit var bitmap: Bitmap
-    var encodedImage:String ="abc"
+    lateinit var encodedImage:String
+     var profile:String?=""
 
     val retrofit = RetrofitClient.getRetrofitInstance().create(Api::class.java)
     override fun onCreateView(
@@ -209,14 +211,17 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         {
             bitmap  = data?.extras?.get("data") as Bitmap
             iv_myacc_profile.setImageBitmap(bitmap)
-            uploadImage(bitmap)
+
         }else if(requestCode ==999)
         {
             val uri: Uri? =data?.data
             try {
                 val bitmap:Bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver,uri)
                 iv_myacc_profile.setImageBitmap(bitmap)
-                uploadImage(bitmap)
+                if (uri != null) {
+                    encode(uri)
+                }
+
             }catch (e:IOException)
             {
                 e.printStackTrace()
@@ -225,18 +230,30 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    fun encode(imageUri: Uri): String {
+        val input = activity?.getContentResolver()?.openInputStream(imageUri)
+        val image = BitmapFactory.decodeStream(input , null, null)
 
+        // Encode image to base64 string
+        val baos = ByteArrayOutputStream()
+        image?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        var imageBytes = baos.toByteArray()
+        val imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT)
+        profile = imageString
+        return imageString
+    }
 
+/*
     private fun uploadImage(bitmap: Bitmap) {
         val byteArrayOutputStream:ByteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream)
         encodedImage= Base64.encodeToString(byteArrayOutputStream.toByteArray(),Base64.DEFAULT)
 
 
-    }
+    }*/
 
     private fun editProfie() {
-
+            encodedImage = profile!!
         retrofit.editProfile(Constants.TOKEN,mEmail,mdob,mphone,encodedImage,mfirstName,mlastName).enqueue(object :Callback<EditProfileModel>{
             override fun onResponse(
                 call: Call<EditProfileModel>,

@@ -16,6 +16,8 @@ class ApiEndPoints {
          const val GET_USER_DATA ="getUserData"
          const val CHANGE_PASSWORD ="change"
          const val EDIT_PROFILE="update"
+         const val ORDER_LIST="orderList"
+         const val ORDER_DETAILS="orderDetail"
 
     }
 }

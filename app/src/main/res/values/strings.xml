@@ -64,4 +64,7 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="update_Profile">Update Profile</string>
+    <string name="place_order">Place Order</string>
+    <string name="orderid">Order ID</string>
+    <string name="ordered_date">Ordered Date</string>
 </resources>

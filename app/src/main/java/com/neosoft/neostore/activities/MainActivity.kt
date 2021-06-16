@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var storeLocatorFragment: StoreLocatorFragment
     lateinit var myOrdersFragment: MyOrdersFragment
     lateinit var preferences: SharedPreferences
-    val progressDialog = CustomProgressDialog()
+
 
 
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
@@ -53,10 +53,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         session = SessionManagement(this)
         session.checkLogin()
 
-        progressDialog.show(this, getString(R.string.please_wait))
-        Handler(Looper.getMainLooper()).postDelayed({
-            progressDialog.dialog.dismiss()
-        }, Constants.DELAY_TIME.toLong())
 
         //initialization of varibales
         initialization()

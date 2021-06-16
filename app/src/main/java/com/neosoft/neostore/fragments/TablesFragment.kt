@@ -32,7 +32,7 @@ class TablesFragment : Fragment() {
     lateinit var adapter: TablesAdapter
     var listdata:List<ProductModel> = ArrayList()
     val my_retrofit = RetrofitClientProduct.getRetrofitInstance().create(Api::class.java)
-    val progressDialog = CustomProgressDialog()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
@@ -48,7 +48,7 @@ class TablesFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         rv_tables_fragment.layoutManager = LinearLayoutManager(activity)
         rv_tables_fragment.addItemDecoration(DividerItemDecoration(context,LinearLayoutManager.VERTICAL))
-        progressDialog.show(requireContext(),getString(R.string.please_wait))
+
 
         getProductList()
     }
@@ -62,15 +62,13 @@ class TablesFragment : Fragment() {
                 try {
                     if (response.code()==Constants.SUCESS_CODE)
                     {
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            progressDialog.dialog.dismiss()
                             val data:List<ProductModel> =response.body()?.data!!
                             listdata =data
                             adapter = TablesAdapter(context!!,listdata)
-                            rv_tables_fragment.adapter = adapter
+                            rv_tables_fragment?.adapter = adapter
                             adapter.notifyDataSetChanged()
 
-                        },Constants.DELAY_TIME.toLong())
+
                     }
 
                 }catch (e:Exception)

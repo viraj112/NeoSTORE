@@ -1,29 +1,27 @@
 package com.neosoft.neostore.activities
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.neosoft.neostore.R
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClientCart
-import com.neosoft.neostore.api.RetrofitClientProduct
-import com.neosoft.neostore.constants.Constants
-import com.neosoft.neostore.models.PlaceOrderModel
 import kotlinx.android.synthetic.main.activity_add_address.*
-import org.jetbrains.anko.toast
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class AddAddressActivity : AppCompatActivity(), View.OnClickListener {
+class AddAddressActivity : AppCompatActivity(),View.OnClickListener {
     val my_retrofit = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
+    lateinit var  name:String
+    lateinit var sharedPreferences: SharedPreferences
+     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_address)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-       supportActionBar?.title =getString(R.string.add_address)
+        supportActionBar?.title = getString(R.string.add_address)
+        sharedPreferences = this.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
+        name = sharedPreferences.getString("username", null).toString()
         initialization()
     }
 
@@ -32,18 +30,21 @@ class AddAddressActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(view: View) {
+
         when(view.id)
         {
             R.id.btn_save_address ->
             {
-                saveAddress()
+                val i :Intent = Intent(this,AddressListActivity::class.java)
+                i.putExtra("address",edittxt_address.text.toString()+edttxt_landmark.text.toString()+edttxt_city.text.toString()+edttxt_state.text.toString()+edttxt_zip_code.text.toString())
+                startActivity(i)
             }
         }
     }
 
-    private fun saveAddress() {
-            val i :Intent = Intent(this,AddressListActivity::class.java)
-            i.putExtra("address",edittxt_address.text.toString()+edttxt_city.text.toString()+edttxt_landmark.text.toString()+edttxt_state.text.toString()+edttxt_country.text.toString()+edttxt_zip_code.text.toString())
-            startActivity(i)
-    }
 }
+
+
+
+
+
