@@ -21,10 +21,10 @@ class OrderDetailsAdapter(val context: Context,val list:List<OrderDetails>) :
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
        holder.itemView.txt_order_title.text = list.get(position).prod_name.toString()
-        holder.itemView.txt_order_catagory.text = list.get(position).prod_cat_name.toString()
-        holder.itemView.txt_order_quantity.text = list.get(position).quantity.toString()
+        holder.itemView.txt_order_catagory.text = "("+list.get(position).prod_cat_name.toString()+")"
+        holder.itemView.txt_order_quantity.text = "QTY "+": "+list.get(position).quantity.toString()
         Glide.with(context).load(list.get(position).prod_image).into(holder.itemView.iv_order_details)
-        holder.itemView.txt_order_quantity.text = list.get(position).total.toString()
+        holder.itemView.txt_order_price.text = "₹"+list.get(position).total.toString()
     }
 
     override fun getItemCount(): Int {

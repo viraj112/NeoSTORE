@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -15,10 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NeoSTORE"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.OrdersDetailsActivity"></activity>
-        <activity android:name=".activities.OrderListActivity" />
+        <activity android:name=".activities.OrdersDetailsActivity" />
         <activity android:name=".activities.ResetPasswordActivity" />
-        <activity android:name=".activities.AddressListActivity" />
+        <activity android:name=".activities.AddressListActivity"/>
         <activity android:name=".activities.AddAddressActivity" />
         <activity
             android:name=".activities.SplashScreenActivity"
@@ -42,6 +43,9 @@
         <activity
             android:name=".activities.MainActivity"
             android:theme="@style/myTheme" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDb23E4_O_N8Y1twVzc_h_86B2hmT-PPEk"/>
     </application>
 
 </manifest>

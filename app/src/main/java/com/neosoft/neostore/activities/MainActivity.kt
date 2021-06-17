@@ -1,16 +1,12 @@
 package com.neosoft.neostore.activities
 
-import CustomProgressDialog
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.*
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
@@ -18,13 +14,11 @@ import androidx.core.view.GravityCompat
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.material.navigation.NavigationView
 import com.neosoft.neostore.R
-import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.fragments.*
 import com.neosoft.neostore.utilities.SessionManagement
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.cart_count.*
-import kotlinx.android.synthetic.main.cart_count.view.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,

@@ -1,15 +1,11 @@
 package com.neosoft.neostore.activities
 
-import CustomProgressDialog
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import androidx.annotation.RequiresApi
-import com.google.android.material.snackbar.Snackbar
 import com.neosoft.neostore.R
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClient

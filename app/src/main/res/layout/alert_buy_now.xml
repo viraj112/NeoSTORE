@@ -56,7 +56,6 @@
         android:background="@drawable/bg_edit_quantity"
         android:gravity="center"
         android:padding="@dimen/_10sdp"
-        android:inputType="number"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="@+id/appCompatTextView"
         app:layout_constraintHorizontal_bias="0.492"

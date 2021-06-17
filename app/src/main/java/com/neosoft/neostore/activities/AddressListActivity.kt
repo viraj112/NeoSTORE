@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.neosoft.neostore.R
@@ -34,15 +36,21 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAda
     var addressAdapter :AddressAdapter? =null
     val onItemClick:AddressAdapter.OnItemClick? = null
     val retrofit = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.title = getString(R.string.address_list)
+
+        supportActionBar?.title =getString(R.string.address_list)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         sharedPreferences = this.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
+
         Address = intent.getStringExtra("address").toString()
         Name = sharedPreferences.getString("username",null).toString()
+
         setContentView(R.layout.activity_address_list)
+
         btn_place_order.setOnClickListener(this)
         val database = Room.databaseBuilder(
             this,

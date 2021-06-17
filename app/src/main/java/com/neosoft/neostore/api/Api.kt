@@ -2,7 +2,6 @@ package com.neosoft.neostore.api
 
 import com.neosoft.neostore.constants.ApiEndPoints
 import com.neosoft.neostore.models.*
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -35,7 +34,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST(ApiEndPoints.ADD_TO_CART)
-    fun addToCart(@Field("product_id") product_id:String, @Field("quantity") quantity: Int, @Header("access_token") access_token:String):Call<AddToCartModel>
+    fun addToCart(@Field("product_id") product_id:String, @Field("quantity") quantity: Int?, @Header("access_token") access_token:String):Call<AddToCartModel>
 
 
     @GET(ApiEndPoints.CART)
@@ -66,5 +65,10 @@ interface Api {
 
     @GET(ApiEndPoints.ORDER_DETAILS)
     fun getOrderDetails(@Header("access_token")access_token:String,@Query("order_id")order_id:Int):Call<OrderDetailsModel>
+
+    @FormUrlEncoded
+    @POST(ApiEndPoints.EDIT_CART)
+    fun editCart(@Header("access_token")access_token:String,@Field("product_id")product_id:String,@Field("quantity")quantity:Int):Call<EditCartmodel>
+
 }
 

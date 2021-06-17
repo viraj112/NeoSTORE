@@ -18,6 +18,6 @@ class ApiEndPoints {
          const val EDIT_PROFILE="update"
          const val ORDER_LIST="orderList"
          const val ORDER_DETAILS="orderDetail"
-
+         const val EDIT_CART ="editCart"
     }
 }

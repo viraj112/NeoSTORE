@@ -12,7 +12,6 @@
         android:id="@+id/iv_myacc_profile"
         android:layout_width="@dimen/_100sdp"
         android:layout_height="@dimen/_100sdp"
-
         android:layout_marginTop="@dimen/_65sdp"
         android:src="@drawable/ic_slider_image_two"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +28,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         android:layout_marginTop="@dimen/_16sdp"
         android:textColor="@color/color_white"
-        android:enabled="false"
         android:layout_marginLeft="@dimen/_20sdp"
         android:layout_marginRight="@dimen/_20sdp"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +44,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:enabled="false"
         android:inputType="textPersonName"
         android:padding="@dimen/_10sdp"
         android:textSize="@dimen/_15ssp"
@@ -65,7 +62,6 @@
         android:id="@+id/edt_profile_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:enabled="false"
         android:layout_marginTop="28dp"
         app:layout_constraintEnd_toEndOf="@+id/edt_profile_lname"
         app:layout_constraintHorizontal_bias="0.0"
@@ -83,7 +79,6 @@
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edt_profile_phone"
         android:layout_width="0dp"
-        android:enabled="false"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@+id/edt_profile_email"
         app:layout_constraintStart_toStartOf="@+id/edt_profile_email"
@@ -100,7 +95,6 @@
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edt_profile_dob"
         android:layout_width="0dp"
-        android:enabled="false"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@+id/edt_profile_phone"
         app:layout_constraintStart_toStartOf="@+id/edt_profile_phone"
@@ -123,14 +117,14 @@
         android:textSize="@dimen/_20ssp"
         android:textColor="@color/color_red"
         android:background="@drawable/bg_button"
-        android:text="@string/edit_profile"
+        android:text="@string/update_Profile"
         android:textAllCaps="true"
         app:layout_constraintEnd_toEndOf="@+id/edt_profile_dob"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/edt_profile_dob"
         app:layout_constraintTop_toBottomOf="@+id/edt_profile_dob" />
 
-    <androidx.appcompat.widget.AppCompatButton
+     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_profile_reset_pass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

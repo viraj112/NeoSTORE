@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.neosoft.neostore.R
 import com.neosoft.neostore.adapters.MyCartAdapter
 import com.neosoft.neostore.adapters.OrderDetailsAdapter
@@ -16,6 +17,7 @@ import com.neosoft.neostore.models.OrderDetails
 import com.neosoft.neostore.models.OrderDetailsModel
 import kotlinx.android.synthetic.main.activity_orders_details.*
 import kotlinx.android.synthetic.main.fragment_my_cart.*
+import kotlinx.android.synthetic.main.fragment_my_orders.*
 import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,7 +34,10 @@ class OrdersDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_orders_details)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         order_id = intent.getIntExtra("id",1)
+        supportActionBar?.title="ORDER ID"+" :  "+order_id.toString()
         recycler_orders_details.layoutManager= LinearLayoutManager(this)
+        recycler_orders_details.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
+
 
 
         getOrderDetails()
@@ -50,7 +55,7 @@ class OrdersDetailsActivity : AppCompatActivity() {
                     if (response.code() == Constants.SUCESS_CODE)
                     {
                         val items =response.body()?.data
-                        txt_cost_orders_details.setText(items?.cost.toString())
+                        txt_cost_orders_details.setText("₹"+items?.cost.toString()+".00")
                         val list:List<OrderDetails> = items?.order_details!!
                         listdata=list
                         adapter = OrderDetailsAdapter(this@OrdersDetailsActivity,list)

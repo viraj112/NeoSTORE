@@ -7,8 +7,10 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.util.Base64
 import android.view.LayoutInflater
@@ -17,7 +19,9 @@ import android.view.ViewGroup
 import android.widget.DatePicker
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.neosoft.neostore.R
 import com.neosoft.neostore.activities.ResetPasswordActivity
 import com.neosoft.neostore.api.Api
@@ -25,6 +29,7 @@ import com.neosoft.neostore.api.RetrofitClient
 import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.models.EditProfileModel
 import com.neosoft.neostore.models.FetchAccountModel
+import com.neosoft.neostore.utilities.LoadingDialog
 import kotlinx.android.synthetic.main.fragment_my_account.*
 import kotlinx.android.synthetic.main.image_picker_dialog.view.*
 import okhttp3.MediaType
@@ -52,23 +57,23 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
     lateinit var mdob:String
     lateinit var bitmap: Bitmap
     lateinit var encodedImage:String
-     var profile:String?=""
-
+    var profile:String?=""
+    lateinit var loadingDialog: LoadingDialog
+    var imageString:String="AA"
     val retrofit = RetrofitClient.getRetrofitInstance().create(Api::class.java)
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    {
         // Inflate the layout for this fragment
-        val view =
-            LayoutInflater.from(context).inflate(R.layout.fragment_my_account, container, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.fragment_my_account, container, false)
+        loadingDialog = LoadingDialog(requireActivity())
+        loadingDialog.startLoading()
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         getUserDetails()
-        iv_myacc_profile.isEnabled = false
+        iv_myacc_profile.isEnabled = true
         btn_profile_reset_pass.setOnClickListener(this)
         iv_myacc_profile.setOnClickListener(this)
         btn_profile_edit_profile.setOnClickListener(this)
@@ -77,24 +82,36 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
 
     private fun getUserDetails() {
         retrofit.fetchAccountDetails(Constants.TOKEN).enqueue(object : Callback<FetchAccountModel> {
+
             override fun onResponse(
                 call: Call<FetchAccountModel>,
-                response: Response<FetchAccountModel>
-            ) {
-                try {
+                response: Response<FetchAccountModel>)
+            {
+                try
+                {
                     if (response.code() == Constants.SUCESS_CODE)
                     {
-                        val items = response.body()?.data?.user_data
-                        fName = items?.first_name.toString()
-                        lName = items?.last_name.toString()
-                        email = items?.email.toString()
-                        phone = items?.phone_no.toString()
-                        dob = items?.dob.toString()
-                        //Glide.with(activity!!).load(items?.profile_pic).into(iv_myacc_profile)
-                        setUserData()
+
+                        val handler = Handler()
+                        handler.postDelayed(object : Runnable
+                        {
+                            override fun run()
+                            {
+                                loadingDialog.isDismiss()
+                                val items = response.body()?.data?.user_data
+                                fName = items?.first_name.toString()
+                                lName = items?.last_name.toString()
+                                email = items?.email.toString()
+                                phone = items?.phone_no.toString()
+                                dob = items?.dob.toString()
+                                Glide.with(activity!!).load(items?.profile_pic).into(iv_myacc_profile)
+                                setUserData()
+                            }
+                        }, Constants.DELAY_TIME.toLong())
 
                     } else if (response.code() == Constants.NOT_FOUND)
                     {
+                        loadingDialog.isDismiss()
                         activity?.toast(response.body()?.user_msg.toString())
                     }
 
@@ -106,6 +123,7 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
 
             override fun onFailure(call: Call<FetchAccountModel>, t: Throwable)
             {
+                loadingDialog.isDismiss()
                 activity?.toast(t.message.toString())
             }
 
@@ -152,8 +170,9 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
             R.id.btn_profile_edit_profile ->
             {
                 updateProfile()
+
             }
-            
+
             R.id.edt_profile_dob ->
             {
                 val c= Calendar.getInstance()
@@ -173,21 +192,20 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
     }
 
     private fun updateProfile() {
-       btn_profile_edit_profile.setText(getString(R.string.update_Profile))
-        edt_profile_dob.isEnabled = true
+     // btn_profile_edit_profile.setText(getString(R.string.update_Profile))
+       /* edt_profile_dob.isEnabled = true
         edt_profile_fname.isEnabled = true
         edt_profile_lname.isEnabled = true
         edt_profile_phone.isEnabled = true
         edt_profile_email.isEnabled = true
         iv_myacc_profile.isEnabled = true
-
-         mfirstName = edt_profile_fname.text.toString()
+*/         mfirstName = edt_profile_fname.text.toString()
         mlastName = edt_profile_lname.text.toString()
         mEmail = edt_profile_email.text.toString()
         mphone = edt_profile_phone.text.toString()
         mdob = edt_profile_dob.text.toString()
-        editProfie()
 
+        editProfie()
     }
 
 
@@ -210,6 +228,7 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         if (requestCode==111)
         {
             bitmap  = data?.extras?.get("data") as Bitmap
+            uploadImage(bitmap)
             iv_myacc_profile.setImageBitmap(bitmap)
 
         }else if(requestCode ==999)
@@ -219,9 +238,9 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                 val bitmap:Bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver,uri)
                 iv_myacc_profile.setImageBitmap(bitmap)
                 if (uri != null) {
-                    encode(uri)
+  //                  encode(uri)
+                    uploadImage(bitmap)
                 }
-
             }catch (e:IOException)
             {
                 e.printStackTrace()
@@ -229,8 +248,9 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
 
         }
     }
-
-    fun encode(imageUri: Uri): String {
+/*
+    fun encode(imageUri: Uri): String
+    {
         val input = activity?.getContentResolver()?.openInputStream(imageUri)
         val image = BitmapFactory.decodeStream(input , null, null)
 
@@ -241,37 +261,48 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         val imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT)
         profile = imageString
         return imageString
-    }
+    }*/
 
-/*
     private fun uploadImage(bitmap: Bitmap) {
         val byteArrayOutputStream:ByteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream)
         encodedImage= Base64.encodeToString(byteArrayOutputStream.toByteArray(),Base64.DEFAULT)
+        imageString=encodedImage
 
+    }
 
-    }*/
+    private fun editProfie()
+    {
+        loadingDialog.startLoading()
 
-    private fun editProfie() {
-            encodedImage = profile!!
-        retrofit.editProfile(Constants.TOKEN,mEmail,mdob,mphone,encodedImage,mfirstName,mlastName).enqueue(object :Callback<EditProfileModel>{
-            override fun onResponse(
-                call: Call<EditProfileModel>,
-                response: Response<EditProfileModel>
-            ) {
-                try {
-                    if (response.code() == Constants.SUCESS_CODE) {
-                        activity?.toast(response.body()?.user_msg.toString())
-                    }else if (response.code() == Constants.Error_CODE) {
+        retrofit.editProfile(Constants.TOKEN,mEmail,mdob,mphone,imageString,mfirstName,mlastName).enqueue(object :Callback<EditProfileModel>{
+            override fun onResponse(call: Call<EditProfileModel>, response: Response<EditProfileModel>)
+            {
+                try
+                {
+                    if (response.code() == Constants.SUCESS_CODE)
+                    {
+                        val handler = Handler()
+                        handler.postDelayed(Runnable {
+                          loadingDialog.isDismiss()
+                            activity?.toast(response.body()?.user_msg.toString())
+                        },Constants.DELAY_TIME.toLong())
+
+                    }else if (response.code() == Constants.Error_CODE)
+                    {
+                        loadingDialog.isDismiss()
                         activity?.toast(response.body()?.user_msg.toString())
 
                     }
-                }catch (e:java.lang.Exception) {
+                }catch (e:java.lang.Exception)
+                {
                     e.printStackTrace()
                 }
             }
 
-            override fun onFailure(call: Call<EditProfileModel>, t: Throwable) {
+            override fun onFailure(call: Call<EditProfileModel>, t: Throwable)
+            {
+                loadingDialog.isDismiss()
                 activity?.toast(t.message.toString())
             }
         })
@@ -283,7 +314,8 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
     {
         if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.M)
         {
-            when{
+            when
+            {
                 activity?.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED ->{
                     activity?.toast("$name permission granted")
                 }
@@ -294,7 +326,8 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
+    {
             fun innerCheck(name: String)
             {
                 if (grantResults.isEmpty() || grantResults[0]!=PackageManager.PERMISSION_GRANTED)
@@ -321,7 +354,6 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
             setPositiveButton("ok"){dialog,which ->
                 ActivityCompat.requestPermissions(requireActivity(), arrayOf(permission),requestCode)
             }
-
         }
         val dialog = builder.create()
         dialog.show()

@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".fragments.MyCartFragment">
+    tools:context=".fragments.MyCartFragment"
+    android:layout_marginTop="@dimen/_25sdp">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/_5sdp">
+        >
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reecycler_my_cart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginLeft="@dimen/_5sdp"

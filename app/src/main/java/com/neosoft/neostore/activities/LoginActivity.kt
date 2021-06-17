@@ -1,6 +1,5 @@
 package com.neosoft.neostore.activities
 
-import CustomProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,7 +7,6 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -19,6 +17,7 @@ import com.neosoft.neostore.api.RetrofitClient
 import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.models.ForgotPModel
 import com.neosoft.neostore.models.LoginModel
+import com.neosoft.neostore.utilities.LoadingDialog
 import com.neosoft.neostore.utilities.SessionManagement
 import com.neosoft.neostore.utilities.Validations
 import kotlinx.android.synthetic.main.activity_login.*
@@ -39,11 +38,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     lateinit var myEmail: String
     lateinit var username: String
     lateinit var sharedPreferences: SharedPreferences
+    lateinit var loading :LoadingDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
+        loading = LoadingDialog(this@LoginActivity)
         session = SessionManagement(this)
+        //initializa varibales
         initialization()
 
     }
@@ -88,87 +89,103 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             override fun onResponse(call: Call<LoginModel>, response: Response<LoginModel>) {
 
                 try {
-                    if (response.code() == Constants.SUCESS_CODE) {
-                        val items = response.body()?.data
-                        myEmail = items?.email.toString()
-                        username = items?.first_name.toString() + items?.last_name.toString()
-                        val token = items?.access_token.toString()
-                        toast(response.body()?.message.toString())
+                    if (response.code() == Constants.SUCESS_CODE)
+                    {
+                        loading.startLoading()
+                        val handler = Handler()
+                        handler.postDelayed(object : Runnable {
+                            override fun run() {
+                                loading.isDismiss()
+                                val items = response.body()?.data
+                                myEmail = items?.email.toString()
+                                username = items?.first_name.toString() + items?.last_name.toString()
+                                val token = items?.access_token.toString()
+                                toast(response.body()?.message.toString())
 
-                        session.createLoginSession(email, password)
-                        var intent: Intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                        editor.putString("email", myEmail)
-                        editor.putString("username", username)
-                        editor.putString("token", token)
+                                session.createLoginSession(email, password)
 
-                        editor.apply()
-                        startActivity(intent)
+                                var intent: Intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                                editor.putString("email", myEmail)
+                                editor.putString("username", username)
+                                editor.putString("token", token)
+                                editor.apply()
+                                startActivity(intent)
 
+                            }
+                        }, Constants.DELAY_TIME.toLong())
 
-                    } else if (response.code() == Constants.Error_CODE) {
+                    } else if (response.code() == Constants.Error_CODE)
+                    {
 
                         toast(response.message().toString())
 
+                    } else
+                    {
 
-                    } else {
                         toast(response.message().toString())
-
-
                     }
-                } catch (e: Exception) {
+                } catch (e: Exception)
+                {
                     e.printStackTrace()
                 }
             }
 
-            override fun onFailure(call: Call<LoginModel>, t: Throwable) {
-                toast(t.message.toString())
+            override fun onFailure(call: Call<LoginModel>, t: Throwable)
+            {
+                toast(R.string.no_connection)
             }
         })
 
     }
 
-
-    private fun getRegisteration() {
-
+        //registration
+    private fun getRegisteration()
+    {
         val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
     }
 
     //forgot password api call
-    private fun doForgotPassword() {
+    private fun doForgotPassword()
+    {
         var email: String = ed_txt_username.text.toString()
         ret.forgotPassword(email).enqueue(object : Callback<ForgotPModel> {
-            override fun onResponse(
-                call: Call<ForgotPModel>,
-                response: Response<ForgotPModel>
-            ) {
-                try {
-                    if (response.code() == Constants.SUCESS_CODE) {
+            override fun onResponse(call: Call<ForgotPModel>, response: Response<ForgotPModel>)
+            {
+                try
+                {
+                    if (response.code() == Constants.SUCESS_CODE)
+                    {
 
                         toast(response.body()?.user_msg.toString())
 
-                    } else if (response.code() == Constants.Error_CODE) {
+                    } else if (response.code() == Constants.Error_CODE)
+                    {
+
                         toast(response.body()?.user_msg.toString())
 
-                    } else {
+                    } else
+                    {
                         toast(response.message())
                     }
-                } catch (e: Exception) {
+                } catch (e: Exception)
+                {
                     e.printStackTrace()
 
                 }
             }
 
-            override fun onFailure(call: Call<ForgotPModel>, t: Throwable) {
+            override fun onFailure(call: Call<ForgotPModel>, t: Throwable)
+            {
                 toast(t.message.toString())
             }
 
         })
     }
 
-
-    private fun initialization() {
+    private fun initialization()
+    {
 
         //for handling session
         if (session.isLoggedIn()) {
@@ -221,9 +238,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             return false
 
         }
-
         return true
     }
-
-
 }

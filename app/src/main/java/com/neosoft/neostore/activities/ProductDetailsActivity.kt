@@ -1,6 +1,5 @@
 package com.neosoft.neostore.activities
 
-import CustomProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,12 +7,9 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
-import com.bumptech.glide.Glide
 import com.neosoft.neostore.R
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClientCart
@@ -21,11 +17,11 @@ import com.neosoft.neostore.api.RetrofitClientProduct
 import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.models.*
 import kotlinx.android.synthetic.main.activity_product_details.*
+import kotlinx.android.synthetic.main.alert_buy_now.*
 import kotlinx.android.synthetic.main.alert_buy_now.view.*
-import kotlinx.android.synthetic.main.items_layout_tables.*
-import kotlinx.android.synthetic.main.rating_alert_dialog.*
 import kotlinx.android.synthetic.main.rating_alert_dialog.view.*
 import org.jetbrains.anko.toast
+import org.xml.sax.Parser
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -186,7 +182,8 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun addToCart() {
-        retrofit.addToCart(my_product_id,1,token).enqueue(object :Callback<AddToCartModel>{
+       //val i : Int? = edt_buynow_quantity?.text?.toString()?.toInt()
+        retrofit.addToCart(my_product_id,6,token).enqueue(object :Callback<AddToCartModel>{
             override fun onResponse(
                 call: Call<AddToCartModel>,
                 response: Response<AddToCartModel>
