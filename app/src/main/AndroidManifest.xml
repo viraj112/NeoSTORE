@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,6 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NeoSTORE"
         android:usesCleartextTraffic="true">
+        <uses-library android:name="com.google.android.maps" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCDLlBnLcD8tjqPnL8fuT6f1JDS0PIOoBA"/>
         <activity android:name=".activities.OrdersDetailsActivity" />
         <activity android:name=".activities.ResetPasswordActivity" />
         <activity android:name=".activities.AddressListActivity"/>
@@ -42,10 +46,9 @@
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
             android:name=".activities.MainActivity"
-            android:theme="@style/myTheme" />
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDb23E4_O_N8Y1twVzc_h_86B2hmT-PPEk"/>
+            android:theme="@style/myTheme" >
+        </activity>
+
     </application>
 
 </manifest>

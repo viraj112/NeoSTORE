@@ -65,4 +65,7 @@
     <string name="orderid">Order ID</string>
     <string name="ordered_date">Ordered Date</string>
     <string name="no_connection">Internet connection appears to be offline</string>
+    <string name="valid_zip">Enter valid zip code</string>
+    <string name="empty_cart">No items in cart</string>
+    <string name="api_key">AIzaSyDb23E4_O_N8Y1twVzc_h_86B2hmT-PPEk</string>
 </resources>

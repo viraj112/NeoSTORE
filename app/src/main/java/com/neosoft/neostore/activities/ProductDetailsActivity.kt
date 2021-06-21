@@ -44,7 +44,8 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
     lateinit var sharedPreferences: SharedPreferences
     var rate :Float = 0.0f
     lateinit var token :String
-     var quantity:Int=1
+     var quantity:Int = 1
+
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,11 +137,13 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
         when (view.id) {
             R.id.btn_product_details_rate ->
             {
+                //rate product here
                 getRating()
 
             }
             R.id.btn_product_details_buy ->
             {
+                //buy product
                 buyNowProduct()
             }
             R.id.product_details_iv_share ->
@@ -156,7 +159,7 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                 startActivity(Intent.createChooser(intent,"Share To :"))
             }
             else ->{
-                //
+                //donothing
             }
         }
     }
@@ -166,28 +169,24 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
         val mybuilder = AlertDialog.Builder(this)
         mybuilder.setView(myview)
         val mydialog = mybuilder.create()
-//        quantity =myview.edt_buynow_quantity.text.toString().toInt()
+
         mydialog.setCanceledOnTouchOutside(false)
-        //val number =myview.edt_buynow_quantity.text.toString()
-         //quantity= number.toInt()
         mydialog.show()
         myview.btn_buynow_submit.setOnClickListener{
-
+            val q:Int =myview.edt_buynow_quantity.text.toString().toInt()
+                quantity = q
+                //add product  into cart
                 addToCart()
                 mydialog.dismiss()
-
-
         }
 
     }
 
     private fun addToCart() {
-       //val i : Int? = edt_buynow_quantity?.text?.toString()?.toInt()
-        retrofit.addToCart(my_product_id,6,token).enqueue(object :Callback<AddToCartModel>{
-            override fun onResponse(
-                call: Call<AddToCartModel>,
-                response: Response<AddToCartModel>
-            ) {
+
+        retrofit.addToCart(my_product_id,quantity,token).enqueue(object :Callback<AddToCartModel>{
+            override fun onResponse(call: Call<AddToCartModel>, response: Response<AddToCartModel>)
+            {
                 try
                 {
                   if (response.code() == Constants.SUCESS_CODE)
@@ -241,6 +240,7 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                     if (response.code()==Constants.SUCESS_CODE)
                     {
                         val myitems = response.body()?.data
+                        product_details_ratingbar.rating = myitems?.rating?.toFloat()!!
                         toast(response.body()?.user_msg.toString())
                     }
                 }catch (e:Exception)
@@ -254,5 +254,10 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
             }
 
         })
+    }
+
+    override fun onBackPressed()
+    {
+        finish()
     }
 }

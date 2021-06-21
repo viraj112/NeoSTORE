@@ -21,7 +21,7 @@ class Constants {
         const val TYPE_READ = 0
         const val TYPE_CREATE =1
         const val INVAILD_DATA =402
-
+        const val PLACE_PICKER_REQUEST_CODE =111
 
     }
 }

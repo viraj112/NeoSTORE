@@ -30,11 +30,13 @@ import java.lang.Exception
 
 class MyCartAdapter(val context: Context, val data: List<Data>) : RecyclerView.Adapter<MyCartAdapter.MyCartViewHolder>()
      {
+         //initialize variable
     val retrofitClientCart = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
     private var listdata: MutableList<Data> = data as MutableList
     var arrayAdapter: ArrayAdapter<Int>?= null
     var quantity = arrayListOf(1,2,3,4,5,6,7,8,9)
     var productId :String = ""
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyCartViewHolder
     {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.items_my_cart, parent, false)
@@ -48,53 +50,56 @@ class MyCartAdapter(val context: Context, val data: List<Data>) : RecyclerView.A
         holder.itemView.txt_catagory_my_cart.text = "(" + data.get(position).product.product_category + ")"
         holder.itemView.txt_price_my_cart.text = "\u20B9" + data.get(position).product.cost.toString()
         Glide.with(context).load(data.get(position).product.product_images).into(holder.itemView.iv_my_cart)
+
         productId = data.get(position).product_id.toString()
+
         arrayAdapter = ArrayAdapter(context,android.R.layout.simple_spinner_item,quantity)
         holder.itemView.spinner_my_cart.adapter = arrayAdapter
+
+        //click listner for edit cart
         holder.itemView.spinner_my_cart.onItemSelectedListener = object :
-            AdapterView.OnItemSelectedListener{
+            AdapterView.OnItemSelectedListener
+        {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
             {
-
                 val i:Int = parent?.getItemAtPosition(position) as Int
-                if (parent!!.selectedItemPosition==i)
+                if (!i.equals(holder.itemView.isSelected))
                 {
-
-                }else
-                {
-                    retrofitClientCart.editCart(Constants.TOKEN,productId,i).enqueue(object :Callback<EditCartmodel>{
-                        override fun onResponse(
-                            call: Call<EditCartmodel>,
-                            response: Response<EditCartmodel>
-                        ) {
-                            try {
-                                if (response.code() == Constants.SUCESS_CODE) {
-                                    context.toast(response.body()?.user_msg.toString())
-                                } else if (response.code() == Constants.NOT_FOUND) {
-                                    context.toast(response.body()?.user_msg.toString())
-                                } else {
-                                    context.toast(response.body()?.user_msg.toString())
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
+                    retrofitClientCart.editCart(Constants.TOKEN,productId,i).enqueue(object :Callback<EditCartmodel>{ override fun onResponse(call: Call<EditCartmodel>, response: Response<EditCartmodel>) {
+                        try
+                        {
+                            if (response.code() == Constants.SUCESS_CODE)
+                            {
+                                context.toast(response.body()?.user_msg.toString())
+                            } else if (response.code() == Constants.NOT_FOUND)
+                            {
+                                context.toast(response.body()?.user_msg.toString())
+                            } else
+                            {
+                                context.toast(response.body()?.user_msg.toString())
                             }
-
+                        } catch (e: Exception)
+                        {
+                            e.printStackTrace()
                         }
+                    }
 
-                        override fun onFailure(call: Call<EditCartmodel>, t: Throwable) {
+                        override fun onFailure(call: Call<EditCartmodel>, t: Throwable)
+                        {
                             context.toast(R.string.no_connection)
                         }
                     })
 
+                }else
+                {
+                    context.toast("do nothing")
                 }
-
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?)
             {
-
+                //do nothing
             }
-
         }
         val value:Int = data.get(position).quantity
         if (value!=null)
@@ -102,13 +107,10 @@ class MyCartAdapter(val context: Context, val data: List<Data>) : RecyclerView.A
             val spinnerpos = arrayAdapter?.getPosition(value)
             holder.itemView.spinner_my_cart.setSelection(spinnerpos!!)
         }
-
-
-
+        //click listner for delete item from list
         holder.itemView.iv_delete_my_cart.setOnClickListener {
-            retrofitClientCart.deleteCart(Constants.TOKEN, data.get(position).product_id.toString())
-                .enqueue(
-                    object : Callback<DeleteCartModel> {
+            retrofitClientCart.deleteCart(Constants.TOKEN, data.get(position).product_id.toString()).enqueue(object : Callback<DeleteCartModel>
+            {
                         override fun onResponse(call: Call<DeleteCartModel>, response: Response<DeleteCartModel>)
                         {
                             try
@@ -136,7 +138,7 @@ class MyCartAdapter(val context: Context, val data: List<Data>) : RecyclerView.A
         }
     }
 
-
+    //delete items from list
     private fun deleteItem(position: Int)
     {
         listdata.removeAt(position)
@@ -150,7 +152,5 @@ class MyCartAdapter(val context: Context, val data: List<Data>) : RecyclerView.A
 
     class MyCartViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
-
-
 
 }

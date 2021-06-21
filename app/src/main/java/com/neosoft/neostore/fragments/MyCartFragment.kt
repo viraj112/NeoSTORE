@@ -32,6 +32,7 @@ import java.lang.Exception
 
 
 class MyCartFragment : Fragment(), View.OnClickListener {
+    //variable initialozation
     val retrofit = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
     lateinit var adapter: MyCartAdapter
     var listdata: List<Data> = ArrayList()
@@ -57,11 +58,13 @@ class MyCartFragment : Fragment(), View.OnClickListener {
         reecycler_my_cart.layoutManager = LinearLayoutManager(activity)
         reecycler_my_cart.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
 
+        //assign value to varibale
         btn_my_cart_order_now.visibility = View.GONE
         txt_total_my_cart.visibility = View.GONE
         txt_sum_my_cart.visibility = View.GONE
         btn_my_cart_order_now.setOnClickListener(this)
 
+        //geting cart items
         getCartList()
     }
 
@@ -81,24 +84,23 @@ class MyCartFragment : Fragment(), View.OnClickListener {
                         {
                             override fun run()
                             {
+                                loadingDialog.isDismiss()
+                                   if (response.body()?.data==null)
+                                   {
+                                       activity?.toast(getString(R.string.empty_cart))
 
-                                    loadingDialog.isDismiss()
-                                    listdata = response.body()?.data!!
-                                        if (listdata.size === 0)
-                                        {
-                                            activity?.toast("cRT Cn be empty")
-                                        }
-                                        else
-                                        {
+                                   }else
+                                   {
+                                       listdata = response.body()?.data!!
+                                       total = response.body()?.total.toString()
+                                       count = response.body()?.count.toString()
+                                       setRecycler()
+                                       //for show visbility
+                                       visibility()
 
-                                        }
+                                   }
 
-                                    total = response.body()?.total.toString()
-                                    count = response.body()?.count.toString()
 
-                                    setRecycler()
-                                    //for show visbility
-                                    visibility()
 
                             }
                         }, Constants.DELAY_TIME.toLong())
@@ -120,7 +122,7 @@ class MyCartFragment : Fragment(), View.OnClickListener {
         })
     }
 
-
+    //set recycler view
     private fun setRecycler() {
         adapter = MyCartAdapter(requireActivity(), listdata)
         reecycler_my_cart.adapter = adapter
@@ -129,7 +131,7 @@ class MyCartFragment : Fragment(), View.OnClickListener {
 
     }
 
-
+        //for views visibility
     private fun visibility()
     {
         btn_my_cart_order_now.visibility = View.VISIBLE

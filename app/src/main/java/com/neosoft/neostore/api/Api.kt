@@ -34,7 +34,7 @@ interface Api {
 
     @FormUrlEncoded
     @POST(ApiEndPoints.ADD_TO_CART)
-    fun addToCart(@Field("product_id") product_id:String, @Field("quantity") quantity: Int?, @Header("access_token") access_token:String):Call<AddToCartModel>
+    fun addToCart(@Field("product_id") product_id:String, @Field("quantity") quantity: Int, @Header("access_token") access_token:String):Call<AddToCartModel>
 
 
     @GET(ApiEndPoints.CART)

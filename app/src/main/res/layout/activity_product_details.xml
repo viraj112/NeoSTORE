@@ -115,6 +115,7 @@
                 android:layout_height="@dimen/_80sdp"
                 android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_200sdp"
+                android:src="@drawable/ic_slider_image_one"
                  />
 
             <androidx.appcompat.widget.AppCompatImageView
