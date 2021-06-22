@@ -21,8 +21,11 @@ import com.neosoft.neostore.api.RetrofitClientCart
 import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.database.AddressDatabase
 import com.neosoft.neostore.database.AddressEntity
+import com.neosoft.neostore.fragments.MyOrdersFragment
 import com.neosoft.neostore.models.PlaceOrderModel
 import kotlinx.android.synthetic.main.activity_address_list.*
+import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.fragment_my_account.*
 import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
@@ -33,6 +36,8 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAda
     lateinit var  Name:String
     lateinit var Address:String
     var add:String=""
+    lateinit var token:String
+    lateinit var myOrdersFragment: MyOrdersFragment
     var addressAdapter :AddressAdapter? =null
     val onItemClick:AddressAdapter.OnItemClick? = null
     val retrofit = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
@@ -45,7 +50,7 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAda
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         sharedPreferences = this.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
-
+        token =sharedPreferences.getString("token",null).toString()
         Address = intent.getStringExtra("address").toString()
         Name = sharedPreferences.getString("username",null).toString()
 
@@ -97,13 +102,15 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAda
         when(view.id)
         {
             R.id.btn_place_order ->
-                placeOrder()
+
+              placeOrder()
+
             }
         }
 
     private fun placeOrder() {
 
-        retrofit.placeOrder(Constants.TOKEN,add).enqueue(object :Callback<PlaceOrderModel>{
+        retrofit.placeOrder(token,add).enqueue(object :Callback<PlaceOrderModel>{
             override fun onResponse(
                 call: Call<PlaceOrderModel>,
                 response: Response<PlaceOrderModel>
@@ -129,8 +136,6 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAda
             }
         })
     }
-
-
 }
 
 

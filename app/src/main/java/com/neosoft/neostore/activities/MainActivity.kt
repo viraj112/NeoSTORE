@@ -2,11 +2,13 @@ package com.neosoft.neostore.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.*
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
@@ -95,8 +97,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navigation_view.setNavigationItemSelectedListener(this)
         navigation_view.menu.findItem(R.id.menu_my_cart).setActionView(R.layout.cart_count)
+        countgravity()
 
-       countgravity()
 
         cv_tables.setOnClickListener(this)
         cv_chairs.setOnClickListener(this)
@@ -104,11 +106,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         cv_sofas.setOnClickListener(this)
     }
 
-    @SuppressLint("ResourceAsColor")
+    @SuppressLint("ResourceAsColor", "ResourceType")
     private fun countgravity() {
-        txt_cart_count?.gravity=Gravity.CLIP_HORIZONTAL
+
+        txt_cart_count?.gravity= Gravity.CLIP_HORIZONTAL
         txt_cart_count?.setTextColor(R.color.white)
-        txt_cart_count?.text =10.toString()
+        txt_cart_count?.setText("1")
     }
 
     //for  search menu item

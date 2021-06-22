@@ -3,11 +3,10 @@ package com.neosoft.neostore.fragments
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neosoft.neostore.R
@@ -24,6 +23,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class TablesFragment : Fragment() {
@@ -32,6 +33,8 @@ class TablesFragment : Fragment() {
     var listdata:List<ProductModel> = ArrayList()
     val my_retrofit = RetrofitClientProduct.getRetrofitInstance().create(Api::class.java)
     lateinit var loadingDialog: LoadingDialog
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
@@ -53,6 +56,7 @@ class TablesFragment : Fragment() {
         //get product list api call
         getProductList()
     }
+
 
     private fun getProductList()
     {
@@ -106,5 +110,39 @@ class TablesFragment : Fragment() {
 
     }
 
+   /* override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu!!.clear()
+        inflater!!.inflate(R.menu.search_menu,menu)
+        val menuItem = menu!!.findItem(R.id.menu_search)
+        if (menuItem != null)
+        {
+            val searchView = menuItem.actionView as SearchView
+            searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return  true
 
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (newText!!.isEmpty())
+                    {
+                        val search = newText.toLowerCase(Locale.getDefault())
+                        listdata.forEach {
+                            if(it.name.toLowerCase(Locale.getDefault()).contains(search)){
+                                listdata= listOf(it)
+                            }
+                            rv_tables_fragment.adapter?.notifyDataSetChanged()
+                        }
+                    }else
+                    {
+                        rv_tables_fragment.adapter?.notifyDataSetChanged()
+                    }
+
+                    return true
+                }
+
+            })
+        }
+        return super.onCreateOptionsMenu(menu, inflater)
+    }*/
 }

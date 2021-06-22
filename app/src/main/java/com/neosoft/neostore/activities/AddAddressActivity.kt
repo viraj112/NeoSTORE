@@ -91,6 +91,11 @@ class AddAddressActivity : AppCompatActivity(),View.OnClickListener {
         }
             return true
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+    }
 }
 
 

@@ -1,11 +1,13 @@
 package com.neosoft.neostore.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neosoft.neostore.R
 import com.neosoft.neostore.activities.AddAddressActivity
+import com.neosoft.neostore.activities.MainActivity
 import com.neosoft.neostore.adapters.MyCartAdapter
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClientCart
@@ -23,12 +26,14 @@ import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.models.Data
 import com.neosoft.neostore.models.MyCartListModel
 import com.neosoft.neostore.utilities.LoadingDialog
+import kotlinx.android.synthetic.main.cart_count.*
 import kotlinx.android.synthetic.main.fragment_my_cart.*
 import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
+import java.util.zip.Inflater
 
 
 class MyCartFragment : Fragment(), View.OnClickListener {
@@ -40,6 +45,7 @@ class MyCartFragment : Fragment(), View.OnClickListener {
     lateinit var total: String
     lateinit var sharedPreferences: SharedPreferences
     lateinit var count: String
+
     lateinit var loadingDialog: LoadingDialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
@@ -49,8 +55,11 @@ class MyCartFragment : Fragment(), View.OnClickListener {
         val view = inflater.inflate(R.layout.fragment_my_cart, container, false)
         loadingDialog = LoadingDialog(requireActivity())
         loadingDialog.startLoading()
+
         return view
     }
+
+
 
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -94,9 +103,12 @@ class MyCartFragment : Fragment(), View.OnClickListener {
                                        listdata = response.body()?.data!!
                                        total = response.body()?.total.toString()
                                        count = response.body()?.count.toString()
+
                                        setRecycler()
+
                                        //for show visbility
                                        visibility()
+
 
                                    }
 
@@ -122,6 +134,8 @@ class MyCartFragment : Fragment(), View.OnClickListener {
         })
     }
 
+
+
     //set recycler view
     private fun setRecycler() {
         adapter = MyCartAdapter(requireActivity(), listdata)
@@ -129,7 +143,11 @@ class MyCartFragment : Fragment(), View.OnClickListener {
         adapter.notifyDataSetChanged()
         txt_sum_my_cart.text = total
 
+        txt_cart_count?.setText(""+count)
+
     }
+
+
 
         //for views visibility
     private fun visibility()

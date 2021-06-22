@@ -1,5 +1,7 @@
 package com.neosoft.neostore.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import androidx.fragment.app.Fragment
@@ -33,11 +35,16 @@ class MyOrdersFragment : Fragment() {
     lateinit var adapter: MyordersAdapter
     val retrofit = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
     lateinit var loadingDialog: LoadingDialog
+    lateinit var token: String
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view= inflater.inflate(R.layout.fragment_my_orders, container, false)
+        sharedPreferences = activity?.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
+        token = sharedPreferences.getString("token", null).toString()
+
         loadingDialog = LoadingDialog(requireActivity())
         loadingDialog.startLoading()
         return view
@@ -54,7 +61,7 @@ class MyOrdersFragment : Fragment() {
 
     private fun getOrderList() {
         //api call for orders
-        retrofit.getOrderList(Constants.TOKEN).enqueue(object :Callback<OrderListModel>
+        retrofit.getOrderList(token).enqueue(object :Callback<OrderListModel>
         {
             override fun onResponse(call: Call<OrderListModel>, response: Response<OrderListModel>)
             {

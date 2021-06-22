@@ -1,5 +1,7 @@
 package com.neosoft.neostore.activities
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -27,6 +29,9 @@ import java.lang.Exception
 class OrdersDetailsActivity : AppCompatActivity() {
     val retrofit = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
     lateinit var adapter: OrderDetailsAdapter
+    lateinit var token: String
+    lateinit var sharedPreferences: SharedPreferences
+
     var listdata: List<OrderDetails> = ArrayList<OrderDetails>()
     var order_id = 0
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +39,9 @@ class OrdersDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_orders_details)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         order_id = intent.getIntExtra("id",1)
+        sharedPreferences = this.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
+        token = sharedPreferences.getString("token", null).toString()
+
         supportActionBar?.title="ORDER ID"+" :  "+order_id.toString()
         recycler_orders_details.layoutManager= LinearLayoutManager(this)
         recycler_orders_details.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
@@ -45,7 +53,7 @@ class OrdersDetailsActivity : AppCompatActivity() {
 
     private fun getOrderDetails() {
 
-        retrofit.getOrderDetails(Constants.TOKEN,order_id).enqueue(object :Callback<OrderDetailsModel>{
+        retrofit.getOrderDetails(token,order_id).enqueue(object :Callback<OrderDetailsModel>{
             override fun onResponse(
                 call: Call<OrderDetailsModel>,
                 response: Response<OrderDetailsModel>
