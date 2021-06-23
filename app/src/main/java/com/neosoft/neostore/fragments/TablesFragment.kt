@@ -27,14 +27,13 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class TablesFragment : Fragment() {
+class TablesFragment : Fragment()
+{
 
     lateinit var adapter: TablesAdapter
     var listdata:List<ProductModel> = ArrayList()
     val my_retrofit = RetrofitClientProduct.getRetrofitInstance().create(Api::class.java)
     lateinit var loadingDialog: LoadingDialog
-
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
@@ -43,9 +42,7 @@ class TablesFragment : Fragment() {
          loadingDialog = LoadingDialog(requireActivity())
         loadingDialog.startLoading()
         return view
-
     }
-
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
@@ -56,7 +53,6 @@ class TablesFragment : Fragment() {
         //get product list api call
         getProductList()
     }
-
 
     private fun getProductList()
     {
@@ -107,42 +103,5 @@ class TablesFragment : Fragment() {
         adapter = TablesAdapter(requireContext(),listdata)
         rv_tables_fragment?.adapter = adapter
         adapter.notifyDataSetChanged()
-
     }
-
-   /* override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu!!.clear()
-        inflater!!.inflate(R.menu.search_menu,menu)
-        val menuItem = menu!!.findItem(R.id.menu_search)
-        if (menuItem != null)
-        {
-            val searchView = menuItem.actionView as SearchView
-            searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    return  true
-
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    if (newText!!.isEmpty())
-                    {
-                        val search = newText.toLowerCase(Locale.getDefault())
-                        listdata.forEach {
-                            if(it.name.toLowerCase(Locale.getDefault()).contains(search)){
-                                listdata= listOf(it)
-                            }
-                            rv_tables_fragment.adapter?.notifyDataSetChanged()
-                        }
-                    }else
-                    {
-                        rv_tables_fragment.adapter?.notifyDataSetChanged()
-                    }
-
-                    return true
-                }
-
-            })
-        }
-        return super.onCreateOptionsMenu(menu, inflater)
-    }*/
 }

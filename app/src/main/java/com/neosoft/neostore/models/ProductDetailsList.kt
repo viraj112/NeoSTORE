@@ -11,7 +11,4 @@ data class ProductDetailsList(
     val view_count: Int,
     val created: String,
     val modified: String
-
-
-
 )

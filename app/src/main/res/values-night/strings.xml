@@ -68,4 +68,7 @@
     <string name="valid_zip">Enter valid zip code</string>
     <string name="empty_cart">No items in cart</string>
     <string name="api_key">AIzaSyDb23E4_O_N8Y1twVzc_h_86B2hmT-PPEk</string>
+    <string name="profile_image_path">data:image/jpg;base64,</string>
+    <string name="permission_grant">permission granted</string>
+    <string name="permission_denied">permission denied</string>
 </resources>

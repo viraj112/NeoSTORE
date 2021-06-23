@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import androidx.annotation.RequiresApi
 import com.neosoft.neostore.R
@@ -11,6 +12,7 @@ import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClient
 import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.models.RegisterationModel
+import com.neosoft.neostore.utilities.LoadingDialog
 import com.neosoft.neostore.utilities.Validations
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
@@ -21,9 +23,10 @@ import retrofit2.Response
 import java.lang.Exception
 import kotlin.time.ExperimentalTime
 
-class RegisterActivity : AppCompatActivity(),View.OnClickListener{
+class RegisterActivity : AppCompatActivity(),View.OnClickListener
+{
+    //initialize variables
     val retIn = RetrofitClient.getRetrofitInstance().create(Api::class.java)
-
     lateinit var Gender :String
     lateinit var first_name: String
     lateinit var last_name: String
@@ -31,29 +34,23 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
     lateinit var password: String
     lateinit var confirm_password: String
     lateinit var phone: String
-
-
-
+    lateinit var loading : LoadingDialog
     @ExperimentalTime
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
-
-        //for  custom toolbar
-        /*setSupportActionBar(toolbar)
-        toolbar.title = getString(R.string.register)
-        toolbar.setNavigationOnClickListener {
-            var intent: Intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-        }*/
         initialization()
+        loading = LoadingDialog(this)
+
     }
 
     //for handling button clicks
-    override fun onClick(view: View){
+    override fun onClick(view: View)
+    {
 
-        when(view.id){
-
+        when(view.id)
+        {
             //do registration api call
             R.id.btn_register ->
             {
@@ -61,8 +58,6 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
             }
             }
         }
-
-
 
     //for initializing varables
     private fun initialization() {
@@ -78,12 +73,10 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
             }
         }
     }
-
-
     //for validating all fields
-    private fun validate(): Boolean {
+    private fun validate(): Boolean
+    {
         email = edt_txt_email.text.toString()
-
         //for firstname
         if(edt_txt_first_name.text.toString().trim().isEmpty())
         {
@@ -99,7 +92,8 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
         }
 
         //for email
-        else if (!Validations.isValidemail(email)) {
+        else if (!Validations.isValidemail(email))
+        {
             edt_txt_email.error = getString(R.string.valid_email)
             return false
         }
@@ -117,7 +111,8 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
             return false
         }
             //for password matching
-        else if(!edt_password.text.toString().equals(ed_txt_con_pass.text.toString())){
+        else if(!edt_password.text.toString().equals(ed_txt_con_pass.text.toString()))
+        {
             toast(getString(R.string.pass_not_match))
             return false
         }
@@ -168,20 +163,24 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
                         try {
                             if (response.code() == Constants.SUCESS_CODE)
                             {
-
-                                toast(response.body()?.message.toString())
-
-                                val i :Intent= Intent(this@RegisterActivity,LoginActivity::class.java)
-                                startActivity(i)
-
+                                loading.startLoading()
+                                val handler = Handler()
+                                handler.postDelayed(object :Runnable{
+                                    override fun run() {
+                                        loading.isDismiss()
+                                        toast(response.body()?.message.toString())
+                                        val i :Intent= Intent(this@RegisterActivity,LoginActivity::class.java)
+                                        startActivity(i)
+                                    }
+                                },Constants.DELAY_TIME.toLong())
                             } else if (response.code() == Constants.Error_CODE)
                             {
-
+                                loading.isDismiss()
                                 toast(response.message())
 
                             } else
                             {
-
+                                loading.isDismiss()
                                 toast(response.body()?.message.toString())
                             }
                         } catch (e: Exception)
@@ -192,9 +191,8 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener{
 
                     override fun onFailure(call: Call<RegisterationModel>, t: Throwable)
                     {
-
-                        toast(t.message.toString())
-
+                        loading.isDismiss()
+                        toast(R.string.no_connection)
                     }
                 })
         }

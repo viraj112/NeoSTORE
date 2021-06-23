@@ -52,8 +52,6 @@ class AddAddressActivity : AppCompatActivity(),View.OnClickListener {
             }
         }
     }
-
-
     //validation for fields
     private fun validation() :Boolean
 

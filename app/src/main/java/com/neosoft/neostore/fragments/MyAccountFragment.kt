@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
 import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.neosoft.neostore.R
 import com.neosoft.neostore.activities.ResetPasswordActivity
 import com.neosoft.neostore.api.Api
@@ -42,6 +44,7 @@ import java.util.jar.Manifest
 
 
 class MyAccountFragment : Fragment(), View.OnClickListener {
+    //initialize variable
     lateinit var fName: String
     lateinit var lName: String
     lateinit var email: String
@@ -53,7 +56,6 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
     lateinit var mphone: String
     lateinit var mdob: String
     lateinit var bitmap: Bitmap
-    lateinit var encodedImage: String
     lateinit var loadingDialog: LoadingDialog
     var imageString: String = "AA"
     lateinit var token: String
@@ -61,11 +63,8 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
 
     val retrofit = RetrofitClient.getRetrofitInstance().create(Api::class.java)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    {
         // Inflate the layout for this fragment
         val view =
             LayoutInflater.from(context).inflate(R.layout.fragment_my_account, container, false)
@@ -78,7 +77,8 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         return view
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
+    override fun onActivityCreated(savedInstanceState: Bundle?)
+    {
         super.onActivityCreated(savedInstanceState)
         getUserDetails()
 
@@ -89,6 +89,7 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         edt_profile_dob.setOnClickListener(this)
     }
 
+    //api call for fetch user details
     private fun getUserDetails() {
         retrofit.fetchAccountDetails(token).enqueue(object : Callback<FetchAccountModel> {
 
@@ -108,7 +109,7 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                                 email = items?.email.toString()
                                 phone = items?.phone_no.toString()
                                 dob = items?.dob.toString()
-                                //Glide.with(activity!!).load(items?.profile_pic).into(iv_myacc_profile)
+                                Glide.with(activity!!).load(items?.profile_pic).into(iv_myacc_profile)
                                 setUserData()
                             }
                         }, Constants.DELAY_TIME.toLong())
@@ -122,7 +123,6 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                     e.printStackTrace()
                 }
             }
-
             override fun onFailure(call: Call<FetchAccountModel>, t: Throwable) {
                 loadingDialog.isDismiss()
                 activity?.toast(t.message.toString())
@@ -130,8 +130,9 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
 
         })
     }
-
-    private fun setUserData() {
+    //set user data from response
+    private fun setUserData()
+    {
         edt_profile_fname.setText(fName)
         edt_profile_lname.setText(lName)
         edt_profile_email.setText(email)
@@ -143,12 +144,14 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.btn_profile_reset_pass -> {
+            R.id.btn_profile_reset_pass ->
+            {
                 val i: Intent = Intent(context, ResetPasswordActivity::class.java)
                 startActivity(i)
             }
 
-            R.id.iv_myacc_profile -> {
+            R.id.iv_myacc_profile ->
+            {
                 val view = View.inflate(activity, R.layout.image_picker_dialog, null)
                 val builder = activity?.let { androidx.appcompat.app.AlertDialog.Builder(it) }
                 builder?.setView(view)
@@ -165,17 +168,19 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                 }
 
             }
-            R.id.btn_profile_edit_profile -> {
+            R.id.btn_profile_edit_profile ->
+            {
                 updateProfile()
 
             }
 
-            R.id.edt_profile_dob -> {
+            R.id.edt_profile_dob ->
+            {
+                //date picker
                 val c = Calendar.getInstance()
                 val year = c.get(Calendar.YEAR)
                 val month = c.get(Calendar.MONTH)
                 val day = c.get(Calendar.DAY_OF_MONTH)
-
                 val dpd = DatePickerDialog(
                     requireActivity(),
                     DatePickerDialog.OnDateSetListener { view: DatePicker?, mYear: Int, mMonth: Int, mDay: Int ->
@@ -188,7 +193,8 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun updateProfile() {
+    private fun updateProfile()
+    {
         mfirstName = edt_profile_fname.text.toString()
         mlastName = edt_profile_lname.text.toString()
         mEmail = edt_profile_email.text.toString()
@@ -198,88 +204,71 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         editProfie()
     }
 
+        //pick image from gallery
+    private fun pickfromGallery()
+    {
 
-    private fun pickfromGallery() {
-
-        checkPermissions(android.Manifest.permission.CAMERA,999)
+        checkPermissions(android.Manifest.permission.CAMERA,Constants.GALLERY_REQUEST_CODE)
         val i: Intent = Intent(Intent.ACTION_PICK)
         i.type = "image/*"
-        startActivityForResult(i, 999)
+        startActivityForResult(i, Constants.GALLERY_REQUEST_CODE)
     }
 
-    private fun pickfromCamera() {
+    //pick imagethrough camera
+    private fun pickfromCamera()
+    {
 
-        checkPermissions(android.Manifest.permission.CAMERA,111)
+        checkPermissions(android.Manifest.permission.CAMERA,Constants.CAMERA_REQUEST_CODE)
         val i: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(i, 111)
+        startActivityForResult(i, Constants.CAMERA_REQUEST_CODE)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 111) {
+        if (requestCode == Constants.CAMERA_REQUEST_CODE )
+        {
             bitmap = data?.extras?.get("data") as Bitmap
             uploadImage(bitmap)
             iv_myacc_profile.setImageBitmap(bitmap)
 
-        } else if (requestCode == 999) {
+        } else if (requestCode == Constants.GALLERY_REQUEST_CODE)
+        {
             val uri: Uri? = data?.data
-            try {
-                val bitmap: Bitmap =
-                    MediaStore.Images.Media.getBitmap(activity?.contentResolver, uri)
+            try
+            {
+                 bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, uri)
                 iv_myacc_profile.setImageBitmap(bitmap)
                 if (uri != null) {
-                    // encode(uri)
                     uploadImage(bitmap)
                 }
-            } catch (e: IOException) {
+            } catch (e: IOException)
+            {
                 e.printStackTrace()
             }
 
         }
     }
 
-
-/*
-    fun encode(imageUri: Uri): String
-    {
-        val input = activity?.getContentResolver()?.openInputStream(imageUri)
-        val image = BitmapFactory.decodeStream(input , null, null)
-
-        // Encode image to base64 string
-        val baos = ByteArrayOutputStream()
-        image?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        var imageBytes = baos.toByteArray()
-        val imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT)
-        profile = imageString
-        return imageString
-    }*/
-
+    //convert base64 image string
     private fun uploadImage(bitmap: Bitmap) {
 
         val byteArrayOutputStream: ByteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
         var byteArray = byteArrayOutputStream.toByteArray()
         imageString = Base64.encodeToString(byteArray, Base64.DEFAULT)
-        /*val byteArrayOutputStream:ByteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream)
-        */
-        /*encodedImage= Base64.encodeToString(byteArrayOutputStream.toByteArray(),Base64.DEFAULT)
-        imageString=encodedImage
-*/
-
     }
 
+    //update profile api call
     private fun editProfie() {
-
+        val image = getString(R.string.profile_image_path)+imageString
         loadingDialog.startLoading()
-        retrofit.editProfile(token, mEmail, mdob, mphone, imageString, mfirstName, mlastName)
-            .enqueue(object : Callback<EditProfileModel> {
-                override fun onResponse(
-                    call: Call<EditProfileModel>,
-                    response: Response<EditProfileModel>
-                ) {
+        retrofit.editProfile(token, mEmail, mdob, mphone, image, mfirstName, mlastName)
+            .enqueue(object : Callback<EditProfileModel> { override fun onResponse(call: Call<EditProfileModel>, response: Response<EditProfileModel>)
+            {
                     try {
-                        if (response.code() == Constants.SUCESS_CODE) {
+                        if (response.code() == Constants.SUCESS_CODE)
+                        {
                             val handler = Handler()
                             handler.postDelayed(
                                 Runnable
@@ -287,15 +276,15 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                                     loadingDialog.isDismiss()
 
                                     activity?.toast(response.body()?.user_msg.toString())
-                                }, Constants.DELAY_TIME.toLong()
-                            )
+                                }, Constants.DELAY_TIME.toLong())
 
-                        } else if (response.code() == Constants.Error_CODE) {
+                        } else if (response.code() == Constants.Error_CODE)
+                        {
                             loadingDialog.isDismiss()
                             activity?.toast(response.body()?.user_msg.toString())
-
                         }
-                    } catch (e: java.lang.Exception) {
+                    } catch (e: java.lang.Exception)
+                    {
                         e.printStackTrace()
                     }
                 }
@@ -308,29 +297,33 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
 
     }
 
-    private fun checkPermissions(permission: String, requestCode: Int) {
+    //for permission check gallery and camera
+    private fun checkPermissions(permission: String, requestCode: Int)
+    {
         if (ContextCompat.checkSelfPermission(requireActivity(), permission) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(permission), requestCode)
         }else
         {
-            activity?.toast("permission granted")
+            activity?.toast(getString(R.string.permission_grant))
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    //for permission request
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
+    {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 111) {
+        if (requestCode == Constants.CAMERA_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                activity?.toast("permission granted")
+                activity?.toast(getString(R.string.permission_grant))
             } else {
-                    activity?.toast("permission denied")
+                    activity?.toast(getString(R.string.permission_denied))
             }
-        } else if (requestCode == 999) {
+        } else if (requestCode == Constants.GALLERY_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                activity?.toast("permission granted")
+                activity?.toast(getString(R.string.permission_grant))
 
             } else {
-                activity?.toast("permission denied")
+                activity?.toast(getString(R.string.permission_denied))
 
             }
         }

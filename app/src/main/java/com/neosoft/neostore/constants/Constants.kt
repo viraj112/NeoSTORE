@@ -22,6 +22,7 @@ class Constants {
         const val TYPE_CREATE =1
         const val INVAILD_DATA =402
         const val PLACE_PICKER_REQUEST_CODE =111
-
+        const val CAMERA_REQUEST_CODE =123
+        const val GALLERY_REQUEST_CODE =999
     }
 }

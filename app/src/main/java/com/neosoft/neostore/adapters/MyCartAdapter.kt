@@ -30,7 +30,6 @@ import retrofit2.Response
 import java.lang.Exception
 
 class MyCartAdapter(val context: Context, val data: List<Data>) : RecyclerView.Adapter<MyCartAdapter.MyCartViewHolder>()
-
 {
          //initialize variable
     val retrofitClientCart = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
@@ -40,15 +39,12 @@ class MyCartAdapter(val context: Context, val data: List<Data>) : RecyclerView.A
     var productId :String = ""
     lateinit var token: String
     lateinit var sharedPreferences: SharedPreferences
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyCartViewHolder
     {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.items_my_cart, parent, false)
         return MyCartViewHolder(view)
 
     }
-
     override fun onBindViewHolder(holder: MyCartViewHolder, position: Int)
     {
         sharedPreferences = context.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
@@ -64,7 +60,7 @@ class MyCartAdapter(val context: Context, val data: List<Data>) : RecyclerView.A
         arrayAdapter = ArrayAdapter(context,android.R.layout.simple_spinner_item,quantity)
         holder.itemView.spinner_my_cart.adapter = arrayAdapter
 
-        //click listner for edit cart
+        //click listner for edit cart api call
         holder.itemView.spinner_my_cart.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener
         {
@@ -118,7 +114,8 @@ class MyCartAdapter(val context: Context, val data: List<Data>) : RecyclerView.A
             val spinnerpos = arrayAdapter?.getPosition(value)
             holder.itemView.spinner_my_cart.setSelection(spinnerpos!!)
         }
-        //click listner for delete item from list
+
+        //click listner for delete item from list api call
         holder.itemView.iv_delete_my_cart.setOnClickListener {
             retrofitClientCart.deleteCart(token, data.get(position).product_id.toString()).enqueue(object : Callback<DeleteCartModel>
             {

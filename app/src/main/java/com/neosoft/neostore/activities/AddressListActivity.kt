@@ -32,6 +32,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAdapter.OnItemClick{
+   //initialize variable
     lateinit var sharedPreferences: SharedPreferences
     lateinit var  Name:String
     lateinit var Address:String
@@ -41,11 +42,12 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAda
     var addressAdapter :AddressAdapter? =null
     val onItemClick:AddressAdapter.OnItemClick? = null
     val retrofit = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
+
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @SuppressLint("CheckResult")
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
-
         supportActionBar?.title =getString(R.string.address_list)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -57,11 +59,11 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAda
         setContentView(R.layout.activity_address_list)
 
         btn_place_order.setOnClickListener(this)
+        //database creation
         val database = Room.databaseBuilder(
             this,
                AddressDatabase::class.java,
-            "addressdatabase"
-        )
+            "addressdatabase")
             .allowMainThreadQueries()
             .build()
 
@@ -103,6 +105,7 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAda
         {
             R.id.btn_place_order ->
 
+                //place order api
               placeOrder()
 
             }
@@ -111,10 +114,8 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAda
     private fun placeOrder() {
 
         retrofit.placeOrder(token,add).enqueue(object :Callback<PlaceOrderModel>{
-            override fun onResponse(
-                call: Call<PlaceOrderModel>,
-                response: Response<PlaceOrderModel>
-            ) {
+            override fun onResponse(call: Call<PlaceOrderModel>, response: Response<PlaceOrderModel>)
+            {
                 try {
                     if (response.code()==Constants.SUCESS_CODE)
                     {

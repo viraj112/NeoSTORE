@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import com.bumptech.glide.Glide
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.material.navigation.NavigationView
 import com.neosoft.neostore.R
@@ -62,11 +63,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val email =preferences.getString("email","")
         val username = preferences.getString("username","")
-
+        val image = preferences.getString("pic","")
         //set values for header view
         val headerView :View = navigation_view.getHeaderView(0)
         headerView.txt_navigation_email.text=email
         headerView.txt_navigation_username.text = username
+        Glide.with(this).load(image).into(headerView.circleImageView)
 
         // set images for slider
         val imageList = ArrayList<SlideModel>()
@@ -81,14 +83,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val actionBar = supportActionBar
         actionBar?.title = getString(R.string.app_name)
 
-
-        val drawerToggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(
-            this,
-            drawer_layout,
-            toolbar,
-            (R.string.open),
-            (R.string.close)) {
-
+        val drawerToggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(this, drawer_layout, toolbar, (R.string.open), (R.string.close)) {
         }
         drawerToggle.isDrawerIndicatorEnabled = true
         drawer_layout.addDrawerListener(drawerToggle)
@@ -98,7 +93,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navigation_view.setNavigationItemSelectedListener(this)
         navigation_view.menu.findItem(R.id.menu_my_cart).setActionView(R.layout.cart_count)
         countgravity()
-
 
         cv_tables.setOnClickListener(this)
         cv_chairs.setOnClickListener(this)
@@ -243,28 +237,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.cv_tables ->
             {
                 getTablesfragment()
-                //getProductList()
             }
-
             R.id.cv_sofas ->
             {
-
                 getSofasFragment()
             }
-
             R.id.cv_chairs ->
             {
                 getChairsFragment()
             }
-
             R.id.cv_cupboards ->
             {
                 getCupboardsFragment()
             }
         }
-
     }
-
 
     private fun getTablesfragment() {
 
@@ -276,16 +263,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             replace(R.id.frame_layout, tablesFragment)
             addToBackStack(null)
             commit()
-
-
         }
     }
 
-
-
     private fun getSofasFragment()
     {
-
         cards_list.visibility = View.GONE
         cardiview_slider.visibility = View.GONE
         toolbar.title = getString(R.string.sofas)
@@ -297,8 +279,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             commit()
         }
     }
-
-
     private fun getChairsFragment()
     {
         cards_list.visibility = View.GONE
@@ -313,7 +293,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-
     private fun getCupboardsFragment()
     {
         toolbar.title = getString(R.string.cupboards)
@@ -327,5 +306,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             commit()
         }
     }
-
 }

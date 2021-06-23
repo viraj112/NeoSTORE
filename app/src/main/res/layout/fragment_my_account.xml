@@ -104,6 +104,7 @@
         android:background="@drawable/bg_edit_text"
         android:fontFamily="@font/gothammedium"
         android:textSize="@dimen/_15ssp"
+        android:focusableInTouchMode="false"
         android:drawablePadding="@dimen/_10sdp"
         android:drawableLeft="@drawable/ic_dob"
         android:textColor="@color/color_white"/>

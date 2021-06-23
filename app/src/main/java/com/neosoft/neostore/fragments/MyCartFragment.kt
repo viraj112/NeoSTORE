@@ -108,11 +108,7 @@ class MyCartFragment : Fragment(), View.OnClickListener {
 
                                        //for show visbility
                                        visibility()
-
-
                                    }
-
-
 
                             }
                         }, Constants.DELAY_TIME.toLong())
@@ -134,22 +130,17 @@ class MyCartFragment : Fragment(), View.OnClickListener {
         })
     }
 
-
-
     //set recycler view
     private fun setRecycler() {
         adapter = MyCartAdapter(requireActivity(), listdata)
         reecycler_my_cart.adapter = adapter
         adapter.notifyDataSetChanged()
         txt_sum_my_cart.text = total
-
         txt_cart_count?.setText(""+count)
 
     }
 
-
-
-        //for views visibility
+    //for views visibility
     private fun visibility()
     {
         btn_my_cart_order_now.visibility = View.VISIBLE
@@ -157,8 +148,7 @@ class MyCartFragment : Fragment(), View.OnClickListener {
         txt_sum_my_cart.visibility = View.VISIBLE
     }
 
-
-    //o buttonn click
+    // button click
     override fun onClick(view: View) {
         when(view.id)
         {

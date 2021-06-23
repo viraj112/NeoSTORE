@@ -43,11 +43,11 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_store_locator, container, false)
+
      //for getting address
       view.btn_get_store.setOnClickListener {
           val builder = PlacePicker.IntentBuilder()
@@ -64,6 +64,7 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
 
         return view
     }
+
 
     override fun onMapReady(map: GoogleMap?)
     {
@@ -91,7 +92,8 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
         map?.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
          map?.addMarker(MarkerOptions().position(homeLatLng))
     }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.PLACE_PICKER_REQUEST_CODE)
         {

@@ -80,14 +80,15 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-    private fun doLogin() {
+    private fun doLogin()
+    {
         email = ed_txt_username.text.toString()
         password = edt_txt_password.text.toString()
-
-        ret.doLogin(email, password).enqueue(object : Callback<LoginModel> {
+        ret.doLogin(email, password).enqueue(object : Callback<LoginModel>
+        {
             @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
-            override fun onResponse(call: Call<LoginModel>, response: Response<LoginModel>) {
-
+            override fun onResponse(call: Call<LoginModel>, response: Response<LoginModel>)
+            {
                 try {
                     if (response.code() == Constants.SUCESS_CODE)
                     {
@@ -100,6 +101,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                 myEmail = items?.email.toString()
                                 username = items?.first_name.toString() + items?.last_name.toString()
                                 val token = items?.access_token.toString()
+                                val imag = items?.profile_pic
                                 toast(response.body()?.message.toString())
 
                                 session.createLoginSession(email, password)
@@ -109,6 +111,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                 editor.putString("email", myEmail)
                                 editor.putString("username", username)
                                 editor.putString("token", token)
+                                editor.putString("pic", imag as String?)
                                 editor.apply()
                                 startActivity(intent)
 
@@ -117,12 +120,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
                     } else if (response.code() == Constants.Error_CODE)
                     {
-
+                        loading.isDismiss()
                         toast(response.message().toString())
 
                     } else
                     {
-
+                        loading.isDismiss()
                         toast(response.message().toString())
                     }
                 } catch (e: Exception)
