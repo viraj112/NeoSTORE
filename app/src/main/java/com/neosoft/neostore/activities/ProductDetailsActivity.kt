@@ -163,12 +163,19 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
         mydialog.setCanceledOnTouchOutside(false)
         mydialog.show()
         myview.btn_buynow_submit.setOnClickListener{
-            val q:Int =myview.edt_buynow_quantity.text.toString().toInt()
+            if (myview.edt_buynow_quantity.text.isEmpty())
+            {
+                myview.edt_buynow_quantity.error = getString(R.string.canot_be_empty)
+            }else
+            {
+                val q:Int =myview.edt_buynow_quantity.text.toString().toInt()
                 quantity = q
                 //add product  into cart
                 addToCart()
                 mydialog.dismiss()
-        }
+
+            }
+             }
 
     }
 
@@ -199,7 +206,7 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
 
             override fun onFailure(call: Call<AddToCartModel>, t: Throwable)
             {
-                toast(t.message.toString())
+                toast(getString(R.string.no_connection))
             }
         })
     }
@@ -245,7 +252,7 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
 
             override fun onFailure(call: Call<ProductRatingModel>, t: Throwable)
             {
-                toast(t.message.toString())
+                toast(getString(R.string.no_connection))
             }
 
         })

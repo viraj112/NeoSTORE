@@ -23,6 +23,8 @@ import kotlinx.android.synthetic.main.alert_dialog_custom.*
 import kotlinx.android.synthetic.main.alert_dialog_custom.view.*
 import kotlinx.android.synthetic.main.fragment_my_cart.view.*
 import kotlinx.android.synthetic.main.items_my_cart.view.*
+import kotlinx.android.synthetic.main.quantity_dialog.view.*
+import org.jetbrains.anko.AlertDialogBuilder
 import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,11 +36,10 @@ class MyCartAdapter(val context: Context, val data: List<Data>) : RecyclerView.A
          //initialize variable
     val retrofitClientCart = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
     private var listdata: MutableList<Data> = data as MutableList
-    var arrayAdapter: ArrayAdapter<Int>?= null
-    var quantity = arrayListOf(1,2,3,4,5,6,7,8,9)
     var productId :String = ""
     lateinit var token: String
     lateinit var sharedPreferences: SharedPreferences
+     var cart_Quantity:Int=0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyCartViewHolder
     {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.items_my_cart, parent, false)
@@ -54,42 +55,46 @@ class MyCartAdapter(val context: Context, val data: List<Data>) : RecyclerView.A
         holder.itemView.txt_catagory_my_cart.text = "(" + data.get(position).product.product_category + ")"
         holder.itemView.txt_price_my_cart.text = "\u20B9" + data.get(position).product.cost.toString()
         Glide.with(context).load(data.get(position).product.product_images).into(holder.itemView.iv_my_cart)
-
         productId = data.get(position).product_id.toString()
+        holder.itemView.txt_cart_quantity.text = data.get(position).quantity.toString()
 
-        arrayAdapter = ArrayAdapter(context,android.R.layout.simple_spinner_item,quantity)
-        holder.itemView.spinner_my_cart.adapter = arrayAdapter
-
-        //click listner for edit cart api call
-        holder.itemView.spinner_my_cart.onItemSelectedListener = object :
-            AdapterView.OnItemSelectedListener
-        {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
-            {
-                val i:Int = parent?.selectedItem as Int
-                if (!i.equals(holder.itemView.isSelected))
+        holder.itemView.txt_cart_quantity.setOnClickListener {
+            val myview = View.inflate(context,R.layout.quantity_dialog,null)
+            val mybuilder = androidx.appcompat.app.AlertDialog.Builder(context)
+            mybuilder.setView(myview)
+            val mydialog = mybuilder.create()
+            mydialog.setCanceledOnTouchOutside(false)
+            mydialog.show()
+            myview.btn_cart_quantity.setOnClickListener {
+                if (myview.edt_cart_quantity.text.toString().isEmpty()){
+                        myview.edt_cart_quantity.error = context.getString(R.string.canot_be_empty)
+                }else
                 {
-                    retrofitClientCart.editCart(token,productId,i).enqueue(object :Callback<EditCartmodel>
+                    val q= myview.edt_cart_quantity.text.toString().toInt()
+                    cart_Quantity = q
+                    holder.itemView.txt_cart_quantity.setText(q.toString())
+                    retrofitClientCart.editCart(token,productId,cart_Quantity).enqueue(object :Callback<EditCartmodel>
                     {
                         override fun onResponse(call: Call<EditCartmodel>, response: Response<EditCartmodel>)
                         {
-                        try
-                        {
-                            if (response.code() == Constants.SUCESS_CODE)
+                            try
                             {
-                                context.toast(response.body()?.user_msg.toString())
-                            } else if (response.code() == Constants.NOT_FOUND)
+                                if (response.code() == Constants.SUCESS_CODE)
+                                {
+                                    context.toast(response.body()?.user_msg.toString())
+
+                                } else if (response.code() == Constants.NOT_FOUND)
+                                {
+                                    context.toast(response.body()?.user_msg.toString())
+                                } else
+                                {
+                                    context.toast(response.body()?.user_msg.toString())
+                                }
+                            } catch (e: Exception)
                             {
-                                context.toast(response.body()?.user_msg.toString())
-                            } else
-                            {
-                                context.toast(response.body()?.user_msg.toString())
+                                e.printStackTrace()
                             }
-                        } catch (e: Exception)
-                        {
-                            e.printStackTrace()
                         }
-                    }
 
                         override fun onFailure(call: Call<EditCartmodel>, t: Throwable)
                         {
@@ -97,22 +102,11 @@ class MyCartAdapter(val context: Context, val data: List<Data>) : RecyclerView.A
                         }
                     })
 
-                }else
-                {
-                    context.toast("do nothing")
-                }
-            }
+                    mydialog.dismiss()
 
-            override fun onNothingSelected(parent: AdapterView<*>?)
-            {
-                //do nothing
-            }
-        }
-        val value:Int = data.get(position).quantity
-        if (value!=null)
-        {
-            val spinnerpos = arrayAdapter?.getPosition(value)
-            holder.itemView.spinner_my_cart.setSelection(spinnerpos!!)
+                }
+                }
+
         }
 
         //click listner for delete item from list api call

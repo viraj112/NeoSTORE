@@ -27,6 +27,7 @@ import com.neosoft.neostore.models.Data
 import com.neosoft.neostore.models.MyCartListModel
 import com.neosoft.neostore.utilities.LoadingDialog
 import kotlinx.android.synthetic.main.cart_count.*
+import kotlinx.android.synthetic.main.cart_count.view.*
 import kotlinx.android.synthetic.main.fragment_my_cart.*
 import org.jetbrains.anko.toast
 import retrofit2.Call
@@ -103,10 +104,11 @@ class MyCartFragment : Fragment(), View.OnClickListener {
                                        listdata = response.body()?.data!!
                                        total = response.body()?.total.toString()
                                        count = response.body()?.count.toString()
-
                                        setRecycler()
-
                                        //for show visbility
+
+                                       val mainActivity = MainActivity()
+                                       mainActivity.f1(count)
                                        visibility()
                                    }
 
@@ -136,9 +138,11 @@ class MyCartFragment : Fragment(), View.OnClickListener {
         reecycler_my_cart.adapter = adapter
         adapter.notifyDataSetChanged()
         txt_sum_my_cart.text = total
-        txt_cart_count?.setText(""+count)
+
 
     }
+
+
 
     //for views visibility
     private fun visibility()

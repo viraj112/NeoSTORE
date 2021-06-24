@@ -6,14 +6,13 @@
     android:layout_gravity="center"
     android:layout_marginTop="@dimen/_10sdp">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt_cart_count"
         android:layout_width="@dimen/_20sdp"
         android:layout_height="@dimen/_20sdp"
         android:layout_marginTop="4dp"
         android:background="@drawable/bg_count"
         android:gravity="center"
-        android:inputType="number"
         android:textColor="@color/color_white"
          />
 </LinearLayout>

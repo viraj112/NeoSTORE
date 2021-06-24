@@ -4,15 +4,18 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.MenuItemCompat
 import com.bumptech.glide.Glide
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.material.navigation.NavigationView
@@ -22,6 +25,7 @@ import com.neosoft.neostore.utilities.SessionManagement
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.cart_count.*
+import kotlinx.android.synthetic.main.cart_count.view.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
@@ -38,8 +42,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var storeLocatorFragment: StoreLocatorFragment
     lateinit var myOrdersFragment: MyOrdersFragment
     lateinit var preferences: SharedPreferences
-
-
+    lateinit var  count:TextView
+    lateinit var ab:String
 
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,21 +95,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerToggle?.drawerArrowDrawable?.color = ContextCompat.getColor(this, R.color.white)
 
         navigation_view.setNavigationItemSelectedListener(this)
-        navigation_view.menu.findItem(R.id.menu_my_cart).setActionView(R.layout.cart_count)
-        countgravity()
+        //count= navigation_view.menu.findItem(R.id.menu_my_cart).setActionView(R.layout.cart_count) as TextView
+        count = MenuItemCompat.getActionView(navigation_view.menu.findItem(R.id.menu_my_cart)) as TextView
 
+        initDrawer()
         cv_tables.setOnClickListener(this)
         cv_chairs.setOnClickListener(this)
         cv_cupboards.setOnClickListener(this)
         cv_sofas.setOnClickListener(this)
     }
 
-    @SuppressLint("ResourceAsColor", "ResourceType")
-    private fun countgravity() {
+    fun f1( a:String){
+      //bc= a
+    }
 
-        txt_cart_count?.gravity= Gravity.CLIP_HORIZONTAL
-        txt_cart_count?.setTextColor(R.color.white)
-        txt_cart_count?.setText("1")
+
+    private fun initDrawer() {
+        count.gravity= Gravity.CENTER
+        count.fitsSystemWindows=true
+        count.setTextColor(resources.getColor(R.color.white))
+        count.text = "1"
+       // count.setText(cc)
     }
 
     //for  search menu item

@@ -9,6 +9,7 @@
             android:id="@+id/menu_my_cart"
             android:icon="@drawable/ic_mycart"
             android:title="@string/my_cart"
+            android:actionLayout="@layout/cart_count"
             app:actionViewClass="android.widget.TextView"/>
 
         <item
