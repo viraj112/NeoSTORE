@@ -19,7 +19,8 @@
         android:textColor="@color/color_black_dark"
         android:textSize="@dimen/_20ssp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/_10sdp" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edittxt_address"
@@ -30,7 +31,7 @@
         android:layout_marginRight="@dimen/_10sdp"
         android:background="@drawable/bg_edittxt_white"
         android:fontFamily="@font/gothambook"
-        android:hint="Address"
+        android:hint="@string/address"
         android:textSize="@dimen/_13ssp"
         android:inputType="textPersonName"
         android:padding="@dimen/_10sdp"
@@ -51,7 +52,8 @@
         android:textColor="@color/color_black_dark"
         android:textSize="@dimen/_20ssp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittxt_address" />
+        app:layout_constraintTop_toBottomOf="@+id/edittxt_address"
+        android:layout_marginStart="@dimen/_10sdp" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edttxt_landmark"
@@ -62,7 +64,7 @@
         android:layout_marginRight="@dimen/_10sdp"
         android:background="@drawable/bg_edittxt_white"
         android:fontFamily="@font/gothambook"
-        android:hint="LANDMARK"
+        android:hint="@string/landmark"
         android:textSize="@dimen/_13ssp"
         android:padding="@dimen/_10sdp"
         android:textAllCaps="true"
@@ -84,7 +86,8 @@
         app:layout_constraintEnd_toStartOf="@+id/appCompatTextView5"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edttxt_landmark" />
+        app:layout_constraintTop_toBottomOf="@+id/edttxt_landmark"
+        android:layout_marginStart="@dimen/_10sdp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/appCompatTextView5"
@@ -114,7 +117,7 @@
         android:maxLines="1"
         android:padding="@dimen/_10sdp"
         android:textSize="@dimen/_13ssp"
-        android:hint="MUMBAI"
+        android:hint="@string/mumbai"
         android:singleLine="true"
         app:layout_constraintEnd_toStartOf="@+id/edttxt_state"
         app:layout_constraintHorizontal_bias="0.5"
@@ -132,7 +135,7 @@
         android:maxLines="1"
         android:textSize="@dimen/_13ssp"
         android:padding="@dimen/_10sdp"
-        android:hint=" MAHARASHTRA"
+        android:hint="@string/maharashtra"
         android:singleLine="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -153,7 +156,9 @@
         app:layout_constraintEnd_toStartOf="@+id/appCompatEditText6"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edttxt_city" />
+        app:layout_constraintTop_toBottomOf="@+id/edttxt_city"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_5sdp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/appCompatEditText6"
@@ -182,7 +187,7 @@
         android:textColor="@color/color_black_dark"
         android:layout_marginRight="@dimen/_10sdp"
         android:layout_marginLeft="@dimen/_10sdp"
-        android:hint="413101"
+        android:hint="@string/_413101"
         android:inputType="number"
         android:maxLength="6"
         app:layout_constraintEnd_toStartOf="@+id/edttxt_country"
@@ -202,7 +207,7 @@
         android:textSize="@dimen/_13ssp"
         android:background="@drawable/bg_edittxt_white"
         app:layout_constraintHorizontal_bias="0.5"
-        android:hint="INDIA"
+        android:hint="@string/india"
         android:maxLines="1"
         android:singleLine="true"
         app:layout_constraintStart_toEndOf="@+id/edttxt_zip_code"

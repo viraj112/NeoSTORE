@@ -1,20 +1,17 @@
 package com.neosoft.neostore.activities
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.neosoft.neostore.R
-import com.neosoft.neostore.adapters.MyCartAdapter
 import com.neosoft.neostore.adapters.OrderDetailsAdapter
 import com.neosoft.neostore.api.Api
-import com.neosoft.neostore.api.RetrofitClient
 import com.neosoft.neostore.api.RetrofitClientCart
 import com.neosoft.neostore.constants.Constants
-import com.neosoft.neostore.models.Data
 import com.neosoft.neostore.models.OrderDetails
 import com.neosoft.neostore.models.OrderDetailsModel
 import kotlinx.android.synthetic.main.activity_orders_details.*
@@ -27,54 +24,55 @@ import retrofit2.Response
 import java.lang.Exception
 
 class OrdersDetailsActivity : AppCompatActivity() {
-    val retrofit = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
+    val retrofit: Api = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
     lateinit var adapter: OrderDetailsAdapter
-    lateinit var token: String
+    private lateinit var token: String
     lateinit var sharedPreferences: SharedPreferences
 
-    var listdata: List<OrderDetails> = ArrayList<OrderDetails>()
-    var order_id = 0
+    var listData: List<OrderDetails> = ArrayList()
+    private var orderId = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_orders_details)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        order_id = intent.getIntExtra("id",1)
+        orderId = intent.getIntExtra("id", 1)
         sharedPreferences = this.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
         token = sharedPreferences.getString("token", null).toString()
 
-        supportActionBar?.title="ORDER ID"+" :  "+order_id.toString()
-        recycler_orders_details.layoutManager= LinearLayoutManager(this)
-        recycler_orders_details.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
-
-
+        supportActionBar?.title = "ORDER ID :  $orderId"
+        recycler_orders_details.layoutManager = LinearLayoutManager(this)
+        recycler_orders_details.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                LinearLayoutManager.VERTICAL
+            )
+        )
 
         getOrderDetails()
     }
 
     private fun getOrderDetails() {
 
-        retrofit.getOrderDetails(token,order_id).enqueue(object :Callback<OrderDetailsModel>{
+        retrofit.getOrderDetails(token, orderId).enqueue(object : Callback<OrderDetailsModel> {
+            @SuppressLint("SetTextI18n")
             override fun onResponse(
                 call: Call<OrderDetailsModel>,
                 response: Response<OrderDetailsModel>
             ) {
 
                 try {
-                    if (response.code() == Constants.SUCESS_CODE)
-                    {
-                        val items =response.body()?.data
-                        txt_cost_orders_details.setText("₹"+items?.cost.toString()+".00")
-                        val list:List<OrderDetails> = items?.order_details!!
-                        listdata=list
-                        adapter = OrderDetailsAdapter(this@OrdersDetailsActivity,list)
+                    if (response.code() == Constants.SUCESS_CODE) {
+                        val items = response.body()?.data
+                        txt_cost_orders_details.text = "₹" + items?.cost.toString() + ".00"
+                        val list: List<OrderDetails> = items?.order_details!!
+                        listData = list
+                        adapter = OrderDetailsAdapter(this@OrdersDetailsActivity, list)
                         recycler_orders_details.adapter = adapter
 
-                    }else if (response.code() == Constants.NOT_FOUND)
-                    {
+                    } else if (response.code() == Constants.NOT_FOUND) {
                         toast(response.body()?.message.toString())
                     }
-                }catch (e:Exception)
-                {
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }

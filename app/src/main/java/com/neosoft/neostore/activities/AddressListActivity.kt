@@ -16,7 +16,6 @@ import androidx.room.Room
 import com.neosoft.neostore.R
 import com.neosoft.neostore.adapters.AddressAdapter
 import com.neosoft.neostore.api.Api
-import com.neosoft.neostore.api.RetrofitClient
 import com.neosoft.neostore.api.RetrofitClientCart
 import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.database.AddressDatabase
@@ -31,30 +30,27 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAdapter.OnItemClick{
-   //initialize variable
+class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAdapter.OnItemClick {
+    //initialize variable
     lateinit var sharedPreferences: SharedPreferences
-    lateinit var  Name:String
-    lateinit var Address:String
-    var add:String=""
-    lateinit var token:String
+    private lateinit var name: String
+    private lateinit var address: String
+    var add: String = ""
+    private lateinit var token: String
     lateinit var myOrdersFragment: MyOrdersFragment
-    var addressAdapter :AddressAdapter? =null
-    val onItemClick:AddressAdapter.OnItemClick? = null
-    val retrofit = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
+    val retrofit: Api = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @SuppressLint("CheckResult")
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.title =getString(R.string.address_list)
+        supportActionBar?.title = getString(R.string.address_list)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         sharedPreferences = this.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
-        token =sharedPreferences.getString("token",null).toString()
-        Address = intent.getStringExtra("address").toString()
-        Name = sharedPreferences.getString("username",null).toString()
+        token = sharedPreferences.getString("token", null).toString()
+        address = intent.getStringExtra("address").toString()
+        name = sharedPreferences.getString("username", null).toString()
 
         setContentView(R.layout.activity_address_list)
 
@@ -62,38 +58,36 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAda
         //database creation
         val database = Room.databaseBuilder(
             this,
-               AddressDatabase::class.java,
-            "addressdatabase")
+            AddressDatabase::class.java,
+            "addressee's"
+        )
             .allowMainThreadQueries()
             .build()
 
-        database.addressDao().insertAddress(AddressEntity(name=Name,address =Address))
-        val allAddress= database.addressDao().getAddress()
+        database.addressDao().insertAddress(AddressEntity(name = name, address = address))
+        val allAddress = database.addressDao().getAddress()
         recycler_address_list.apply {
             layoutManager = LinearLayoutManager(this@AddressListActivity)
-            adapter = AddressAdapter(this@AddressListActivity,allAddress,this@AddressListActivity)
+            adapter = AddressAdapter(this@AddressListActivity, allAddress, this@AddressListActivity)
 
         }
 
     }
 
-
-    override fun onClick(myadd: String) {
-        add = myadd
+    override fun onClick(myAddress: String) {
+        add = myAddress
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.add_address_menu,menu)
+        menuInflater.inflate(R.menu.add_address_menu, menu)
         return true
     }
-
+        //option menu click
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        when(item.itemId)
-        {
-            R.id.menu_add_address ->
-            {
-                val i:Intent = Intent(this,AddAddressActivity::class.java)
+        when (item.itemId) {
+            R.id.menu_add_address -> {
+                val i = Intent(this, AddAddressActivity::class.java)
                 startActivity(i)
             }
         }
@@ -101,39 +95,37 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener,AddressAda
     }
 
     override fun onClick(view: View) {
-        when(view.id)
-        {
+        when (view.id) {
             R.id.btn_place_order ->
-
                 //place order api
-              placeOrder()
-
-            }
+                placeOrder()
         }
+    }
 
     private fun placeOrder() {
 
-        retrofit.placeOrder(token,add).enqueue(object :Callback<PlaceOrderModel>{
-            override fun onResponse(call: Call<PlaceOrderModel>, response: Response<PlaceOrderModel>)
-            {
+        retrofit.placeOrder(token, add).enqueue(object : Callback<PlaceOrderModel> {
+            override fun onResponse(
+                call: Call<PlaceOrderModel>,
+                response: Response<PlaceOrderModel>
+            ) {
                 try {
-                    if (response.code()==Constants.SUCESS_CODE)
-                    {
+                    if (response.code() == Constants.SUCESS_CODE) {
                         toast(response.body()?.user_msg.toString())
 
-                    }else if (response.code()==Constants.NOT_FOUND)
-                    {
-                        toast(response.body()?.message.toString())
+                    } else if (response.code() == Constants.NOT_FOUND) {
+                        toast(response.body()?.user_msg.toString())
+                    }else{
+                        toast(response.body()?.user_msg.toString())
                     }
 
-                }catch (e:Exception)
-                {
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
 
             override fun onFailure(call: Call<PlaceOrderModel>, t: Throwable) {
-                toast(t.message.toString())
+                toast(getString(R.string.no_connection))
             }
         })
     }

@@ -1,5 +1,7 @@
 package com.neosoft.neostore.activities
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,26 +21,29 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ResetPasswordActivity : AppCompatActivity(), View.OnClickListener {
-    //initialize varibales
-    val retrofit = RetrofitClient.getRetrofitInstance().create(Api::class.java)
-    lateinit var old_password: String
-    lateinit var new_password: String
-    lateinit var confirm_password: String
+    //initialize variables
+    val retrofit: Api = RetrofitClient.getRetrofitInstance().create(Api::class.java)
+    private lateinit var oldPassword: String
+    private lateinit var newPassword: String
+    private lateinit var confirmPassword: String
     lateinit var loadingDialog: LoadingDialog
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    private lateinit var preferences: SharedPreferences
+    private lateinit var token: String
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reset_password)
         supportActionBar?.title = getString(R.string.reset_password)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         loadingDialog = LoadingDialog(this)
 
-          //assign value to varibales
+        //assign value to variables
         initialization()
     }
 
-    private fun initialization()
-    {
+    private fun initialization() {
+        preferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
+        token = preferences.getString("token", null).toString()
+
         btn_change_password.setOnClickListener(this)
     }
 
@@ -47,17 +52,13 @@ class ResetPasswordActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view.id) {
             //click for change password
-            R.id.btn_change_password ->
-            {
-                if (validate()) {
+            R.id.btn_change_password -> {
+                if (validate())
+                    oldPassword = edt_current_password.text.toString()
+                newPassword = edt_new_password.text.toString()
+                confirmPassword = edt_confim_password.text.toString()
 
-                    old_password = edt_current_password.text.toString()
-                    new_password = edt_new_password.text.toString()
-                    confirm_password = edt_confim_password.text.toString()
-
-                    changePassword()
-
-                }
+                changePassword()
             }
         }
     }
@@ -65,42 +66,42 @@ class ResetPasswordActivity : AppCompatActivity(), View.OnClickListener {
     //api call for change password
     private fun changePassword() {
         loadingDialog.startLoading()
-        retrofit.changePassword(Constants.TOKEN, old_password, new_password, confirm_password)
+        retrofit.changePassword(token, oldPassword, newPassword, confirmPassword)
             .enqueue(object : Callback<ChangePasswordModel> {
                 @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
-                override fun onResponse(call: Call<ChangePasswordModel>, response: Response<ChangePasswordModel>)
-                {
+                override fun onResponse(
+                    call: Call<ChangePasswordModel>,
+                    response: Response<ChangePasswordModel>
+                ) {
 
                     try {
-                        if (response.code() == Constants.SUCESS_CODE)
-                        {
-                            val handler = Handler()
-                            handler.postDelayed(Runnable {
+                        when {
+                            response.code() == Constants.SUCESS_CODE -> {
+                                @Suppress("DEPRECATION") val handler = Handler()
+                                handler.postDelayed({
+                                    loadingDialog.isDismiss()
+                                    toast(response.body()?.user_msg.toString())
+                                }, Constants.DELAY_TIME.toLong())
+
+
+                            }
+                            response.code() == Constants.DATA_MISSING -> {
                                 loadingDialog.isDismiss()
                                 toast(response.body()?.user_msg.toString())
-                            },Constants.DELAY_TIME.toLong())
 
-
-                        } else if (response.code() == Constants.DATA_MISSING)
-                        {
-                            loadingDialog.isDismiss()
-                            toast(response.body()?.user_msg.toString())
-
-                        } else
-                        {
+                            }
+                            else -> {
                                 loadingDialog.isDismiss()
                                 toast(response.body()?.user_msg.toString())
+                            }
                         }
 
-                    } catch (e: Exception)
-                    {
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
-
                 }
 
-                override fun onFailure(call: Call<ChangePasswordModel>, t: Throwable)
-                {
+                override fun onFailure(call: Call<ChangePasswordModel>, t: Throwable) {
                     loadingDialog.isDismiss()
                     toast(t.message.toString())
                     clearData()
@@ -117,22 +118,21 @@ class ResetPasswordActivity : AppCompatActivity(), View.OnClickListener {
 
     //validation for fields
     private fun validate(): Boolean {
-        if (edt_current_password.text.toString().equals("") || edt_current_password.text.toString().length < 6)
-        {
+        if (edt_current_password.text.toString() == "" || edt_current_password.text.toString().length < 6
+        ) {
             edt_current_password.error = getString(R.string.password_length)
             return false
-
-        } else if (edt_new_password.text.toString().equals("") || edt_new_password.text.toString().length < 6)
-        {
+        } else if (edt_new_password.text.toString() == "" || edt_new_password.text.toString().length < 6
+        ) {
             edt_new_password.error = getString(R.string.password_length)
-
-        } else if (edt_confim_password.text.toString().equals("") || edt_confim_password.text.toString().length < 6)
-        {
+            return false
+        } else if (edt_confim_password.text.toString() == "" || edt_confim_password.text.toString().length < 6
+        ) {
             edt_confim_password.error = getString(R.string.password_length)
-
-        } else if (!edt_confim_password.text.toString().equals(edt_new_password.text.toString()))
-        {
+            return false
+        } else if (edt_confim_password.text.toString() != edt_new_password.text.toString()) {
             toast(getString(R.string.pass_not_match))
+            return false
         }
         return true
 

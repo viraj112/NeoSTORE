@@ -1,10 +1,8 @@
 package com.neosoft.neostore.activities
 
-import android.annotation.SuppressLint
+
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -24,26 +22,23 @@ import com.neosoft.neostore.fragments.*
 import com.neosoft.neostore.utilities.SessionManagement
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.cart_count.*
-import kotlinx.android.synthetic.main.cart_count.view.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    View.OnClickListener
-{
-    //decalre variables
-    lateinit var session: SessionManagement
-    lateinit var myCartFragment: MyCartFragment
-    lateinit var tablesFragment: TablesFragment
-    lateinit var sofasFragment: SofasFragment
-    lateinit var chairsFragment: ChairsFragment
+    View.OnClickListener {
+    //declare variables
+    private lateinit var session: SessionManagement
+    private lateinit var myCartFragment: MyCartFragment
+    private lateinit var tablesFragment: TablesFragment
+    private lateinit var sofasFragment: SofasFragment
+    private lateinit var chairsFragment: ChairsFragment
     lateinit var cupboardsFragment: CupboardsFragment
-    lateinit var myAccountFragment: MyAccountFragment
+    private lateinit var myAccountFragment: MyAccountFragment
     lateinit var storeLocatorFragment: StoreLocatorFragment
-    lateinit var myOrdersFragment: MyOrdersFragment
-    lateinit var preferences: SharedPreferences
-    lateinit var  count:TextView
-    lateinit var ab:String
+    private lateinit var myOrdersFragment: MyOrdersFragment
+    private lateinit var preferences: SharedPreferences
+    private lateinit var count: TextView
 
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,23 +49,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         session = SessionManagement(this)
         session.checkLogin()
 
-
-        //initialization of varibales
+        //initialization of variables
         initialization()
     }
 
-    //for varibales initialization
-    private fun initialization()
-    {
+    //for variables initialization
+    private fun initialization() {
 
-        preferences = getSharedPreferences("SHARED_PREF",Context.MODE_PRIVATE)
+        preferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
 
-        val email =preferences.getString("email","")
-        val username = preferences.getString("username","")
-        val image = preferences.getString("pic","")
+        val email = preferences.getString("email", "")
+        val username = preferences.getString("username", "")
+        val image = preferences.getString("pic", "")
         //set values for header view
-        val headerView :View = navigation_view.getHeaderView(0)
-        headerView.txt_navigation_email.text=email
+        val headerView: View = navigation_view.getHeaderView(0)
+        headerView.txt_navigation_email.text = email
         headerView.txt_navigation_username.text = username
         Glide.with(this).load(image).into(headerView.circleImageView)
 
@@ -87,16 +80,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val actionBar = supportActionBar
         actionBar?.title = getString(R.string.app_name)
 
-        val drawerToggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(this, drawer_layout, toolbar, (R.string.open), (R.string.close)) {
+        val drawerToggle: ActionBarDrawerToggle = object :
+            ActionBarDrawerToggle(this, drawer_layout, toolbar, (R.string.open), (R.string.close)) {
         }
         drawerToggle.isDrawerIndicatorEnabled = true
         drawer_layout.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
-        drawerToggle?.drawerArrowDrawable?.color = ContextCompat.getColor(this, R.color.white)
+        drawerToggle.drawerArrowDrawable.color = ContextCompat.getColor(this, R.color.white)
 
         navigation_view.setNavigationItemSelectedListener(this)
         //count= navigation_view.menu.findItem(R.id.menu_my_cart).setActionView(R.layout.cart_count) as TextView
-        count = MenuItemCompat.getActionView(navigation_view.menu.findItem(R.id.menu_my_cart)) as TextView
+        count =
+            MenuItemCompat.getActionView(navigation_view.menu.findItem(R.id.menu_my_cart)) as TextView
 
         initDrawer()
         cv_tables.setOnClickListener(this)
@@ -105,17 +100,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         cv_sofas.setOnClickListener(this)
     }
 
-    fun f1( a:String){
-      //bc= a
+    fun getCount(a: String) {
+        Log.d("tag", a)
     }
 
-
     private fun initDrawer() {
-        count.gravity= Gravity.CENTER
-        count.fitsSystemWindows=true
+        count.gravity = Gravity.CENTER
+        count.fitsSystemWindows = true
         count.setTextColor(resources.getColor(R.color.white))
         count.text = "1"
-       // count.setText(cc)
+
     }
 
     //for  search menu item
@@ -124,67 +118,54 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    //navogation menu click listners
+    //navigation menu click
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.menu_my_cart ->
-            {
-                //mycarts fragment
+                //my cart fragment
                 myCartsFragment()
 
-            }
             R.id.menu_table ->
-            {
                 //tables fragment
-                getTablesfragment()
-            }
+                getTableFragment()
+
             R.id.menu_sofas ->
-            {
+
                 //sofas fragment
                 getSofasFragment()
-            }
+
             R.id.menu_chairs ->
-            {
                 //chairs fragment
                 getChairsFragment()
-            }
 
             R.id.menu_cupboards ->
-            {
                 //cupboards fragment
                 getCupboardsFragment()
-            }
+
             R.id.menu_my_account ->
-            {
-                //myaccount fragment
+                //my account fragment
                 getMyAccountFragment()
 
-            }
             R.id.menu_store_locator ->
-            {
                 //store locator fragment
                 getStoreLocatorFragment()
 
-            }
             R.id.menu_my_orders ->
-            {
+                //my orders fragment
+                getMyOrderFragment()
 
-                //myorders fragmnet
-                getMyorderFragment()
-            }
             R.id.menu_logout ->
-            {
                 //for logout user
                 session.logoutUser()
-            }
+
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
 
 
-    private fun getMyorderFragment() {
+    private fun getMyOrderFragment() {
         cards_list.visibility = View.GONE
         cardiview_slider.visibility = View.GONE
         toolbar.title = getString(R.string.my_orders)
@@ -241,29 +222,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
     }
+
     //for cards clicks
     override fun onClick(view: View) {
         when (view.id) {
             R.id.cv_tables ->
-            {
-                getTablesfragment()
-            }
+                getTableFragment()
+
             R.id.cv_sofas ->
-            {
                 getSofasFragment()
-            }
+
             R.id.cv_chairs ->
-            {
                 getChairsFragment()
-            }
+
             R.id.cv_cupboards ->
-            {
                 getCupboardsFragment()
-            }
+
         }
     }
 
-    private fun getTablesfragment() {
+    private fun getTableFragment() {
 
         cardiview_slider.visibility = View.GONE
         cards_list.visibility = View.GONE
@@ -276,8 +254,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun getSofasFragment()
-    {
+    private fun getSofasFragment() {
         cards_list.visibility = View.GONE
         cardiview_slider.visibility = View.GONE
         toolbar.title = getString(R.string.sofas)
@@ -289,8 +266,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             commit()
         }
     }
-    private fun getChairsFragment()
-    {
+
+    private fun getChairsFragment() {
         cards_list.visibility = View.GONE
         cardiview_slider.visibility = View.GONE
         toolbar.title = getString(R.string.chairs)
@@ -303,8 +280,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun getCupboardsFragment()
-    {
+    private fun getCupboardsFragment() {
         toolbar.title = getString(R.string.cupboards)
         cards_list.visibility = View.GONE
         cardiview_slider.visibility = View.GONE

@@ -47,7 +47,6 @@
     <string name="total">TOTAL</string>
     <string name="ordernow">order now</string>
     <string name="alert">Alert</string>
-    <string name="address">Address</string>
     <string name="city">CITY</string>
     <string name="state">STATE</string>
     <string name="zip_code">ZIP CODE</string>
@@ -71,4 +70,11 @@
     <string name="profile_image_path">data:image/jpg;base64,</string>
     <string name="permission_grant">permission granted</string>
     <string name="permission_denied">permission denied</string>
+    <string name="price">Price</string>
+    <string name="address">Address</string>
+    <string name="landmark">LANDMARK</string>
+    <string name="india">INDIA</string>
+    <string name="mumbai">MUMBAI</string>
+    <string name="_413101">413101</string>
+    <string name="maharashtra">MAHARASHTRA</string>
 </resources>

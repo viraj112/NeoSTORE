@@ -27,13 +27,18 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCDLlBnLcD8tjqPnL8fuT6f1JDS0PIOoBA"/>
-        <activity android:name=".activities.OrdersDetailsActivity" />
-        <activity android:name=".activities.ResetPasswordActivity" />
-        <activity android:name=".activities.AddressListActivity"/>
-        <activity android:name=".activities.AddAddressActivity" />
+        <activity android:name=".activities.OrdersDetailsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.ResetPasswordActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.AddressListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.AddAddressActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.SplashScreenActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,17 +47,21 @@
         </activity>
         <activity
             android:name=".activities.ProductDetailsActivity"
-            android:theme="@style/Theme.NeoSTORE" />
+            android:theme="@style/Theme.NeoSTORE"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.RegisterActivity"
             android:label="@string/register"
-            android:parentActivityName=".activities.LoginActivity" />
+            android:parentActivityName=".activities.LoginActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.LoginActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.MainActivity"
-            android:theme="@style/myTheme" >
+            android:theme="@style/myTheme"
+            android:screenOrientation="portrait">
         </activity>
 
     </application>

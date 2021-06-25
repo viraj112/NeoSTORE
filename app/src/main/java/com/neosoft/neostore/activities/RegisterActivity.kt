@@ -23,21 +23,21 @@ import retrofit2.Response
 import java.lang.Exception
 import kotlin.time.ExperimentalTime
 
-class RegisterActivity : AppCompatActivity(),View.OnClickListener
-{
+@Suppress("DEPRECATION")
+class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     //initialize variables
-    val retIn = RetrofitClient.getRetrofitInstance().create(Api::class.java)
-    lateinit var Gender :String
-    lateinit var first_name: String
-    lateinit var last_name: String
+    private val retIn: Api = RetrofitClient.getRetrofitInstance().create(Api::class.java)
+    private lateinit var gender: String
+    private lateinit var firstname: String
+    private lateinit var lastname: String
     lateinit var email: String
     lateinit var password: String
-    lateinit var confirm_password: String
+    private lateinit var confirmPassword: String
     lateinit var phone: String
-    lateinit var loading : LoadingDialog
+    lateinit var loading: LoadingDialog
+
     @ExperimentalTime
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
         initialization()
@@ -46,151 +46,134 @@ class RegisterActivity : AppCompatActivity(),View.OnClickListener
     }
 
     //for handling button clicks
-    override fun onClick(view: View)
-    {
+    override fun onClick(view: View) {
 
-        when(view.id)
-        {
+        when (view.id) {
             //do registration api call
-            R.id.btn_register ->
-            {
+            R.id.btn_register -> {
                 doRegistration()
-            }
-            }
-        }
-
-    //for initializing varables
-    private fun initialization() {
-
-        btn_register.setOnClickListener(this)
-        radioGroup.setOnCheckedChangeListener { group, checkedId ->
-            if (checkedId ==R.id.radioButtonMale)
-            {
-                Gender = Constants.GENDER_MALE
-            }else
-            {
-                Gender = Constants.GENDER_FEMALE
             }
         }
     }
+
+    //for initializing variables
+    private fun initialization() {
+
+        btn_register.setOnClickListener(this)
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            gender = if (checkedId == R.id.radioButtonMale) {
+                Constants.GENDER_MALE
+            } else {
+                Constants.GENDER_FEMALE
+            }
+        }
+    }
+
     //for validating all fields
-    private fun validate(): Boolean
-    {
+    private fun validate(): Boolean {
         email = edt_txt_email.text.toString()
         //for firstname
-        if(edt_txt_first_name.text.toString().trim().isEmpty())
-        {
-            edt_txt_first_name.error =getString(R.string.canot_be_empty)
+        if (edt_txt_first_name.text.toString().trim().isEmpty()) {
+            edt_txt_first_name.error = getString(R.string.canot_be_empty)
             return false
         }
 
         //for last name
-        else if(edt_txt_last_name.text.toString().trim().isEmpty())
-        {
-            edt_txt_last_name.error =getString(R.string.canot_be_empty)
+        else if (edt_txt_last_name.text.toString().trim().isEmpty()) {
+            edt_txt_last_name.error = getString(R.string.canot_be_empty)
             return false
         }
 
         //for email
-        else if (!Validations.isValidemail(email))
-        {
+        else if (!Validations.isValidEmail(email)) {
             edt_txt_email.error = getString(R.string.valid_email)
             return false
         }
 
         //for password
-        else if (edt_password.text.toString().trim().isEmpty() ||edt_password.text.length<6)
-        {
-            edt_password.error =getString(R.string.password_length)
+        else if (edt_password.text.toString().trim().isEmpty() || edt_password.text.length < 6) {
+            edt_password.error = getString(R.string.password_length)
             return false
         }
-         //for confirm password
-        else if (ed_txt_con_pass.text.toString().trim().isEmpty() ||ed_txt_con_pass.text.length<6)
-        {
-            ed_txt_con_pass.error =getString(R.string.password_length)
+        //for confirm password
+        else if (ed_txt_con_pass.text.toString().trim()
+                .isEmpty() || ed_txt_con_pass.text.length < 6
+        ) {
+            ed_txt_con_pass.error = getString(R.string.password_length)
             return false
         }
-            //for password matching
-        else if(!edt_password.text.toString().equals(ed_txt_con_pass.text.toString()))
-        {
+        //for password matching
+        else if (edt_password.text.toString() != ed_txt_con_pass.text.toString()) {
             toast(getString(R.string.pass_not_match))
             return false
         }
 
         //for radio button gender
-        else if(radioGroup.checkedRadioButtonId ==-1)
-        {
+        else if (radioGroup.checkedRadioButtonId == -1) {
             toast(getString(R.string.select_gender))
             return false
         }
         //for phone number
-        else if (edt_txt_phone_no.text.length<10)
-        {
-            edt_txt_phone_no.error=getString(R.string.valid_phone_no)
+        else if (edt_txt_phone_no.text.length < 10) {
+            edt_txt_phone_no.error = getString(R.string.valid_phone_no)
             return false
         }
         //for check terms and conditions
-        else if (!checkbox_terms_cond.isChecked)
-        {
+        else if (!checkbox_terms_cond.isChecked) {
             toast(getString(R.string.check_terms_cond))
             return false
         }
 
-            return true
+        return true
     }
 
-    private fun doRegistration()
-    {
+    private fun doRegistration() {
 
-        first_name = edt_txt_first_name.text.toString()
-        last_name = edt_txt_last_name.text.toString()
+        firstname = edt_txt_first_name.text.toString()
+        lastname = edt_txt_last_name.text.toString()
         password = edt_password.text.toString()
-        confirm_password = ed_txt_con_pass.text.toString()
+        confirmPassword = ed_txt_con_pass.text.toString()
         phone = edt_txt_phone_no.text.toString()
         email = edt_txt_email.text.toString()
 
         if (validate())
-        //call for registraion api
+        //call for  api
         {
-            retIn.register(first_name, last_name, email, password, confirm_password, Gender, phone)
+            retIn.register(firstname, lastname, email, password, confirmPassword, gender, phone)
                 .enqueue(object : Callback<RegisterationModel> {
                     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
                     override fun onResponse(
                         call: Call<RegisterationModel>,
-                        response: Response<RegisterationModel>)
-                    {
+                        response: Response<RegisterationModel>
+                    ) {
 
                         try {
-                            if (response.code() == Constants.SUCESS_CODE)
-                            {
-                                loading.startLoading()
-                                val handler = Handler()
-                                handler.postDelayed(object :Runnable{
-                                    override fun run() {
+                            when {
+                                response.code() == Constants.SUCESS_CODE -> {
+                                    loading.startLoading()
+                                    val handler = Handler()
+                                    handler.postDelayed({
                                         loading.isDismiss()
                                         toast(response.body()?.message.toString())
-                                        val i :Intent= Intent(this@RegisterActivity,LoginActivity::class.java)
+                                        val i= Intent(this@RegisterActivity, LoginActivity::class.java)
                                         startActivity(i)
-                                    }
-                                },Constants.DELAY_TIME.toLong())
-                            } else if (response.code() == Constants.Error_CODE)
-                            {
-                                loading.isDismiss()
-                                toast(response.message())
+                                    }, Constants.DELAY_TIME.toLong())
+                                }
+                                response.code() == Constants.Error_CODE -> {
+                                    loading.isDismiss()
+                                    toast(response.message())
 
-                            } else
-                            {
-                                loading.isDismiss()
-                                toast(response.body()?.message.toString())
+                                }
+                                else -> {
+                                    loading.isDismiss()
+                                    toast(response.body()?.message.toString())
+                                }
                             }
-                        } catch (e: Exception)
-                        {
+                        } catch (e: Exception) {
                             e.printStackTrace()
                         }
                     }
-
-                    override fun onFailure(call: Call<RegisterationModel>, t: Throwable)
-                    {
+                    override fun onFailure(call: Call<RegisterationModel>, t: Throwable) {
                         loading.isDismiss()
                         toast(R.string.no_connection)
                     }

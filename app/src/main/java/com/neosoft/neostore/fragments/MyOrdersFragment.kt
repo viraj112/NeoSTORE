@@ -12,16 +12,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neosoft.neostore.R
 import com.neosoft.neostore.adapters.MyordersAdapter
-import com.neosoft.neostore.adapters.TablesAdapter
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClientCart
 import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.models.OrderListModel
 import com.neosoft.neostore.models.OrderModel
-import com.neosoft.neostore.models.ProductModel
 import com.neosoft.neostore.utilities.LoadingDialog
 import kotlinx.android.synthetic.main.fragment_my_orders.*
-import kotlinx.android.synthetic.main.fragment_tables.*
 import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,19 +26,21 @@ import retrofit2.Response
 import java.lang.Exception
 
 
+@Suppress("DEPRECATION")
 class MyOrdersFragment : Fragment() {
 
-    var listdata: List<OrderModel> = ArrayList()
+    var listData: List<OrderModel> = ArrayList()
     lateinit var adapter: MyordersAdapter
-    val retrofit = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
+    val retrofit: Api = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
     lateinit var loadingDialog: LoadingDialog
-    lateinit var token: String
+    private lateinit var token: String
     lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        val view= inflater.inflate(R.layout.fragment_my_orders, container, false)
+        val view = inflater.inflate(R.layout.fragment_my_orders, container, false)
         sharedPreferences = activity?.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
         token = sharedPreferences.getString("token", null).toString()
 
@@ -61,42 +60,34 @@ class MyOrdersFragment : Fragment() {
 
     private fun getOrderList() {
         //api call for orders
-        retrofit.getOrderList(token).enqueue(object :Callback<OrderListModel>
-        {
-            override fun onResponse(call: Call<OrderListModel>, response: Response<OrderListModel>)
-            {
+        retrofit.getOrderList(token).enqueue(object : Callback<OrderListModel> {
+            override fun onResponse(call: Call<OrderListModel>, response: Response<OrderListModel>) {
                 try {
-                    if (response.code()==Constants.SUCESS_CODE)
-                    {
+                    if (response.code() == Constants.SUCESS_CODE) {
                         val handler = Handler()
-                        handler.postDelayed(object : Runnable
-                        {
-                            override fun run()
-                            {
-                                loadingDialog.isDismiss()
-                                val data:List<OrderModel> =response.body()?.data!!
-                                listdata =data
+                        handler.postDelayed({
+                            loadingDialog.isDismiss()
+                            val data: List<OrderModel> = response.body()?.data!!
+                            listData = data
 
-                                setRecycler()
-                            }
+                            setRecycler()
                         }, Constants.DELAY_TIME.toLong())
                     }
-                }catch (e: Exception)
-                {
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
-            override fun onFailure(call: Call<OrderListModel>, t: Throwable)
-            {
+
+            override fun onFailure(call: Call<OrderListModel>, t: Throwable) {
                 loadingDialog.isDismiss()
                 activity?.toast(t.message.toString())
             }
         })
     }
+
     //set recycler list
-    private fun setRecycler()
-    {
-        adapter = MyordersAdapter(requireContext(),listdata)
+    private fun setRecycler() {
+        adapter = MyordersAdapter(requireContext(), listData)
         recycler_view_orders?.adapter = adapter
         adapter.notifyDataSetChanged()
 

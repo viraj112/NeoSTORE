@@ -13,9 +13,5 @@
                 android:width="1dp"
                 android:color="@color/color_black_fiant" />
         </shape>
-        <!--
-        android:dashGap="10px"
-                android:dashWidth="10px"
-                -->
-    </item>
+          </item>
 </layer-list>

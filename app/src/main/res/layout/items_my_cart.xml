@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_130sdp"
     android:layout_marginTop="@dimen/_5sdp">
@@ -60,12 +59,13 @@
         android:layout_marginLeft="@dimen/_8sdp"
         android:layout_marginTop="8sp"
         android:gravity="center"
-        android:background="@color/color_grey"
+        android:background="@color/color_light_grey"
         android:drawableRight="@drawable/ic_baseline_arrow_drop_down_24"
         android:drawablePadding="@dimen/_5sdp"
         android:padding="@dimen/_5sdp"
         app:layout_constraintStart_toEndOf="@+id/iv_my_cart"
-        app:layout_constraintTop_toBottomOf="@+id/txt_catagory_my_cart" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_catagory_my_cart"
+        android:drawableEnd="@drawable/ic_baseline_arrow_drop_down_24" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt_price_my_cart"
@@ -78,7 +78,7 @@
         android:layout_marginRight="32dp"
         android:fontFamily="@font/gothambook"
         android:padding="@dimen/_5sdp"
-        android:text="price"
+        android:text="@string/price"
         android:textColor="@color/color_black_dark"
         android:textSize="@dimen/_15ssp"
         app:layout_constraintBottom_toBottomOf="@+id/txt_cart_quantity"

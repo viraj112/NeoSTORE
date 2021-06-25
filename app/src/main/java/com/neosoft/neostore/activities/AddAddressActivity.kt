@@ -7,10 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.neosoft.neostore.R
-import com.neosoft.neostore.api.Api
-import com.neosoft.neostore.api.RetrofitClientCart
 import kotlinx.android.synthetic.main.activity_add_address.*
-import org.jetbrains.anko.toast
 
 class AddAddressActivity : AppCompatActivity(),View.OnClickListener {
     //initialize variables
@@ -43,7 +40,7 @@ class AddAddressActivity : AppCompatActivity(),View.OnClickListener {
             {
                 if(validation())
                 {
-                    val i :Intent = Intent(this,AddressListActivity::class.java)
+                    val i = Intent(this,AddressListActivity::class.java)
                     i.putExtra("address",edittxt_address.text.toString()+edttxt_landmark.text.toString()+edttxt_city.text.toString()+edttxt_state.text.toString()+edttxt_zip_code.text.toString())
                     startActivity(i)
 
@@ -56,47 +53,38 @@ class AddAddressActivity : AppCompatActivity(),View.OnClickListener {
     private fun validation() :Boolean
 
     {
-        if (edittxt_address.text.toString().isEmpty())
-        {
-            edittxt_address.error = getString(R.string.canot_be_empty)
-            return false
-        }else if (edttxt_landmark.text.toString().isEmpty())
-        {
-            edttxt_landmark.error =getString(R.string.canot_be_empty)
-            return false
+        when {
+            edittxt_address.text.toString().isEmpty() -> {
+                edittxt_address.error = getString(R.string.canot_be_empty)
+                return false
+            }
+            edttxt_landmark.text.toString().isEmpty() -> {
+                edttxt_landmark.error =getString(R.string.canot_be_empty)
+                return false
+            }
+            edttxt_city.text.toString().isEmpty() -> {
+                edttxt_city.error =getString(R.string.canot_be_empty)
+                return false
+            }
+            edttxt_city.text.toString().isEmpty() -> {
+                edttxt_city.error =getString(R.string.canot_be_empty)
+                return false
+            }
+            edttxt_state.text.toString().isEmpty() -> {
+                edttxt_state.error =getString(R.string.canot_be_empty)
+                return false
+            }
+            edttxt_zip_code.text.toString().isEmpty() -> {
+                edttxt_zip_code.error = getString(R.string.valid_zip)
+                return false
+            }
+            edttxt_zip_code.text.toString().length<6 -> {
+                edttxt_zip_code.error = getString(R.string.valid_zip)
+                return false
+
+            }
+            else -> return true
         }
-        else if (edttxt_city.text.toString().isEmpty())
-        {
-            edttxt_city.error =getString(R.string.canot_be_empty)
-            return false
-        }else if (edttxt_city.text.toString().isEmpty())
-        {
-            edttxt_city.error =getString(R.string.canot_be_empty)
-            return false
-        }else if ((edttxt_state.text.toString().isEmpty()))
-        {
-            edttxt_state.error =getString(R.string.canot_be_empty)
-            return false
-        }else if (edttxt_zip_code.text.toString().isEmpty())
-        {
-            edttxt_zip_code.error = getString(R.string.valid_zip)
-            return false
-        }else if(edttxt_zip_code.text.toString().length<6)
-        {
-            edttxt_zip_code.error = getString(R.string.valid_zip)
-            return false
-
-        }
-            return true
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-
     }
 }
-
-
-
-
 

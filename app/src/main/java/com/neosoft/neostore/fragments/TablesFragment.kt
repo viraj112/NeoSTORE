@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.neosoft.neostore.fragments
 
 import android.os.Build
@@ -6,7 +8,6 @@ import android.os.Handler
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neosoft.neostore.R
@@ -23,16 +24,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
-import java.util.*
 import kotlin.collections.ArrayList
-
 
 class TablesFragment : Fragment()
 {
-
     lateinit var adapter: TablesAdapter
-    var listdata:List<ProductModel> = ArrayList()
-    val my_retrofit = RetrofitClientProduct.getRetrofitInstance().create(Api::class.java)
+    var listData:List<ProductModel> = ArrayList()
+    private val myRetrofit: Api = RetrofitClientProduct.getRetrofitInstance().create(Api::class.java)
     lateinit var loadingDialog: LoadingDialog
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
@@ -56,7 +54,7 @@ class TablesFragment : Fragment()
 
     private fun getProductList()
     {
-        my_retrofit.getProductList(1,10,1).enqueue(object :Callback<ProductList>{
+        myRetrofit.getProductList(1,10,1).enqueue(object :Callback<ProductList>{
             @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
             override fun onResponse(call: Call<ProductList>, response: Response<ProductList>)
             {
@@ -65,16 +63,12 @@ class TablesFragment : Fragment()
                     if (response.code()==Constants.SUCESS_CODE)
                     {
                         val handler = Handler()
-                        handler.postDelayed(object : Runnable
-                        {
-                            override fun run()
-                            {
-                                loadingDialog.isDismiss()
-                                val data:List<ProductModel> =response.body()?.data!!
-                                listdata =data
-                                //setRecycler list
-                                setRecycler()
-                            }
+                        handler.postDelayed({
+                            loadingDialog.isDismiss()
+                            val data:List<ProductModel> =response.body()?.data!!
+                            listData =data
+                            //setRecycler list
+                            setRecycler()
                         }, Constants.DELAY_TIME.toLong())
 
                     }else if (response.code() == Constants.NOT_FOUND)
@@ -93,14 +87,14 @@ class TablesFragment : Fragment()
             override fun onFailure(call: Call<ProductList>, t: Throwable)
             {
                 loadingDialog.isDismiss()
-               activity?.toast(t.message.toString())
+               activity?.toast(getString(R.string.no_connection))
             }
         })
     }
         //set recycler view
     private fun setRecycler()
     {
-        adapter = TablesAdapter(requireContext(),listdata)
+        adapter = TablesAdapter(requireContext(),listData)
         rv_tables_fragment?.adapter = adapter
         adapter.notifyDataSetChanged()
     }

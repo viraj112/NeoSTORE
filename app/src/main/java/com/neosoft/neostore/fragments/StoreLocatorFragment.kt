@@ -1,16 +1,16 @@
+@file:Suppress("DEPRECATION")
+
 package com.neosoft.neostore.fragments
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
-import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
@@ -23,11 +23,9 @@ import com.neosoft.neostore.R
 import com.neosoft.neostore.constants.Constants
 import kotlinx.android.synthetic.main.fragment_store_locator.*
 import kotlinx.android.synthetic.main.fragment_store_locator.view.*
-import org.jetbrains.anko.toast
 import java.io.IOException
-import java.util.*
 import kotlin.collections.ArrayList
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
 
     private lateinit var googleMap: GoogleMap
@@ -47,7 +45,6 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
     {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_store_locator, container, false)
-
      //for getting address
       view.btn_get_store.setOnClickListener {
           val builder = PlacePicker.IntentBuilder()
@@ -69,7 +66,7 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
     override fun onMapReady(map: GoogleMap?)
     {
 
-        MapsInitializer.initialize(context)
+        MapsInitializer.initialize(activity)
         if (map != null)
         {
             googleMap = map
@@ -79,19 +76,20 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
         val zoomLevel = 15f
 
         val homeLatLng = LatLng(latitude, longitude)
-        val mylang = LatLng(18.50778755342922, 73.8081783598659)
+        val myLang = LatLng(18.50778755342922, 73.8081783598659)
 
         list.add(homeLatLng)
-        list.add(mylang)
+        list.add(myLang)
 
         for (i in 0 until list.size)
         {
-            map?.addMarker(MarkerOptions().position(list.get(i)).title("My Location"))
+            map?.addMarker(MarkerOptions().position(list[i]).title("My Location"))
 
         }
         map?.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
          map?.addMarker(MarkerOptions().position(homeLatLng))
     }
+    @SuppressLint("SetTextI18n")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
     {
         super.onActivityResult(requestCode, resultCode, data)
@@ -101,13 +99,13 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
             {
                 val place: Place = PlacePicker.getPlace(data, activity)
                 //for getting locale address
-                val geocoder:Geocoder = Geocoder(activity)
+                val geocoder = Geocoder(activity)
              try
              {
                  val address1:List<Address> = geocoder.getFromLocation(place.latLng.latitude,place.latLng.longitude,1)
-                 val name = address1.get(0).getAddressLine(0)
-                 val city = address1.get(0).getAddressLine(1)
-                 txt_place.setText(name+city)
+                 val name = address1[0].getAddressLine(0)
+                 val city = address1[0].getAddressLine(1)
+                 txt_place.text = name+city
 
              }catch (e:IOException)
              {

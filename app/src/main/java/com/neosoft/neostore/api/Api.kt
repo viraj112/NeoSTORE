@@ -5,10 +5,7 @@ import com.neosoft.neostore.models.*
 import retrofit2.Call
 import retrofit2.http.*
 
-
 interface Api {
-
-
     @FormUrlEncoded
     @POST(ApiEndPoints.REGISTER_KEY)
     fun register(@Field("first_name")first_name:String,@Field("last_name")last_name:String,@Field("email")email:String,@Field("password")password:String,@Field("confirm_password")confirm_password:String,@Field("gender")gender:String,@Field("phone_no")phone_no:String):Call<RegisterationModel>
