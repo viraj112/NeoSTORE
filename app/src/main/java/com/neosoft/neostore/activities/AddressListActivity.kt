@@ -29,7 +29,6 @@ import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
 class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAdapter.OnItemClick {
     //initialize variable
     lateinit var sharedPreferences: SharedPreferences
@@ -39,52 +38,41 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAd
     private lateinit var token: String
     lateinit var myOrdersFragment: MyOrdersFragment
     val retrofit: Api = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
-
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.title = getString(R.string.address_list)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         sharedPreferences = this.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
         token = sharedPreferences.getString("token", null).toString()
         address = intent.getStringExtra("address").toString()
         name = sharedPreferences.getString("username", null).toString()
-
         setContentView(R.layout.activity_address_list)
-
         btn_place_order.setOnClickListener(this)
         //database creation
         val database = Room.databaseBuilder(
             this,
             AddressDatabase::class.java,
-            "addressee's"
-        )
+            "addressee's")
             .allowMainThreadQueries()
             .build()
-
         database.addressDao().insertAddress(AddressEntity(name = name, address = address))
         val allAddress = database.addressDao().getAddress()
         recycler_address_list.apply {
             layoutManager = LinearLayoutManager(this@AddressListActivity)
             adapter = AddressAdapter(this@AddressListActivity, allAddress, this@AddressListActivity)
-
         }
-
     }
-
     override fun onClick(myAddress: String) {
         add = myAddress
     }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.add_address_menu, menu)
         return true
     }
         //option menu click
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         when (item.itemId) {
             R.id.menu_add_address -> {
                 val i = Intent(this, AddAddressActivity::class.java)
@@ -93,7 +81,6 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAd
         }
         return super.onOptionsItemSelected(item)
     }
-
     override fun onClick(view: View) {
         when (view.id) {
             R.id.btn_place_order ->
@@ -101,14 +88,10 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAd
                 placeOrder()
         }
     }
-
     private fun placeOrder() {
-
         retrofit.placeOrder(token, add).enqueue(object : Callback<PlaceOrderModel> {
-            override fun onResponse(
-                call: Call<PlaceOrderModel>,
-                response: Response<PlaceOrderModel>
-            ) {
+            override fun onResponse(call: Call<PlaceOrderModel>, response: Response<PlaceOrderModel>)
+            {
                 try {
                     if (response.code() == Constants.SUCESS_CODE) {
                         toast(response.body()?.user_msg.toString())
@@ -118,12 +101,10 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAd
                     }else{
                         toast(response.body()?.user_msg.toString())
                     }
-
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
-
             override fun onFailure(call: Call<PlaceOrderModel>, t: Throwable) {
                 toast(getString(R.string.no_connection))
             }

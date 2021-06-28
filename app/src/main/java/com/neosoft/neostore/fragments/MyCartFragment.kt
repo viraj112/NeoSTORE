@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neosoft.neostore.R
 import com.neosoft.neostore.activities.AddAddressActivity
-import com.neosoft.neostore.activities.AddressListActivity
-import com.neosoft.neostore.activities.MainActivity
 import com.neosoft.neostore.adapters.MyCartAdapter
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClientCart
@@ -30,8 +28,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
-
-
 @Suppress("DEPRECATION")
 class MyCartFragment : Fragment(), View.OnClickListener {
     //variable initialization
@@ -42,7 +38,6 @@ class MyCartFragment : Fragment(), View.OnClickListener {
     lateinit var total: String
     lateinit var sharedPreferences: SharedPreferences
     lateinit var count: String
-
     lateinit var loadingDialog: LoadingDialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -51,30 +46,23 @@ class MyCartFragment : Fragment(), View.OnClickListener {
         val view = inflater.inflate(R.layout.fragment_my_cart, container, false)
         loadingDialog = LoadingDialog(requireActivity())
         loadingDialog.startLoading()
-
         return view
     }
-
-
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         reecycler_my_cart.layoutManager = LinearLayoutManager(activity)
         reecycler_my_cart.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
-
         //assign value to variable
         btn_my_cart_order_now.visibility = View.GONE
         txt_total_my_cart.visibility = View.GONE
         txt_sum_my_cart.visibility = View.GONE
         btn_my_cart_order_now.setOnClickListener(this)
-
         //getting cart items
         getCartList()
     }
-
+    //api cll for cart list
     private fun getCartList() {
-
-        //api cll for cart list
         retrofit.getCartList(token).enqueue(object : Callback<MyCartListModel> {
             override fun onResponse(call: Call<MyCartListModel>, response: Response<MyCartListModel>) {
                 try {
@@ -84,15 +72,11 @@ class MyCartFragment : Fragment(), View.OnClickListener {
                             loadingDialog.isDismiss()
                             if (response.body()?.data == null) {
                                 activity?.toast(getString(R.string.empty_cart))
-
                             } else {
                                 listData = response.body()?.data!!
                                 total = response.body()?.total.toString()
                                 count = response.body()?.count.toString()
                                 setRecycler()
-
-                                val mainActivity = MainActivity()
-                                mainActivity.getCount(count)
                                 visibility()
                             }
                         }, Constants.DELAY_TIME.toLong())
@@ -104,14 +88,12 @@ class MyCartFragment : Fragment(), View.OnClickListener {
                     e.printStackTrace()
                 }
             }
-
             override fun onFailure(call: Call<MyCartListModel>, t: Throwable) {
                 loadingDialog.isDismiss()
                 context?.toast(R.string.no_connection)
             }
         })
     }
-
     //set recycler view
     private fun setRecycler() {
         adapter = MyCartAdapter(requireActivity(), listData)
@@ -119,15 +101,12 @@ class MyCartFragment : Fragment(), View.OnClickListener {
         adapter.notifyDataSetChanged()
         txt_sum_my_cart.text = total
     }
-
-
     //for views visibility
     private fun visibility() {
         btn_my_cart_order_now.visibility = View.VISIBLE
         txt_total_my_cart.visibility = View.VISIBLE
         txt_sum_my_cart.visibility = View.VISIBLE
     }
-
     // button click
     override fun onClick(view: View) {
         when (view.id) {
@@ -136,6 +115,5 @@ class MyCartFragment : Fragment(), View.OnClickListener {
                 startActivity(i)
             }
         }
-
     }
 }

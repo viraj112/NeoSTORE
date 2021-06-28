@@ -35,16 +35,13 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var confirmPassword: String
     lateinit var phone: String
     lateinit var loading: LoadingDialog
-
     @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
         initialization()
-        loading = LoadingDialog(this)
-
+        loading = LoadingDialog(this@RegisterActivity)
     }
-
     //for handling button clicks
     override fun onClick(view: View) {
 
@@ -55,10 +52,8 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
     }
-
     //for initializing variables
     private fun initialization() {
-
         btn_register.setOnClickListener(this)
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
             gender = if (checkedId == R.id.radioButtonMale) {
@@ -68,7 +63,6 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
     }
-
     //for validating all fields
     private fun validate(): Boolean {
         email = edt_txt_email.text.toString()
@@ -77,7 +71,6 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             edt_txt_first_name.error = getString(R.string.canot_be_empty)
             return false
         }
-
         //for last name
         else if (edt_txt_last_name.text.toString().trim().isEmpty()) {
             edt_txt_last_name.error = getString(R.string.canot_be_empty)
@@ -107,7 +100,6 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             toast(getString(R.string.pass_not_match))
             return false
         }
-
         //for radio button gender
         else if (radioGroup.checkedRadioButtonId == -1) {
             toast(getString(R.string.select_gender))
@@ -123,34 +115,27 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             toast(getString(R.string.check_terms_cond))
             return false
         }
-
         return true
     }
-
     private fun doRegistration() {
-
+        loading.startLoading()
         firstname = edt_txt_first_name.text.toString()
         lastname = edt_txt_last_name.text.toString()
         password = edt_password.text.toString()
         confirmPassword = ed_txt_con_pass.text.toString()
         phone = edt_txt_phone_no.text.toString()
         email = edt_txt_email.text.toString()
-
         if (validate())
         //call for  api
         {
             retIn.register(firstname, lastname, email, password, confirmPassword, gender, phone)
                 .enqueue(object : Callback<RegisterationModel> {
                     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
-                    override fun onResponse(
-                        call: Call<RegisterationModel>,
-                        response: Response<RegisterationModel>
-                    ) {
-
+                    override fun onResponse(call: Call<RegisterationModel>, response: Response<RegisterationModel>)
+                    {
                         try {
                             when {
                                 response.code() == Constants.SUCESS_CODE -> {
-                                    loading.startLoading()
                                     val handler = Handler()
                                     handler.postDelayed({
                                         loading.isDismiss()
@@ -161,8 +146,10 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                                 }
                                 response.code() == Constants.Error_CODE -> {
                                     loading.isDismiss()
-                                    toast(response.message())
-
+                                    toast(response.body()?.message.toString())
+                                }response.code() == Constants.INVALID_DATA->{
+                                loading.isDismiss()
+                                toast(response.body()?.message.toString())
                                 }
                                 else -> {
                                     loading.isDismiss()

@@ -4,12 +4,14 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.WindowInsets
 import android.view.WindowManager
 import com.neosoft.neostore.R
+import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.utilities.SessionManagement
-import kotlinx.android.synthetic.main.activity_splash_screen.*
 
+@Suppress("DEPRECATION")
 class SplashScreenActivity : AppCompatActivity() {
     private lateinit var sessionManagement: SessionManagement
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,27 +25,12 @@ class SplashScreenActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-            )
+                WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
-
-        splsh_text.animate().setDuration(1000).alpha(1f).withEndAction {
-
-               if (sessionManagement.isLoggedIn()){
-                   val i = Intent(this, MainActivity::class.java)
-                   startActivity(i)
-
-               }else
-               {
-                   val i = Intent(this, LoginActivity::class.java)
-                   startActivity(i)
-
-               }
-            overridePendingTransition(
-                android.R.anim.bounce_interpolator,
-                android.R.anim.bounce_interpolator
-            )
+        Handler().postDelayed({
+            val i = Intent(this, LoginActivity::class.java)
+            startActivity(i)
             finish()
-        }
+        },Constants.DELAY_TIME.toLong())
     }
 }

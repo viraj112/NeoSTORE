@@ -80,4 +80,5 @@
     <string name="mumbai">MUMBAI</string>
     <string name="_413101">413101</string>
     <string name="maharashtra">MAHARASHTRA</string>
+    <string name="empty_orders">No any orders</string>
 </resources>

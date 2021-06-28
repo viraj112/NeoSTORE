@@ -11,7 +11,6 @@ class SessionManagement(private var con: Context) {
     private var pref :SharedPreferences
     private var editor:SharedPreferences.Editor
     private var PRIVATE_MODE:Int = 0
-
     init {
         pref = con.getSharedPreferences(PREF_NAME,PRIVATE_MODE)
         editor = pref.edit()
@@ -22,14 +21,12 @@ class SessionManagement(private var con: Context) {
         val KEY_NAME :String ="name"
         val KEY_EMAIL :String="email"
     }
-
     fun createLoginSession(name:String,email:String){
         editor.putBoolean(IS_LOGIN,true)
         editor.putString(KEY_NAME,name)
         editor.putString(KEY_EMAIL,email)
         editor.commit()
     }
-
     fun checkLogin()
     {
         if (!this.isLoggedIn())
@@ -38,15 +35,10 @@ class SessionManagement(private var con: Context) {
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             con.startActivity(i)
-
         }
-
-
     }
-
      fun isLoggedIn(): Boolean {
             return pref.getBoolean(IS_LOGIN,false)
-
     }
     fun logoutUser()
     {
@@ -56,6 +48,5 @@ class SessionManagement(private var con: Context) {
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         con.startActivity(i)
-
     }
 }

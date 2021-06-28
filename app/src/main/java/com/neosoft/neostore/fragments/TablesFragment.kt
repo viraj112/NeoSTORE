@@ -25,14 +25,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
 import kotlin.collections.ArrayList
-
 class TablesFragment : Fragment()
 {
+    //initialize variables
     lateinit var adapter: TablesAdapter
     var listData:List<ProductModel> = ArrayList()
     private val myRetrofit: Api = RetrofitClientProduct.getRetrofitInstance().create(Api::class.java)
     lateinit var loadingDialog: LoadingDialog
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         // Inflate the layout for this fragment
@@ -47,11 +46,9 @@ class TablesFragment : Fragment()
         super.onActivityCreated(savedInstanceState)
         rv_tables_fragment.layoutManager = LinearLayoutManager(activity)
         rv_tables_fragment.addItemDecoration(DividerItemDecoration(context,LinearLayoutManager.VERTICAL))
-
         //get product list api call
         getProductList()
     }
-
     private fun getProductList()
     {
         myRetrofit.getProductList(1,10,1).enqueue(object :Callback<ProductList>{
@@ -70,20 +67,16 @@ class TablesFragment : Fragment()
                             //setRecycler list
                             setRecycler()
                         }, Constants.DELAY_TIME.toLong())
-
                     }else if (response.code() == Constants.NOT_FOUND)
-
                     {
                         loadingDialog.isDismiss()
                         activity?.toast(response.message().toString())
                     }
-
                 }catch (e:Exception)
                 {
                     e.printStackTrace()
                 }
             }
-
             override fun onFailure(call: Call<ProductList>, t: Throwable)
             {
                 loadingDialog.isDismiss()

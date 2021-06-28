@@ -1,7 +1,5 @@
 @file:Suppress("DEPRECATION")
-
 package com.neosoft.neostore.fragments
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -27,12 +25,10 @@ import java.io.IOException
 import kotlin.collections.ArrayList
 @Suppress("DEPRECATION", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
-
     private lateinit var googleMap: GoogleMap
     private val list = ArrayList<LatLng>()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         //for showing map
         if (map_layout != null) {
             map_layout.onCreate(null)
@@ -40,7 +36,6 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
             map_layout.getMapAsync(this)
         }
     }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         // Inflate the layout for this fragment
@@ -58,14 +53,10 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
               e.printStackTrace()
           }
       }
-
         return view
     }
-
-
     override fun onMapReady(map: GoogleMap?)
     {
-
         MapsInitializer.initialize(activity)
         if (map != null)
         {
@@ -74,17 +65,13 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
         val latitude = 17.88252355892892
         val longitude = 75.01984086125351
         val zoomLevel = 15f
-
         val homeLatLng = LatLng(latitude, longitude)
         val myLang = LatLng(18.50778755342922, 73.8081783598659)
-
         list.add(homeLatLng)
         list.add(myLang)
-
         for (i in 0 until list.size)
         {
             map?.addMarker(MarkerOptions().position(list[i]).title("My Location"))
-
         }
         map?.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
          map?.addMarker(MarkerOptions().position(homeLatLng))
@@ -106,12 +93,10 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
                  val name = address1[0].getAddressLine(0)
                  val city = address1[0].getAddressLine(1)
                  txt_place.text = name+city
-
              }catch (e:IOException)
              {
                  e.printStackTrace()
              }
-
             }
         }
     }

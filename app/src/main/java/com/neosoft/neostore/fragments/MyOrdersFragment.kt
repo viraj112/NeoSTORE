@@ -24,40 +24,31 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
-
-
 @Suppress("DEPRECATION")
 class MyOrdersFragment : Fragment() {
-
     var listData: List<OrderModel> = ArrayList()
     lateinit var adapter: MyordersAdapter
     val retrofit: Api = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
     lateinit var loadingDialog: LoadingDialog
     private lateinit var token: String
     lateinit var sharedPreferences: SharedPreferences
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_my_orders, container, false)
         sharedPreferences = activity?.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
         token = sharedPreferences.getString("token", null).toString()
-
         loadingDialog = LoadingDialog(requireActivity())
         loadingDialog.startLoading()
         return view
     }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         recycler_view_orders.layoutManager = LinearLayoutManager(activity)
         recycler_view_orders.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
-
         //get orders list
         getOrderList()
     }
-
     private fun getOrderList() {
         //api call for orders
         retrofit.getOrderList(token).enqueue(object : Callback<OrderListModel> {
@@ -67,29 +58,30 @@ class MyOrdersFragment : Fragment() {
                         val handler = Handler()
                         handler.postDelayed({
                             loadingDialog.isDismiss()
-                            val data: List<OrderModel> = response.body()?.data!!
-                            listData = data
-
-                            setRecycler()
+                            if (response.body()?.data == null) {
+                                activity?.toast(getString(R.string.empty_orders))
+                            }else
+                            {
+                                val data: List<OrderModel> = response.body()?.data!!
+                                listData = data
+                                setRecycler()
+                            }
                         }, Constants.DELAY_TIME.toLong())
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
-
             override fun onFailure(call: Call<OrderListModel>, t: Throwable) {
                 loadingDialog.isDismiss()
-                activity?.toast(t.message.toString())
+                activity?.toast(getString(R.string.no_connection))
             }
         })
     }
-
     //set recycler list
     private fun setRecycler() {
         adapter = MyordersAdapter(requireContext(), listData)
         recycler_view_orders?.adapter = adapter
         adapter.notifyDataSetChanged()
-
     }
 }

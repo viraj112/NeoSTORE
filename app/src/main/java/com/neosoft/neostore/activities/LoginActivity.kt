@@ -47,59 +47,46 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         session = SessionManagement(this)
         //initialization variables
         initialization()
-
     }
-
     //for managing  button clicks
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onClick(view: View) {
-
         when (view.id) {
-
             //for forgot password api call
             R.id.txt_forgot_password ->
                 doForgotPassword()
-
             //for register pi call
             R.id.fab_register ->
                 getRegistration()
-
             //for login api call
             R.id.btn_login ->
                 if (validate())
                     doLogin()
-
             else -> {
-                //do nothing
             }
-
         }
-
     }
 
     private fun doLogin() {
         email = ed_txt_username.text.toString()
         password = edt_txt_password.text.toString()
+        loading.startLoading()
         ret.doLogin(email, password).enqueue(object : Callback<LoginModel> {
             @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
             override fun onResponse(call: Call<LoginModel>, response: Response<LoginModel>) {
                 try {
                     when {
                         response.code() == Constants.SUCESS_CODE -> {
-                            loading.startLoading()
                             val handler = Handler()
                             handler.postDelayed({
                                 loading.isDismiss()
                                 val items = response.body()?.data
                                 myEmail = items?.email.toString()
-                                username =
-                                    items?.first_name.toString() + items?.last_name.toString()
+                                username = items?.first_name.toString() + items?.last_name.toString()
                                 val token = items?.access_token.toString()
                                 val image = items?.profile_pic
-                                toast(response.body()?.message.toString())
-
+                                toast(response.body()?.user_msg.toString())
                                 session.createLoginSession(email, password)
-
                                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
                                 val editor: SharedPreferences.Editor = sharedPreferences.edit()
                                 editor.putString("email", myEmail)
@@ -110,7 +97,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                 startActivity(intent)
                             }, Constants.DELAY_TIME.toLong())
                         }
-                        response.code() == Constants.Error_CODE -> {
+                        response.code() == Constants.NOT_FOUND -> {
                             loading.isDismiss()
                             toast(response.message().toString())
                         }
@@ -120,17 +107,16 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         }
                     }
                 } catch (e: Exception) {
+                    loading.isDismiss()
                     e.printStackTrace()
                 }
             }
-
             override fun onFailure(call: Call<LoginModel>, t: Throwable) {
+                loading.isDismiss()
                 toast(R.string.no_connection)
             }
         })
-
     }
-
     //registration
     private fun getRegistration() {
         val intent = Intent(this, RegisterActivity::class.java)
@@ -157,19 +143,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-
                 }
             }
-
             override fun onFailure(call: Call<ForgotPModel>, t: Throwable) {
                 toast(t.message.toString())
             }
-
         })
     }
-
     private fun initialization() {
-
         //for handling session
         if (session.isLoggedIn()) {
             val i = Intent(this, MainActivity::class.java)
@@ -178,7 +159,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             startActivity(i)
             finish()
         }
-
         //for full screen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
@@ -189,15 +169,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
             )
         }
-
         //initialization
         fab_register.setOnClickListener(this)
         btn_login.setOnClickListener(this)
         txt_forgot_password.setOnClickListener(this)
-
         sharedPreferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
     }
-
     //for back press
     override fun onBackPressed() {
         if (backPressTime + 1000 > System.currentTimeMillis()) {
@@ -206,7 +183,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             toast(getString(R.string.press_back_again))
             backPressTime = System.currentTimeMillis()
         }
-
     }
 
     //validations for login
@@ -215,11 +191,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         if (!Validations.isValidEmail(email)) {
             ed_txt_username.error = getString(R.string.valid_email)
             return false
-
         } else if (edt_txt_password.text.toString().isEmpty()) {
             edt_txt_password.error = getString(R.string.canot_be_empty)
             return false
-
         }
         return true
     }

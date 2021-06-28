@@ -12,12 +12,14 @@ class Constants {
         const val Error_CODE = 500
         const val NOT_FOUND = 401
         const val DATA_MISSING = 400
+        const val INVALID_DATA =422
 
         //gender keywords
         const val GENDER_MALE = "M"
         const val GENDER_FEMALE = "F"
 
         const val DELAY_TIME = 3000
+        const val PRODUCT_ID = 1
 
         //request codes
         const val PLACE_PICKER_REQUEST_CODE = 111

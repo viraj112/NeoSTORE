@@ -33,21 +33,19 @@ class MyCartAdapter(val context: Context, val data: List<Data>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyCartViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.items_my_cart, parent, false)
         return MyCartViewHolder(view)
-
     }
-
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MyCartViewHolder, position: Int) {
         sharedPreferences = context.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
         token = sharedPreferences.getString("token", null).toString()
-
+        //set data to views
         holder.itemView.txt_title_my_cart.text = data[position].product.name
         holder.itemView.txt_catagory_my_cart.text = "(" + data[position].product.product_category + ")"
         holder.itemView.txt_price_my_cart.text = "\u20B9" + data[position].product.cost.toString()
         Glide.with(context).load(data[position].product.product_images).into(holder.itemView.iv_my_cart)
         productId = data[position].product_id.toString()
         holder.itemView.txt_cart_quantity.text = data[position].quantity.toString()
-
+        //edit quantity api call
         holder.itemView.txt_cart_quantity.setOnClickListener {
             val myView = View.inflate(context, R.layout.quantity_dialog, null)
             val myBuilder = androidx.appcompat.app.AlertDialog.Builder(context)
@@ -69,7 +67,6 @@ class MyCartAdapter(val context: Context, val data: List<Data>) :
                                     when {
                                         response.code() == Constants.SUCESS_CODE -> {
                                             context.toast(response.body()?.user_msg.toString())
-
                                         }
                                         response.code() == Constants.NOT_FOUND -> {
                                             context.toast(response.body()?.user_msg.toString())
@@ -82,19 +79,14 @@ class MyCartAdapter(val context: Context, val data: List<Data>) :
                                     e.printStackTrace()
                                 }
                             }
-
                             override fun onFailure(call: Call<EditCartmodel>, t: Throwable) {
                                 context.toast(R.string.no_connection)
                             }
                         })
-
                     myDialog.dismiss()
-
                 }
             }
-
         }
-
         //click for delete item from list api call
         holder.itemView.iv_delete_my_cart.setOnClickListener {
             retrofitClientCart.deleteCart(token, data[position].product_id.toString())
@@ -102,10 +94,8 @@ class MyCartAdapter(val context: Context, val data: List<Data>) :
                     override fun onResponse(call: Call<DeleteCartModel>, response: Response<DeleteCartModel>) {
                         try {
                             if (response.code() == Constants.SUCESS_CODE) {
-
                                 deleteItem(position)
                                 context.toast(response.body()?.user_msg.toString())
-
                             } else if (response.code() == Constants.NOT_FOUND) {
                                 context.toast(response.body()?.user_msg.toString())
                             }
@@ -113,24 +103,19 @@ class MyCartAdapter(val context: Context, val data: List<Data>) :
                             e.printStackTrace()
                         }
                     }
-
                     override fun onFailure(call: Call<DeleteCartModel>, t: Throwable) {
                         context.toast(t.message.toString())
                     }
                 })
         }
     }
-
     //delete items from list
     private fun deleteItem(position: Int) {
         listData.removeAt(position)
         notifyDataSetChanged()
     }
-
     override fun getItemCount(): Int {
         return listData.size
     }
-
     class MyCartViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
 }

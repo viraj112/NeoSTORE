@@ -39,7 +39,6 @@ import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
-
 @Suppress("DEPRECATION", "NAME_SHADOWING")
 class MyAccountFragment : Fragment(), View.OnClickListener {
     //initialize variable
@@ -59,34 +58,28 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
     private lateinit var token: String
     lateinit var sharedPreferences: SharedPreferences
     val retrofit: Api = RetrofitClient.getRetrofitInstance().create(Api::class.java)
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = LayoutInflater.from(context).inflate(R.layout.fragment_my_account, container, false)
         sharedPreferences = activity?.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
-
         loadingDialog = LoadingDialog(requireActivity())
         loadingDialog.startLoading()
         token = sharedPreferences.getString("token", null).toString()
-
         return view
     }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        //get user details
         getUserDetails()
-
         iv_myacc_profile.isEnabled = true
         btn_profile_reset_pass.setOnClickListener(this)
         iv_myacc_profile.setOnClickListener(this)
         btn_profile_edit_profile.setOnClickListener(this)
         edt_profile_dob.setOnClickListener(this)
     }
-
     //api call for fetch user details
     private fun getUserDetails() {
         retrofit.fetchAccountDetails(token).enqueue(object : Callback<FetchAccountModel> {
-
             override fun onResponse(call: Call<FetchAccountModel>, response: Response<FetchAccountModel>) {
                 try {
                     if (response.code() == Constants.SUCESS_CODE) {
@@ -102,25 +95,20 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                             Glide.with(activity!!).load(items?.profile_pic).into(iv_myacc_profile)
                             setUserData()
                         }, Constants.DELAY_TIME.toLong())
-
                     } else if (response.code() == Constants.NOT_FOUND) {
                         loadingDialog.isDismiss()
                         activity?.toast(response.body()?.user_msg.toString())
                     }
-
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
-
             override fun onFailure(call: Call<FetchAccountModel>, t: Throwable) {
                 loadingDialog.isDismiss()
-                activity?.toast(t.message.toString())
+                activity?.toast(getString(R.string.no_connection))
             }
-
         })
     }
-
     //set user data from response
     private fun setUserData() {
         edt_profile_fname.setText(fName)
@@ -128,9 +116,7 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         edt_profile_email.setText(email)
         edt_profile_phone.setText(phone)
         edt_profile_dob.setText(dob)
-
     }
-
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onClick(view: View) {
@@ -140,6 +126,8 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                 startActivity(i)
             }
             R.id.iv_myacc_profile -> {
+                checkPermissions(android.Manifest.permission.CAMERA, Constants.GALLERY_REQUEST_CODE)
+                checkPermissions(android.Manifest.permission.CAMERA, Constants.CAMERA_REQUEST_CODE)
                 val view = View.inflate(activity, R.layout.image_picker_dialog, null)
                 val builder = activity?.let { androidx.appcompat.app.AlertDialog.Builder(it) }
                 builder?.setView(view)
@@ -168,46 +156,36 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                     requireActivity(),
                     { _: DatePicker?, mYear: Int, mMonth: Int, mDay: Int ->
                         edt_profile_dob.setText("" + mDay + "-" + (mMonth + 1) + "-" + mYear)
-                    }, year, month, day
-                )
+                    }, year, month, day)
                 dpd.show()
             }
         }
     }
-
     private fun updateProfile() {
         firstName = edt_profile_fname.text.toString()
         lastName = edt_profile_lname.text.toString()
         mEmail = edt_profile_email.text.toString()
         mPhone = edt_profile_phone.text.toString()
         mDob = edt_profile_dob.text.toString()
-
         editProfile()
     }
     //pick image from gallery
     private fun pickFromGallery() {
-
-        checkPermissions(android.Manifest.permission.CAMERA, Constants.GALLERY_REQUEST_CODE)
         val i = Intent(Intent.ACTION_PICK)
         i.type = "image/*"
         startActivityForResult(i, Constants.GALLERY_REQUEST_CODE)
     }
-
     //pick  camera
     private fun pickFromCamera() {
-
-        checkPermissions(android.Manifest.permission.CAMERA, Constants.CAMERA_REQUEST_CODE)
         val i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(i, Constants.CAMERA_REQUEST_CODE)
     }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.CAMERA_REQUEST_CODE) {
             bitmap = data?.extras?.get("data") as Bitmap
             uploadImage(bitmap)
             iv_myacc_profile.setImageBitmap(bitmap)
-
         } else if (requestCode == Constants.GALLERY_REQUEST_CODE) {
             val uri: Uri? = data?.data
             try {
@@ -219,19 +197,15 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         }
     }
-
     //convert base64 image string
     private fun uploadImage(bitmap: Bitmap) {
-
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         imageString = Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
-
     //update profile api call
     private fun editProfile() {
         val image = getString(R.string.profile_image_path) + imageString
@@ -246,9 +220,7 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                                 {
                                     loadingDialog.isDismiss()
                                     activity?.toast(response.body()?.user_msg.toString())
-                                }, Constants.DELAY_TIME.toLong()
-                            )
-
+                                }, Constants.DELAY_TIME.toLong())
                         } else if (response.code() == Constants.Error_CODE) {
                             loadingDialog.isDismiss()
                             activity?.toast(response.body()?.user_msg.toString())
@@ -258,14 +230,12 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                         e.printStackTrace()
                     }
                 }
-
                 override fun onFailure(call: Call<EditProfileModel>, t: Throwable) {
                     loadingDialog.isDismiss()
-                    activity?.toast(t.message.toString())
+                    activity?.toast(getString(R.string.no_connection))
                 }
             })
     }
-
     //for permission check gallery and camera
     private fun checkPermissions(permission: String, requestCode: Int) {
         if (ContextCompat.checkSelfPermission(requireActivity(), permission) == PackageManager.PERMISSION_DENIED) {
@@ -274,7 +244,6 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
             activity?.toast(getString(R.string.permission_grant))
         }
     }
-
     //for permission request
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -287,7 +256,6 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         } else if (requestCode == Constants.GALLERY_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 activity?.toast(getString(R.string.permission_grant))
-
             } else {
                 activity?.toast(getString(R.string.permission_denied))
             }

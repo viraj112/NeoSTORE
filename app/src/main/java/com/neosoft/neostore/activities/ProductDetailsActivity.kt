@@ -30,10 +30,8 @@ import kotlin.math.roundToInt
 
 @Suppress("DEPRECATION")
 class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
-
     //variable initialize
-    private val myRetrofit: Api =
-        RetrofitClientProduct.getRetrofitInstance().create(Api::class.java)
+    private val myRetrofit: Api = RetrofitClientProduct.getRetrofitInstance().create(Api::class.java)
     val retrofit: Api = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
     lateinit var title: String
     lateinit var rating: String
@@ -45,8 +43,7 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
     lateinit var sharedPreferences: SharedPreferences
     private var rate: Float = 0.0f
     private lateinit var token: String
-    private var quantity: Int = 1
-
+    private var quantity: Int = Constants.PRODUCT_ID
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,23 +51,17 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //assign variables
         initialization()
-
         getProductDetails()
     }
-
     //get product details api call
     private fun getProductDetails() {
         val productId = intent.getIntExtra("p_id", -1)
         myRetrofit.getProductDetails(productId.toString())
             .enqueue(object : Callback<ProductDetailsModel> {
-                override fun onResponse(
-                    call: Call<ProductDetailsModel>,
-                    response: Response<ProductDetailsModel>
-                ) {
+                override fun onResponse(call: Call<ProductDetailsModel>, response: Response<ProductDetailsModel>) {
                     try {
                         if (response.code() == Constants.SUCESS_CODE) {
                             val items = response.body()?.data
-                            //val images:List<ProductImages> = response.body()?.product_images!!
                             title = items?.name.toString()
                             rating = items?.rating?.toFloat().toString()
                             description = items?.description.toString()
@@ -79,25 +70,21 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                             catGory = getString(R.string.catagory) + items?.cost
                             myProductId = items?.id.toString()
                             supportActionBar?.title = title
-
                             getDetails()
 
                         } else if (response.code() == Constants.NOT_FOUND) {
-
                             toast(response.message().toString())
                         }
-
                     } catch (e: NumberFormatException) {
                         e.printStackTrace()
                     }
                 }
-
                 override fun onFailure(call: Call<ProductDetailsModel>, t: Throwable) {
-                    toast(t.message.toString())
+                    toast(getString(R.string.no_connection))
                 }
             })
     }
-
+    //get details
     private fun getDetails() {
         txt_product_details_title.text = title
         product_details_ratingbar.rating = rating.toFloat()
@@ -106,7 +93,6 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
         txt_product_details_price.text = cost
         txt_sub_title_tables_product_details_catagory.text = cost
     }
-
     private fun initialization() {
         sharedPreferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
         token = sharedPreferences.getString("token", null).toString()
@@ -114,49 +100,35 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
         btn_product_details_buy.setOnClickListener(this)
         product_details_iv_share.setOnClickListener(this)
     }
-
     override fun onClick(view: View) {
         when (view.id) {
             R.id.btn_product_details_rate ->
                 //rate product here
                 getRating()
-
             R.id.btn_product_details_buy ->
                 //buy product
                 buyNowProduct()
-
             R.id.product_details_iv_share -> {
                 val b = BitmapFactory.decodeResource(resources, R.drawable.ic_image_slider_three)
                 val intent = Intent()
                 intent.action = Intent.ACTION_SEND
-                val path = MediaStore.Images.Media.insertImage(
-                    contentResolver,
-                    b,
-                    txt_product_details_title.toString() + cost,
-                    null
-                )
+                val path = MediaStore.Images.Media.insertImage(contentResolver, b, txt_product_details_title.toString() + cost, null)
                 val uri = Uri.parse(path)
                 intent.putExtra(Intent.EXTRA_STREAM, uri)
-                intent.putExtra(
-                    Intent.EXTRA_TEXT,
-                    txt_product_details_title.text.toString() + " " + cost
-                )
+                intent.putExtra(Intent.EXTRA_TEXT, txt_product_details_title.text.toString() + " " + cost)
                 intent.type = "image/*"
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 startActivity(Intent.createChooser(intent, "Share To :"))
             }
             else ->{}
-
         }
     }
-
     //buy product popup
     private fun buyNowProduct() {
         val myView = View.inflate(this, R.layout.alert_buy_now, null)
         val myBuilder = AlertDialog.Builder(this)
         myBuilder.setView(myView)
         val myDialog = myBuilder.create()
-
         myDialog.setCanceledOnTouchOutside(false)
         myDialog.show()
         myView.btn_buynow_submit.setOnClickListener {
@@ -168,20 +140,14 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                 //add product  into cart
                 addToCart()
                 myDialog.dismiss()
-
             }
         }
-
     }
-
     //add to cart api call
     private fun addToCart() {
-
         retrofit.addToCart(myProductId, quantity, token).enqueue(object : Callback<AddToCartModel> {
-            override fun onResponse(
-                call: Call<AddToCartModel>,
-                response: Response<AddToCartModel>
-            ) {
+            override fun onResponse(call: Call<AddToCartModel>, response: Response<AddToCartModel>)
+            {
                 try {
                     when {
                         response.code() == Constants.SUCESS_CODE -> {
@@ -198,13 +164,11 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                     e.printStackTrace()
                 }
             }
-
             override fun onFailure(call: Call<AddToCartModel>, t: Throwable) {
                 toast(getString(R.string.no_connection))
             }
         })
     }
-
     //rating dialog popup
     private fun getRating() {
         val view = View.inflate(this, R.layout.rating_alert_dialog, null)
@@ -222,15 +186,12 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
             dialog.dismiss()
         }
     }
-
     //rating product aoi call
     private fun rateProduct() {
         myRetrofit.productRating(myProductId, rate.roundToInt())
             .enqueue(object : Callback<ProductRatingModel> {
-                override fun onResponse(
-                    call: Call<ProductRatingModel>,
-                    response: Response<ProductRatingModel>
-                ) {
+                override fun onResponse(call: Call<ProductRatingModel>, response: Response<ProductRatingModel>)
+                {
                     try {
                         if (response.code() == Constants.SUCESS_CODE) {
                             val myItems = response.body()?.data
@@ -241,14 +202,11 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                         e.printStackTrace()
                     }
                 }
-
                 override fun onFailure(call: Call<ProductRatingModel>, t: Throwable) {
                     toast(getString(R.string.no_connection))
                 }
-
             })
     }
-
     override fun onBackPressed() {
         finish()
     }
