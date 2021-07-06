@@ -32,8 +32,11 @@
 
     <style name="CustomDialogTheme" >
         <item name="android:windowBackground">@android:color/white</item>
-        <item name="android:shape">oval</item>
     </style>
-
+    <style name="BadgeStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">10sp</item>
+        <item name="android:background">@drawable/bg_count</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
 
 </resources>

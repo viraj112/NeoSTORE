@@ -8,7 +8,9 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
+import android.view.MenuItem
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -18,6 +20,7 @@ import com.neosoft.neostore.api.RetrofitClientCart
 import com.neosoft.neostore.api.RetrofitClientProduct
 import com.neosoft.neostore.constants.Constants
 import com.neosoft.neostore.models.*
+import com.neosoft.neostore.utilities.LoadingDialog
 import kotlinx.android.synthetic.main.activity_product_details.*
 import kotlinx.android.synthetic.main.alert_buy_now.view.*
 import kotlinx.android.synthetic.main.rating_alert_dialog.view.*
@@ -44,12 +47,15 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
     private var rate: Float = 0.0f
     private lateinit var token: String
     private var quantity: Int = Constants.PRODUCT_ID
+    lateinit var loadingDialog: LoadingDialog
+
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_details)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //assign variables
+        loadingDialog = LoadingDialog(this)
         initialization()
         getProductDetails()
     }
@@ -61,17 +67,16 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                 override fun onResponse(call: Call<ProductDetailsModel>, response: Response<ProductDetailsModel>) {
                     try {
                         if (response.code() == Constants.SUCESS_CODE) {
-                            val items = response.body()?.data
-                            title = items?.name.toString()
-                            rating = items?.rating?.toFloat().toString()
-                            description = items?.description.toString()
-                            producer = items?.producer.toString()
-                            cost = "RS ." + " " + items?.cost.toString()
-                            catGory = getString(R.string.catagory) + items?.cost
-                            myProductId = items?.id.toString()
-                            supportActionBar?.title = title
-                            getDetails()
-
+                                val items = response.body()?.data
+                                title = items?.name.toString()
+                                rating = items?.rating?.toFloat().toString()
+                                description = items?.description.toString()
+                                producer = items?.producer.toString()
+                                cost = "RS ." + " " + items?.cost.toString()
+                                catGory = getString(R.string.catagory) + items?.cost
+                                myProductId = items?.id.toString()
+                                supportActionBar?.title = title
+                                getDetails()
                         } else if (response.code() == Constants.NOT_FOUND) {
                             toast(response.message().toString())
                         }
@@ -118,6 +123,7 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                 intent.putExtra(Intent.EXTRA_TEXT, txt_product_details_title.text.toString() + " " + cost)
                 intent.type = "image/*"
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                 startActivity(Intent.createChooser(intent, "Share To :"))
             }
             else ->{}
@@ -132,12 +138,13 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
         myDialog.setCanceledOnTouchOutside(false)
         myDialog.show()
         myView.btn_buynow_submit.setOnClickListener {
-            if (myView.edt_buynow_quantity.text.isEmpty()) {
+            if (myView.edt_buynow_quantity.text?.isEmpty() == true) {
                 myView.edt_buynow_quantity.error = getString(R.string.canot_be_empty)
             } else {
                 val q: Int = myView.edt_buynow_quantity.text.toString().toInt()
                 quantity = q
                 //add product  into cart
+                loadingDialog.startLoading()
                 addToCart()
                 myDialog.dismiss()
             }
@@ -151,12 +158,24 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                 try {
                     when {
                         response.code() == Constants.SUCESS_CODE -> {
-                            toast(response.body()?.user_msg.toString())
+                            val handler = Handler()
+                            handler.postDelayed({
+                                loadingDialog.isDismiss()
+                                toast(response.body()?.user_msg.toString())
+                                val i = Intent(this@ProductDetailsActivity,MainActivity::class.java)
+                                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                                editor.putString("count",response.body()?.total_carts.toString())
+                                editor.apply()
+                                startActivity(i)
+
+                            },Constants.DELAY_TIME.toLong())
                         }
                         response.code() == Constants.NOT_FOUND -> {
+                           loadingDialog.isDismiss()
                             toast(response.message().toString())
                         }
                         else -> {
+                            loadingDialog.isDismiss()
                             toast(response.message().toString())
                         }
                     }
@@ -165,6 +184,7 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
             override fun onFailure(call: Call<AddToCartModel>, t: Throwable) {
+               loadingDialog.isDismiss()
                 toast(getString(R.string.no_connection))
             }
         })
@@ -207,7 +227,16 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                 }
             })
     }
-    override fun onBackPressed() {
-        finish()
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId)
+        {
+            android.R.id.home ->
+            {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

@@ -20,7 +20,7 @@
      android:layout_marginLeft="@dimen/_10sdp"
      android:layout_marginRight="@dimen/_10sdp"
      android:padding="@dimen/_5sdp"
-     android:text="getstore"
+     android:text="@string/getstore"
      android:textSize="@dimen/_15ssp"
      android:textColor="@color/color_white"
      android:fontFamily="@font/gothammedium"

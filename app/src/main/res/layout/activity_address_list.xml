@@ -7,7 +7,7 @@
     tools:context=".fragments.MyCartFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp">
         <include
             android:layout_height="match_parent"
@@ -53,12 +53,13 @@
             android:layout_marginEnd="@dimen/_16sdp"
             android:layout_marginRight="@dimen/_16sdp"
             android:padding="@dimen/_5sdp"
-            android:text="2000"
+            android:text="@string/_2000"
             android:visibility="gone"
             android:textColor="@color/color_black_dark"
             android:textSize="@dimen/_20ssp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recycler_address_list" />
+            app:layout_constraintTop_toBottomOf="@+id/recycler_address_list"
+            tools:ignore="RtlHardcoded" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_place_order"

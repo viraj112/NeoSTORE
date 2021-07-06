@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neosoft.neostore.R
+import com.neosoft.neostore.activities.MainActivity
 import com.neosoft.neostore.adapters.MyordersAdapter
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClientCart
@@ -83,5 +84,10 @@ class MyOrdersFragment : Fragment() {
         adapter = MyordersAdapter(requireContext(), listData)
         recycler_view_orders?.adapter = adapter
         adapter.notifyDataSetChanged()
+    }
+    override fun onResume() {
+        super.onResume()
+        val actionBar: androidx.appcompat.app.ActionBar? = (activity as MainActivity?)?.supportActionBar
+        actionBar?.title = getString(R.string.my_orders)
     }
 }

@@ -6,15 +6,15 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neosoft.neostore.R
 import com.neosoft.neostore.activities.AddAddressActivity
+import com.neosoft.neostore.activities.MainActivity
 import com.neosoft.neostore.adapters.MyCartAdapter
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClientCart
@@ -28,16 +28,20 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
+
 @Suppress("DEPRECATION")
 class MyCartFragment : Fragment(), View.OnClickListener {
     //variable initialization
     val retrofit: Api = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
     lateinit var adapter: MyCartAdapter
-    var listData: List<Data> = ArrayList()
+    var listData: ArrayList<Data> = ArrayList()
+    var displayList: ArrayList<Data> = ArrayList()
     private lateinit var token: String
     lateinit var total: String
     lateinit var sharedPreferences: SharedPreferences
-    lateinit var count: String
+   lateinit  var count: String
     lateinit var loadingDialog: LoadingDialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -46,13 +50,16 @@ class MyCartFragment : Fragment(), View.OnClickListener {
         val view = inflater.inflate(R.layout.fragment_my_cart, container, false)
         loadingDialog = LoadingDialog(requireActivity())
         loadingDialog.startLoading()
+        setHasOptionsMenu(true)
+        activity?.actionBar?.title = getString(R.string.my_cart)
         return view
     }
+
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         reecycler_my_cart.layoutManager = LinearLayoutManager(activity)
-        reecycler_my_cart.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
+        reecycler_my_cart.addItemDecoration(DividerItemDecoration(context,LinearLayoutManager.VERTICAL))
         //assign value to variable
         btn_my_cart_order_now.visibility = View.GONE
         txt_total_my_cart.visibility = View.GONE
@@ -71,11 +78,11 @@ class MyCartFragment : Fragment(), View.OnClickListener {
                         handler.postDelayed({
                             loadingDialog.isDismiss()
                             if (response.body()?.data == null) {
-                                activity?.toast(getString(R.string.empty_cart))
+                                iv_nodata.visibility = View.VISIBLE
                             } else {
                                 listData = response.body()?.data!!
+                                displayList.addAll(listData)
                                 total = response.body()?.total.toString()
-                                count = response.body()?.count.toString()
                                 setRecycler()
                                 visibility()
                             }
@@ -116,4 +123,44 @@ class MyCartFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_menu, menu)
+        val menuItem = menu.findItem(R.id.menu_search)
+        if (menuItem != null) {
+            val searchView = menuItem.actionView as SearchView
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (newText!!.isNotEmpty()) {
+                        displayList.clear()
+                        val search = newText.toLowerCase(Locale.getDefault())
+                        listData.forEach {
+                            if (it.product.name.toLowerCase(Locale.getDefault()).contains(search))
+                            {
+                                displayList.add(it)
+                            }
+                        }
+                        reecycler_my_cart.adapter!!.notifyDataSetChanged()
+                    } else {
+                        displayList.clear()
+                        displayList.addAll(listData)
+                        reecycler_my_cart.adapter!!.notifyDataSetChanged()
+                    }
+                    return true
+                }
+            })
+        }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val actionBar: androidx.appcompat.app.ActionBar? = (activity as MainActivity?)?.supportActionBar
+        actionBar?.title = getString(R.string.my_cart)
+    }
+
+
 }

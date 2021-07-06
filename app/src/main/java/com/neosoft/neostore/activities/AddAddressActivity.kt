@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import com.neosoft.neostore.R
 import kotlinx.android.synthetic.main.activity_add_address.*
@@ -16,9 +17,9 @@ class AddAddressActivity : AppCompatActivity(),View.OnClickListener {
      {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_address)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.add_address)
-        sharedPreferences = this.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
+         sharedPreferences = this.getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)!!
         name = sharedPreferences.getString("username", null).toString()
          //initialize variables
         initialization()
@@ -30,14 +31,12 @@ class AddAddressActivity : AppCompatActivity(),View.OnClickListener {
         when(view.id)
         {
             R.id.btn_save_address ->
-            {
                 if(validation())
                 {
                     val i = Intent(this,AddressListActivity::class.java)
                     i.putExtra("address",edittxt_address.text.toString()+edttxt_landmark.text.toString()+edttxt_city.text.toString()+edttxt_state.text.toString()+edttxt_zip_code.text.toString())
                     startActivity(i)
                 }
-            }
         }
     }
     //validation for fields
@@ -74,6 +73,18 @@ class AddAddressActivity : AppCompatActivity(),View.OnClickListener {
             }
             else -> return true
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId)
+        {
+            android.R.id.home ->
+            {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
 

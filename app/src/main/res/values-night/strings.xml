@@ -78,4 +78,11 @@
     <string name="_413101">413101</string>
     <string name="maharashtra">MAHARASHTRA</string>
     <string name="empty_orders">No any orders</string>
+    <string name="_2000">2000</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="getstore">getstore</string>
+    <string name="choose_action">Choose Action</string>
+    <string name="search">Search</string>
+    <string name="search_here">Search product name</string>
 </resources>

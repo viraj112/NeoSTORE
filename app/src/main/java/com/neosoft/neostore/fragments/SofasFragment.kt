@@ -6,9 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.neosoft.neostore.R
+import com.neosoft.neostore.activities.MainActivity
+
 class SofasFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_sofas, container, false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val actionBar: androidx.appcompat.app.ActionBar? = (activity as MainActivity?)?.supportActionBar
+        actionBar?.title = getString(R.string.sofas)
     }
 }

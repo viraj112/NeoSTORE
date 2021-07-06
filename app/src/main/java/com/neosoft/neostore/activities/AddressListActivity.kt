@@ -52,11 +52,7 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAd
         btn_place_order.setOnClickListener(this)
         //database creation
         val database = Room.databaseBuilder(
-            this,
-            AddressDatabase::class.java,
-            "addressee's")
-            .allowMainThreadQueries()
-            .build()
+            this, AddressDatabase::class.java, "addressee's").allowMainThreadQueries().build()
         database.addressDao().insertAddress(AddressEntity(name = name, address = address))
         val allAddress = database.addressDao().getAddress()
         recycler_address_list.apply {
@@ -74,6 +70,10 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAd
         //option menu click
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
             R.id.menu_add_address -> {
                 val i = Intent(this, AddAddressActivity::class.java)
                 startActivity(i)
@@ -93,13 +93,16 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAd
             override fun onResponse(call: Call<PlaceOrderModel>, response: Response<PlaceOrderModel>)
             {
                 try {
-                    if (response.code() == Constants.SUCESS_CODE) {
-                        toast(response.body()?.user_msg.toString())
-
-                    } else if (response.code() == Constants.NOT_FOUND) {
-                        toast(response.body()?.user_msg.toString())
-                    }else{
-                        toast(response.body()?.user_msg.toString())
+                    when {
+                        response.code() == Constants.SUCESS_CODE -> {
+                            toast(response.body()?.user_msg.toString())
+                        }
+                        response.code() == Constants.NOT_FOUND -> {
+                            toast(response.body()?.user_msg.toString())
+                        }
+                        else -> {
+                            toast(response.body()?.user_msg.toString())
+                        }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -110,8 +113,5 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAd
             }
         })
     }
+
 }
-
-
-
-

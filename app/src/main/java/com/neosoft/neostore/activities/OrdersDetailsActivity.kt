@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neosoft.neostore.R
@@ -39,21 +40,13 @@ class OrdersDetailsActivity : AppCompatActivity() {
         token = sharedPreferences.getString("token", null).toString()
         supportActionBar?.title = "ORDER ID :  $orderId"
         recycler_orders_details.layoutManager = LinearLayoutManager(this)
-        recycler_orders_details.addItemDecoration(
-            DividerItemDecoration(
-                this,
-                LinearLayoutManager.VERTICAL
-            )
-        )
+        recycler_orders_details.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
         getOrderDetails()
     }
     private fun getOrderDetails() {
         retrofit.getOrderDetails(token, orderId).enqueue(object : Callback<OrderDetailsModel> {
             @SuppressLint("SetTextI18n")
-            override fun onResponse(
-                call: Call<OrderDetailsModel>,
-                response: Response<OrderDetailsModel>
-            ) {
+            override fun onResponse(call: Call<OrderDetailsModel>, response: Response<OrderDetailsModel>) {
                 try {
                     if (response.code() == Constants.SUCESS_CODE) {
                         val items = response.body()?.data
@@ -73,5 +66,15 @@ class OrdersDetailsActivity : AppCompatActivity() {
                 toast(t.message.toString())
             }
         })
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId)
+        {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

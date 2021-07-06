@@ -47,12 +47,13 @@
         android:fontFamily="@font/gothammedium"
         android:gravity="right|center_vertical"
         android:padding="@dimen/_10sdp"
-        android:text="price"
+        android:text="@string/price"
         android:textSize="@dimen/_20ssp"
         android:layout_marginRight="@dimen/_10sdp"
         android:textColor="@color/color_black_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.766"
         app:layout_constraintStart_toEndOf="@+id/txt_order_id"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlHardcoded" />
 </androidx.constraintlayout.widget.ConstraintLayout>

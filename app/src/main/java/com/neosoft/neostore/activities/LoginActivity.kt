@@ -125,30 +125,44 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     //forgot password api call
     private fun doForgotPassword() {
+        loading.startLoading()
         val email: String = ed_txt_username.text.toString()
-        ret.forgotPassword(email).enqueue(object : Callback<ForgotPModel> {
-            override fun onResponse(call: Call<ForgotPModel>, response: Response<ForgotPModel>) {
-                try {
-                    when {
-                        response.code() == Constants.SUCESS_CODE -> {
-
-                            toast(response.body()?.user_msg.toString())
+        if (email.equals("")){
+            loading.isDismiss()
+            ed_txt_username.error = getString(R.string.canot_be_empty)
+        }else
+        {
+            ret.forgotPassword(email).enqueue(object : Callback<ForgotPModel> {
+                override fun onResponse(call: Call<ForgotPModel>, response: Response<ForgotPModel>) {
+                    try {
+                        when {
+                            response.code() == Constants.SUCESS_CODE -> {
+                                val handler = Handler()
+                                handler.postDelayed(Runnable {
+                                    loading.isDismiss()
+                                    toast(response.body()?.user_msg.toString())
+                                },Constants.DELAY_TIME.toLong())
+                            }
+                            response.code() == Constants.Error_CODE -> {
+                                loading.isDismiss()
+                                toast(response.body()?.user_msg.toString())
+                            }
+                            else -> {
+                                loading.isDismiss()
+                                toast(response.message())
+                            }
                         }
-                        response.code() == Constants.Error_CODE -> {
-                            toast(response.body()?.user_msg.toString())
-                        }
-                        else -> {
-                            toast(response.message())
-                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
-            }
-            override fun onFailure(call: Call<ForgotPModel>, t: Throwable) {
-                toast(t.message.toString())
-            }
-        })
+                override fun onFailure(call: Call<ForgotPModel>, t: Throwable) {
+                    loading.isDismiss()
+                    toast(t.message.toString())
+                }
+            })
+        }
+
     }
     private fun initialization() {
         //for handling session
@@ -184,15 +198,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             backPressTime = System.currentTimeMillis()
         }
     }
-
     //validations for login
     private fun validate(): Boolean {
         email = ed_txt_username.text.toString()
         if (!Validations.isValidEmail(email)) {
             ed_txt_username.error = getString(R.string.valid_email)
             return false
-        } else if (edt_txt_password.text.toString().isEmpty()) {
-            edt_txt_password.error = getString(R.string.canot_be_empty)
+        } else if (edt_txt_password.text.toString().isEmpty()||edt_txt_password.text.length<6) {
+            edt_txt_password.error = getString(R.string.password_length)
             return false
         }
         return true

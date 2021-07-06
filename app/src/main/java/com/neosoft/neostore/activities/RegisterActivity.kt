@@ -39,6 +39,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         initialization()
         loading = LoadingDialog(this@RegisterActivity)
     }
@@ -118,7 +119,6 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         return true
     }
     private fun doRegistration() {
-        loading.startLoading()
         firstname = edt_txt_first_name.text.toString()
         lastname = edt_txt_last_name.text.toString()
         password = edt_password.text.toString()
@@ -128,6 +128,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         if (validate())
         //call for  api
         {
+            loading.startLoading()
             retIn.register(firstname, lastname, email, password, confirmPassword, gender, phone)
                 .enqueue(object : Callback<RegisterationModel> {
                     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)

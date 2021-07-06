@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.text.method.TextKeyListener.clear
+import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import androidx.annotation.RequiresApi
 import com.neosoft.neostore.R
@@ -56,6 +58,7 @@ class ResetPasswordActivity : AppCompatActivity(), View.OnClickListener {
                     changePassword()
                 }else
                 {
+                    Log.d("tag","not validate")
                 }
             }
         }
@@ -120,8 +123,17 @@ class ResetPasswordActivity : AppCompatActivity(), View.OnClickListener {
         }
         return true
     }
-    override fun onBackPressed() {
-       finish()
-        super.onBackPressed()
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId)
+        {
+            android.R.id.home ->
+            {
+                onBackPressed()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }

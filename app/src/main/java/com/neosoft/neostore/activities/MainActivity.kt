@@ -3,15 +3,14 @@ package com.neosoft.neostore.activities
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.MenuItemCompat
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.neosoft.neostore.R
@@ -21,8 +20,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
 
+
 @Suppress("DEPRECATION")
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class
+MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     //declare variables
     private lateinit var session: SessionManagement
     private lateinit var myCartFragment: MyCartFragment
@@ -34,20 +35,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var storeLocatorFragment: StoreLocatorFragment
     private lateinit var myOrdersFragment: MyOrdersFragment
     private lateinit var preferences: SharedPreferences
-    private lateinit var count: TextView
     private lateinit var homeFragment: HomeFragment
+    private  var counterView : TextView? = null
 
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        //session for login
+           //session for login
         session = SessionManagement(this)
         session.checkLogin()
-
         //initialization of variables
-        initialization()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            initialization()
+        }
         if (savedInstanceState == null) {
             homeFragment = HomeFragment()
             supportFragmentManager.beginTransaction().apply {
@@ -56,10 +57,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
     }
-
     //for variables initialization
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun initialization() {
-
         preferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
         val email = preferences.getString("email", "")
         val username = preferences.getString("username", "")
@@ -69,37 +69,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         headerView.txt_navigation_email.text = email
         headerView.txt_navigation_username.text = username
         Glide.with(this).load(image).into(headerView.circleImageView)
-
         //for toolbar
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
         actionBar?.title = getString(R.string.app_name)
-
-        val drawerToggle: ActionBarDrawerToggle = object :
-            ActionBarDrawerToggle(this, drawer_layout, toolbar, (R.string.open), (R.string.close)) {
+        val drawerToggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(this, drawer_layout, toolbar, (R.string.open), (R.string.close)) {
         }
         drawerToggle.isDrawerIndicatorEnabled = true
         drawer_layout.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
         drawerToggle.drawerArrowDrawable.color = ContextCompat.getColor(this, R.color.white)
-
         navigation_view.setNavigationItemSelectedListener(this)
-        count = MenuItemCompat.getActionView(navigation_view.menu.findItem(R.id.menu_my_cart)) as TextView
+        val count = preferences.getString("count","0")
+        val menuItem = navigation_view.menu.findItem(R.id.menu_my_cart)
+        val view = menuItem.setActionView(R.layout.cart_count)
+        counterView =view.actionView.findViewById(R.id.txt_cart_count)
+        counterView?.text = count.toString()
 
-        initDrawer()
-    }
-
-    private fun initDrawer() {
-        count.gravity = Gravity.CENTER
-        count.fitsSystemWindows = true
-        count.setTextColor(resources.getColor(R.color.white))
-        count.text = "1"
-    }
-
-    //for  search menu item
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.search_menu, menu)
-        return true
     }
     //navigation menu click
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
@@ -114,7 +100,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 getTableFragment()
 
             R.id.menu_sofas ->
-
                 //sofas fragment
                 getSofasFragment()
 
@@ -146,34 +131,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
-
-
     private fun getMyOrderFragment() {
+        toolbar.title = getString(R.string.my_orders)
         myOrdersFragment = MyOrdersFragment()
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.frame_layout, myOrdersFragment)
-            addToBackStack("backFrag")
+            addToBackStack(null)
             commit()
         }
-
     }
-
     private fun getStoreLocatorFragment() {
         toolbar.title = getString(R.string.store_locator)
         storeLocatorFragment = StoreLocatorFragment()
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.frame_layout, storeLocatorFragment)
-            addToBackStack("fragBack")
+            addToBackStack(null)
             commit()
         }
     }
-
     private fun getMyAccountFragment() {
         toolbar.title = getString(R.string.my_account)
         myAccountFragment = MyAccountFragment()
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.frame_layout, myAccountFragment)
-            addToBackStack("fragBack")
+            addToBackStack(null)
             commit()
         }
     }
@@ -183,18 +164,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         myCartFragment = MyCartFragment()
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.frame_layout, myCartFragment)
-            addToBackStack("fragBack")
+            addToBackStack(null)
             commit()
         }
-    }
-
-    override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
-
     }
 
     private fun getTableFragment() {
@@ -202,7 +174,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         tablesFragment = TablesFragment()
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.frame_layout, tablesFragment)
-            addToBackStack("fragBack")
+            addToBackStack(null)
             commit()
         }
     }
@@ -212,28 +184,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         sofasFragment = SofasFragment()
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.frame_layout, sofasFragment)
-            addToBackStack("fragBack")
+            addToBackStack(null)
             commit()
         }
     }
-
     private fun getChairsFragment() {
         toolbar.title = getString(R.string.chairs)
         chairsFragment = ChairsFragment()
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.frame_layout, chairsFragment)
-            addToBackStack("fragBack")
+            addToBackStack(null)
             commit()
         }
     }
-
     private fun getCupboardsFragment() {
         toolbar.title = getString(R.string.cupboards)
         chairsFragment = ChairsFragment()
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.frame_layout, chairsFragment)
-            addToBackStack("fragBack")
+            addToBackStack(null)
             commit()
+        }
+    }
+    override fun onBackPressed() {
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
         }
     }
 }

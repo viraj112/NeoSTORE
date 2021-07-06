@@ -18,6 +18,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.neosoft.neostore.R
+import com.neosoft.neostore.activities.MainActivity
 import com.neosoft.neostore.constants.Constants
 import kotlinx.android.synthetic.main.fragment_store_locator.*
 import kotlinx.android.synthetic.main.fragment_store_locator.view.*
@@ -62,13 +63,17 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
         {
             googleMap = map
         }
-        val latitude = 17.88252355892892
-        val longitude = 75.01984086125351
         val zoomLevel = 15f
-        val homeLatLng = LatLng(latitude, longitude)
-        val myLang = LatLng(18.50778755342922, 73.8081783598659)
+        val homeLatLng = LatLng(17.88252355892892,75.01984086125351)
+        val myLang = LatLng(17.894196005836072, 75.02310673299861)
+        val solapur = LatLng(17.88321438200638, 75.01801728143161)
+        val satara = LatLng(17.883236213407233, 75.02217165259627)
+        val akluj = LatLng(17.879841517023987, 75.01547595006508)
         list.add(homeLatLng)
         list.add(myLang)
+        list.add(solapur)
+        list.add(satara)
+        list.add(akluj)
         for (i in 0 until list.size)
         {
             map?.addMarker(MarkerOptions().position(list[i]).title("My Location"))
@@ -99,5 +104,11 @@ class StoreLocatorFragment : Fragment() ,OnMapReadyCallback{
              }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val actionBar: androidx.appcompat.app.ActionBar? = (activity as MainActivity?)?.supportActionBar
+        actionBar?.title = getString(R.string.store_locator)
     }
 }

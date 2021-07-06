@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
 import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.neosoft.neostore.R
+import com.neosoft.neostore.activities.MainActivity
 import com.neosoft.neostore.activities.ResetPasswordActivity
 import com.neosoft.neostore.api.Api
 import com.neosoft.neostore.api.RetrofitClient
@@ -57,6 +59,7 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
     private var imageString: String = "AA"
     private lateinit var token: String
     lateinit var sharedPreferences: SharedPreferences
+    private var image=""
     val retrofit: Api = RetrofitClient.getRetrofitInstance().create(Api::class.java)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -71,9 +74,9 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         super.onActivityCreated(savedInstanceState)
         //get user details
         getUserDetails()
-        iv_myacc_profile.isEnabled = true
+        iv_myaccount_profile.isEnabled = true
         btn_profile_reset_pass.setOnClickListener(this)
-        iv_myacc_profile.setOnClickListener(this)
+        iv_myaccount_profile.setOnClickListener(this)
         btn_profile_edit_profile.setOnClickListener(this)
         edt_profile_dob.setOnClickListener(this)
     }
@@ -92,7 +95,7 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                             email = items?.email.toString()
                             phone = items?.phone_no.toString()
                             dob = items?.dob.toString()
-                            Glide.with(activity!!).load(items?.profile_pic).into(iv_myacc_profile)
+                            Glide.with(activity!!).load(items?.profile_pic).into(iv_myaccount_profile)
                             setUserData()
                         }, Constants.DELAY_TIME.toLong())
                     } else if (response.code() == Constants.NOT_FOUND) {
@@ -125,7 +128,7 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                 val i = Intent(context, ResetPasswordActivity::class.java)
                 startActivity(i)
             }
-            R.id.iv_myacc_profile -> {
+            R.id.iv_myaccount_profile -> {
                 checkPermissions(android.Manifest.permission.CAMERA, Constants.GALLERY_REQUEST_CODE)
                 checkPermissions(android.Manifest.permission.CAMERA, Constants.CAMERA_REQUEST_CODE)
                 val view = View.inflate(activity, R.layout.image_picker_dialog, null)
@@ -183,14 +186,16 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.CAMERA_REQUEST_CODE) {
-            bitmap = data?.extras?.get("data") as Bitmap
-            uploadImage(bitmap)
-            iv_myacc_profile.setImageBitmap(bitmap)
+            if (data!=null){
+                bitmap = data.extras?.get("data") as Bitmap
+                uploadImage(bitmap)
+                iv_myaccount_profile.setImageBitmap(bitmap)
+            }
         } else if (requestCode == Constants.GALLERY_REQUEST_CODE) {
             val uri: Uri? = data?.data
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, uri)
-                iv_myacc_profile.setImageBitmap(bitmap)
+                iv_myaccount_profile.setImageBitmap(bitmap)
                 if (uri != null) {
                     uploadImage(bitmap)
                 }
@@ -205,11 +210,12 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         imageString = Base64.encodeToString(byteArray, Base64.DEFAULT)
+         image = getString(R.string.profile_image_path) + imageString
+
     }
     //update profile api call
     private fun editProfile() {
-        val image = getString(R.string.profile_image_path) + imageString
-        loadingDialog.startLoading()
+         loadingDialog.startLoading()
         retrofit.editProfile(token, mEmail, mDob, mPhone, image, firstName, lastName)
             .enqueue(object : Callback<EditProfileModel> {
                 override fun onResponse(call: Call<EditProfileModel>, response: Response<EditProfileModel>) {
@@ -241,7 +247,7 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         if (ContextCompat.checkSelfPermission(requireActivity(), permission) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(permission), requestCode)
         } else {
-            activity?.toast(getString(R.string.permission_grant))
+            Log.d("tag",getString(R.string.permission_grant))
         }
     }
     //for permission request
@@ -249,7 +255,7 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Constants.CAMERA_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                activity?.toast(getString(R.string.permission_grant))
+                Log.d("tag",getString(R.string.permission_grant))
             } else {
                 activity?.toast(getString(R.string.permission_denied))
             }
@@ -260,6 +266,11 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                 activity?.toast(getString(R.string.permission_denied))
             }
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        val actionBar: androidx.appcompat.app.ActionBar? = (activity as MainActivity?)?.supportActionBar
+        actionBar?.title = getString(R.string.my_account)
     }
 }
 
