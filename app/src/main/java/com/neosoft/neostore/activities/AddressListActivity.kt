@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,6 +23,7 @@ import com.neosoft.neostore.database.AddressDatabase
 import com.neosoft.neostore.database.AddressEntity
 import com.neosoft.neostore.fragments.MyOrdersFragment
 import com.neosoft.neostore.models.PlaceOrderModel
+import com.neosoft.neostore.utilities.LoadingDialog
 import kotlinx.android.synthetic.main.activity_address_list.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_my_account.*
@@ -29,6 +31,7 @@ import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+@Suppress("DEPRECATION")
 class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAdapter.OnItemClick {
     //initialize variable
     lateinit var sharedPreferences: SharedPreferences
@@ -37,6 +40,7 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAd
     var add: String = ""
     private lateinit var token: String
     lateinit var myOrdersFragment: MyOrdersFragment
+    private lateinit var loadingDialog: LoadingDialog
     val retrofit: Api = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @SuppressLint("CheckResult")
@@ -49,6 +53,7 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAd
         address = intent.getStringExtra("address").toString()
         name = sharedPreferences.getString("username", null).toString()
         setContentView(R.layout.activity_address_list)
+        loadingDialog = LoadingDialog(this)
         btn_place_order.setOnClickListener(this)
         //database creation
         val database = Room.databaseBuilder(
@@ -89,18 +94,28 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAd
         }
     }
     private fun placeOrder() {
+        loadingDialog.startLoading()
         retrofit.placeOrder(token, add).enqueue(object : Callback<PlaceOrderModel> {
             override fun onResponse(call: Call<PlaceOrderModel>, response: Response<PlaceOrderModel>)
             {
                 try {
                     when {
                         response.code() == Constants.SUCESS_CODE -> {
-                            toast(response.body()?.user_msg.toString())
+                            val handler = Handler()
+                            handler.postDelayed(Runnable {
+                                loadingDialog.isDismiss()
+                                toast(response.body()?.user_msg.toString())
+                                val i = Intent(this@AddressListActivity,MainActivity::class.java)
+                                startActivity(i)
+                            },Constants.DELAY_TIME.toLong())
+
                         }
                         response.code() == Constants.NOT_FOUND -> {
+                            loadingDialog.isDismiss()
                             toast(response.body()?.user_msg.toString())
                         }
                         else -> {
+                            loadingDialog.isDismiss()
                             toast(response.body()?.user_msg.toString())
                         }
                     }
@@ -109,6 +124,7 @@ class AddressListActivity : AppCompatActivity(), View.OnClickListener, AddressAd
                 }
             }
             override fun onFailure(call: Call<PlaceOrderModel>, t: Throwable) {
+                loadingDialog.isDismiss()
                 toast(getString(R.string.no_connection))
             }
         })

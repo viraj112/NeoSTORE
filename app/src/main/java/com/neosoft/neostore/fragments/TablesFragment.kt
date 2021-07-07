@@ -53,7 +53,7 @@ class TablesFragment : Fragment() {
         //get product list api call
         getProductList()
     }
-
+    //get product list
     private fun getProductList() {
         myRetrofit.getProductList(1, 10, 1).enqueue(object : Callback<ProductList> {
             @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)

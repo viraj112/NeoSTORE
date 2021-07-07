@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_red"
     tools:context=".activities.LoginActivity">
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/ed_txt_username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -36,13 +36,14 @@
         android:textSize="@dimen/_18ssp"
         android:inputType="text"
         android:padding="@dimen/_10sdp"
+        android:fontFamily="@font/gothammedium"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/txt_app_name"
         app:layout_constraintStart_toStartOf="@+id/txt_app_name"
         app:layout_constraintTop_toBottomOf="@+id/txt_app_name" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edt_txt_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -52,6 +53,7 @@
         android:drawablePadding="10dp"
         android:textSize="@dimen/_18ssp"
         android:hint="@string/password"
+        android:fontFamily="@font/gothammedium"
         android:inputType="textPassword"
         android:padding="@dimen/_10sdp"
         android:textColor="@color/white"
@@ -88,7 +90,7 @@
         android:padding="@dimen/_10sdp"
         android:text="@string/forgot_password"
         android:textColor="@color/white"
-        android:textSize="@dimen/_20ssp"
+        android:textSize="@dimen/_18ssp"
         app:layout_constraintEnd_toEndOf="@+id/txt_app_name"
         app:layout_constraintStart_toStartOf="@+id/txt_app_name"
         app:layout_constraintTop_toBottomOf="@+id/btn_login" />

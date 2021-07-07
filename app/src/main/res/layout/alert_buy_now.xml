@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/_10sdp">
+    android:layout_marginBottom="@dimen/_10sdp"
+    android:background="@drawable/alert_dialog"
+    android:layout_margin="@dimen/_10sdp">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt_buy_now_title"
@@ -27,6 +29,7 @@
         android:layout_height="@dimen/_100sdp"
         android:layout_marginTop="@dimen/_16sdp"
         android:src="@drawable/ic_slider_image_two"
+        android:alpha="10"
         android:background="@drawable/bg_edit_quantity"
         app:layout_constraintEnd_toEndOf="@+id/txt_buy_now_title"
         app:layout_constraintHorizontal_bias="0.0"

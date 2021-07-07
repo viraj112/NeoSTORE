@@ -77,21 +77,19 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             edt_txt_last_name.error = getString(R.string.canot_be_empty)
             return false
         }
-
         //for email
         else if (!Validations.isValidEmail(email)) {
             edt_txt_email.error = getString(R.string.valid_email)
             return false
         }
-
         //for password
-        else if (edt_password.text.toString().trim().isEmpty() || edt_password.text.length < 6) {
+        else if (edt_password.text.toString().trim().isEmpty() || edt_password.text.toString().length < 6) {
             edt_password.error = getString(R.string.password_length)
             return false
         }
         //for confirm password
         else if (ed_txt_con_pass.text.toString().trim()
-                .isEmpty() || ed_txt_con_pass.text.length < 6
+                .isEmpty() || ed_txt_con_pass.text.toString().length < 6
         ) {
             ed_txt_con_pass.error = getString(R.string.password_length)
             return false
@@ -107,7 +105,7 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             return false
         }
         //for phone number
-        else if (edt_txt_phone_no.text.length < 10) {
+        else if (edt_txt_phone_no.text.toString().length < 10) {
             edt_txt_phone_no.error = getString(R.string.valid_phone_no)
             return false
         }
@@ -145,16 +143,13 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
                                         startActivity(i)
                                     }, Constants.DELAY_TIME.toLong())
                                 }
-                                response.code() == Constants.Error_CODE -> {
-                                    loading.isDismiss()
-                                    toast(response.body()?.message.toString())
-                                }response.code() == Constants.INVALID_DATA->{
+                               response.code()== Constants.DATA_MISSING  -> {
                                 loading.isDismiss()
-                                toast(response.body()?.message.toString())
+                                toast(response.body()?.user_message.toString())
                                 }
                                 else -> {
                                     loading.isDismiss()
-                                    toast(response.body()?.message.toString())
+                                    toast(response.body()?.user_message.toString())
                                 }
                             }
                         } catch (e: Exception) {

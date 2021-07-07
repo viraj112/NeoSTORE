@@ -85,4 +85,7 @@
     <string name="choose_action">Choose Action</string>
     <string name="search">Search</string>
     <string name="search_here">Search product name</string>
+    <string name="viraj_pote">viraj Pote</string>
+    <string name="owner_name">John Sinha</string>
+    <string name="search_order_id">Search Order Id</string>
 </resources>

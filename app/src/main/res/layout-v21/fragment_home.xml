@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -32,14 +39,13 @@
         app:iss_delay="0"
         app:iss_period="2500"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        tools:layout_editor_absoluteX="-6dp" />
+         />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_tables"
         android:layout_width="@dimen/_130sdp"
-        android:layout_height="@dimen/_130sdp"
+        android:layout_height="@dimen/_150sdp"
         android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginLeft="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_16sdp"
         android:backgroundTint="@color/color_red_midle"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,13 +59,14 @@
             android:padding="@dimen/_10sdp"
             android:text="@string/tables"
             android:textColor="@color/color_white"
-            android:textSize="@dimen/_23ssp" />
+            android:textSize="@dimen/_23ssp"
+            tools:ignore="RtlHardcoded" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginBottom="@dimen/_10sdp"
             android:src="@drawable/ic_table" />
     </androidx.cardview.widget.CardView>
@@ -67,17 +74,17 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_sofas"
         android:layout_width="@dimen/_130sdp"
-        android:layout_height="@dimen/_130sdp"
-        android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_height="@dimen/_150sdp"
+        android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginTop="@dimen/_16sdp"
-        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:backgroundTint="@color/color_red_midle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/cv_tables"
         app:layout_constraintTop_toBottomOf="@+id/image_slider">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -92,21 +99,22 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginRight="@dimen/_10sdp"
-            android:src="@drawable/ic_sofa" />
+            android:src="@drawable/ic_sofa"
+            tools:ignore="RtlHardcoded" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_chairs"
         android:layout_width="@dimen/_130sdp"
-        android:layout_height="@dimen/_130sdp"
-        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_height="@dimen/_150sdp"
+        android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_16sdp"
-        android:layout_marginRight="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
         android:backgroundTint="@color/color_red_midle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_tables">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/gothammedium"
@@ -119,16 +127,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
-            android:src="@drawable/ic_chair" />
+            android:src="@drawable/ic_chair"
+            tools:ignore="RtlHardcoded" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_cupboards"
         android:layout_width="@dimen/_130sdp"
-        android:layout_height="@dimen/_130sdp"
-        android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_height="@dimen/_150sdp"
+        android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginTop="@dimen/_16sdp"
-        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:backgroundTint="@color/color_red_midle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.65"
@@ -151,10 +160,10 @@
             android:layout_gravity="left"
             android:layout_marginLeft="@dimen/_5sdp"
             android:layout_marginTop="@dimen/_16sdp"
-            android:src="@drawable/ic_cupboards" />
+            android:src="@drawable/ic_cupboards"
+            tools:ignore="RtlHardcoded" />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+</ScrollView>
 
 

@@ -124,7 +124,7 @@
                 android:layout_marginLeft="@dimen/_110sdp"
                 android:layout_marginTop="@dimen/_200sdp"
                 android:gravity="center"
-                android:src="@drawable/ic_slider_image_one" />
+                android:src="@drawable/ic_image_slider_three" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/_80sdp"

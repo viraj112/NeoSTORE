@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_130sdp"
-    android:layout_marginTop="@dimen/_5sdp">
+    android:layout_height="@dimen/_120sdp"
+    >
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_my_cart"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginLeft="@dimen/_8sdp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="@dimen/_20sdp"
         android:fontFamily="@font/gothammedium"
         android:padding="@dimen/_2sdp"
         android:textColor="@color/color_black_dark"
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginLeft="@dimen/_16sdp"
-        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_2sdp"
         android:fontFamily="@font/gothambook"
         android:padding="@dimen/_5sdp"
         android:text="@string/catagory"
@@ -57,8 +57,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginLeft="@dimen/_8sdp"
-        android:layout_marginTop="8sp"
+        android:layout_marginTop="@dimen/_4sdp"
         android:gravity="center"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:background="@color/color_light_grey"
         android:drawableRight="@drawable/ic_baseline_arrow_drop_down_24"
         android:drawablePadding="@dimen/_5sdp"

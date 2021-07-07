@@ -41,7 +41,6 @@ class MyCartFragment : Fragment(), View.OnClickListener {
     private lateinit var token: String
     lateinit var total: String
     lateinit var sharedPreferences: SharedPreferences
-   lateinit  var count: String
     lateinit var loadingDialog: LoadingDialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -138,7 +137,7 @@ class MyCartFragment : Fragment(), View.OnClickListener {
                         displayList.clear()
                         val search = newText.toLowerCase(Locale.getDefault())
                         listData.forEach {
-                            if (it.product.name.toLowerCase(Locale.getDefault()).contains(search))
+                            if (it.quantity.toString().contains(search))
                             {
                                 displayList.add(it)
                             }
@@ -155,12 +154,9 @@ class MyCartFragment : Fragment(), View.OnClickListener {
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
-
     override fun onResume() {
         super.onResume()
         val actionBar: androidx.appcompat.app.ActionBar? = (activity as MainActivity?)?.supportActionBar
         actionBar?.title = getString(R.string.my_cart)
     }
-
-
 }

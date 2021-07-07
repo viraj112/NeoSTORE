@@ -11,6 +11,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.neosoft.neostore.R
@@ -22,8 +23,7 @@ import kotlinx.android.synthetic.main.navigation_header.view.*
 
 
 @Suppress("DEPRECATION")
-class
-MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     //declare variables
     private lateinit var session: SessionManagement
     private lateinit var myCartFragment: MyCartFragment
@@ -37,7 +37,6 @@ MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
     private lateinit var preferences: SharedPreferences
     private lateinit var homeFragment: HomeFragment
     private  var counterView : TextView? = null
-
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +83,7 @@ MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         val menuItem = navigation_view.menu.findItem(R.id.menu_my_cart)
         val view = menuItem.setActionView(R.layout.cart_count)
         counterView =view.actionView.findViewById(R.id.txt_cart_count)
-        counterView?.text = count.toString()
+        counterView?.text = count
 
     }
     //navigation menu click

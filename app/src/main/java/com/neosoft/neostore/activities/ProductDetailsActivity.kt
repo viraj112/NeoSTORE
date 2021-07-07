@@ -167,7 +167,6 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                                 editor.putString("count",response.body()?.total_carts.toString())
                                 editor.apply()
                                 startActivity(i)
-
                             },Constants.DELAY_TIME.toLong())
                         }
                         response.code() == Constants.NOT_FOUND -> {
@@ -227,7 +226,6 @@ class ProductDetailsActivity : AppCompatActivity(), View.OnClickListener {
                 }
             })
     }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId)
         {

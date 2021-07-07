@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.MyOrdersFragment"
-    android:layout_marginTop="@dimen/_40sdp">
+    android:layout_marginTop="@dimen/_30sdp">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_orders"
         android:layout_width="match_parent"

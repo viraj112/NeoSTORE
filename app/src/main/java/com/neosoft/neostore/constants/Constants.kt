@@ -13,6 +13,7 @@ class Constants {
         const val NOT_FOUND = 401
         const val DATA_MISSING = 400
         const val INVALID_DATA =422
+        const val DATA_EXIST =404
 
         //gender keywords
         const val GENDER_MALE = "M"

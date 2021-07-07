@@ -122,12 +122,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
     }
-
     //forgot password api call
     private fun doForgotPassword() {
         loading.startLoading()
         val email: String = ed_txt_username.text.toString()
-        if (email.equals("")){
+        if (email == ""){
             loading.isDismiss()
             ed_txt_username.error = getString(R.string.canot_be_empty)
         }else
@@ -138,18 +137,18 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         when {
                             response.code() == Constants.SUCESS_CODE -> {
                                 val handler = Handler()
-                                handler.postDelayed(Runnable {
+                                handler.postDelayed({
                                     loading.isDismiss()
                                     toast(response.body()?.user_msg.toString())
                                 },Constants.DELAY_TIME.toLong())
                             }
-                            response.code() == Constants.Error_CODE -> {
+                            response.code()==Constants.Error_CODE -> {
                                 loading.isDismiss()
                                 toast(response.body()?.user_msg.toString())
                             }
                             else -> {
                                 loading.isDismiss()
-                                toast(response.message())
+                                toast(response.body()?.user_msg.toString())
                             }
                         }
                     } catch (e: Exception) {
@@ -158,11 +157,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 }
                 override fun onFailure(call: Call<ForgotPModel>, t: Throwable) {
                     loading.isDismiss()
-                    toast(t.message.toString())
+                    toast(getString(R.string.no_connection))
                 }
             })
         }
-
     }
     private fun initialization() {
         //for handling session
@@ -204,7 +202,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         if (!Validations.isValidEmail(email)) {
             ed_txt_username.error = getString(R.string.valid_email)
             return false
-        } else if (edt_txt_password.text.toString().isEmpty()||edt_txt_password.text.length<6) {
+        } else if (edt_txt_password.text.toString().isEmpty()|| edt_txt_password.text.toString().length<6) {
             edt_txt_password.error = getString(R.string.password_length)
             return false
         }

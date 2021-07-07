@@ -129,7 +129,6 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                 startActivity(i)
             }
             R.id.iv_myaccount_profile -> {
-                checkPermissions(android.Manifest.permission.CAMERA, Constants.GALLERY_REQUEST_CODE)
                 checkPermissions(android.Manifest.permission.CAMERA, Constants.CAMERA_REQUEST_CODE)
                 val view = View.inflate(activity, R.layout.image_picker_dialog, null)
                 val builder = activity?.let { androidx.appcompat.app.AlertDialog.Builder(it) }
@@ -142,6 +141,8 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
                     dialog?.dismiss()
                 }
                 view.btn_gallery.setOnClickListener {
+
+                    //checkPermissions(android.Manifest.permission.READ_EXTERNAL_STORAGE, Constants.GALLERY_REQUEST_CODE)
                     pickFromGallery()
                     dialog?.dismiss()
                 }
@@ -188,15 +189,16 @@ class MyAccountFragment : Fragment(), View.OnClickListener {
         if (requestCode == Constants.CAMERA_REQUEST_CODE) {
             if (data!=null){
                 bitmap = data.extras?.get("data") as Bitmap
-                uploadImage(bitmap)
                 iv_myaccount_profile.setImageBitmap(bitmap)
+                uploadImage(bitmap)
+
             }
         } else if (requestCode == Constants.GALLERY_REQUEST_CODE) {
             val uri: Uri? = data?.data
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, uri)
-                iv_myaccount_profile.setImageBitmap(bitmap)
                 if (uri != null) {
+                    bitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, uri)
+                    iv_myaccount_profile.setImageBitmap(bitmap)
                     uploadImage(bitmap)
                 }
             } catch (e: IOException) {

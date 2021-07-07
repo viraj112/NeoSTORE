@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neosoft.neostore.R
@@ -23,13 +25,17 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
+
 class OrdersDetailsActivity : AppCompatActivity() {
     //initialize variables
     val retrofit: Api = RetrofitClientCart.getRetrofitInstance().create(Api::class.java)
     lateinit var adapter: OrderDetailsAdapter
     private lateinit var token: String
     lateinit var sharedPreferences: SharedPreferences
-    var listData: List<OrderDetails> = ArrayList()
+    var listData: ArrayList<OrderDetails> = ArrayList()
+    var displayList:ArrayList<OrderDetails> = ArrayList()
     private var orderId = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +57,10 @@ class OrdersDetailsActivity : AppCompatActivity() {
                     if (response.code() == Constants.SUCESS_CODE) {
                         val items = response.body()?.data
                         txt_cost_orders_details.text = "₹" + items?.cost.toString() + ".00"
-                        val list: List<OrderDetails> = items?.order_details!!
+                        val list: ArrayList<OrderDetails> = items?.order_details!!
                         listData = list
-                        adapter = OrderDetailsAdapter(this@OrdersDetailsActivity, list)
+                        displayList.addAll(listData)
+                        adapter = OrderDetailsAdapter(this@OrdersDetailsActivity,displayList)
                         recycler_orders_details.adapter = adapter
                     } else if (response.code() == Constants.NOT_FOUND) {
                         toast(response.body()?.message.toString())
@@ -77,4 +84,37 @@ class OrdersDetailsActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.search_menu,menu)
+        val menuItem = menu?.findItem(R.id.menu_search)
+        val searchView = menuItem?.actionView as SearchView
+        searchView.queryHint = getString(R.string.search_here)
+        searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+             if(newText !=null)
+             {
+                 displayList.clear()
+                 val search = newText.toLowerCase(Locale.getDefault())
+                 listData.forEach {
+                     if (it.prod_name.toLowerCase(Locale.getDefault()).contains(search)){
+                         displayList.add(it)
+                     }
+                 }
+                 recycler_orders_details.adapter!!.notifyDataSetChanged()
+             }else{
+                 displayList.clear()
+                 displayList.addAll(listData)
+                 recycler_orders_details.adapter!!.notifyDataSetChanged()
+             }
+                return true
+               }
+
+        })
+        return true
+    }
+
 }
