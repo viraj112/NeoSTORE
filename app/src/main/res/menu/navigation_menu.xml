@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/menu_my_cart"
+            android:icon="@drawable/ic_mycart"
+            android:title="@string/my_cart"
+            android:actionLayout="@layout/cart_count"
+           />
+
+        <item
+            android:id="@+id/menu_table"
+            android:icon="@drawable/ic_table"
+            android:title="@string/tables" />
+
+        <item
+            android:id="@+id/menu_sofas"
+            android:icon="@drawable/ic_sofa"
+            android:title="@string/sofas" />
+
+        <item
+            android:id="@+id/menu_chairs"
+            android:icon="@drawable/ic_chair"
+            android:title="@string/chairs" />
+        <item
+            android:id="@+id/menu_cupboards"
+            android:icon="@drawable/ic_cupboards"
+            android:title="@string/cupboards" />
+
+        <item
+            android:id="@+id/menu_my_account"
+            android:icon="@drawable/ic_username"
+            android:title="@string/my_account" />
+        <item
+            android:id="@+id/menu_store_locator"
+            android:icon="@drawable/ic_store_locator"
+            android:title="@string/store_locator" />
+        <item
+            android:id="@+id/menu_my_orders"
+            android:icon="@drawable/ic_my_orders"
+            android:title="@string/my_orders" />
+        <item
+            android:id="@+id/menu_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/Logout" />
+
+    </group>
+</menu>
