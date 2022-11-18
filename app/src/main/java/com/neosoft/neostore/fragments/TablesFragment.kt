@@ -32,6 +32,7 @@ import kotlin.collections.ArrayList
 class TablesFragment : Fragment() {
     //initialize variables
     lateinit var adapter: TablesAdapter
+    var pageNumber :Int =1
     var listData: ArrayList<ProductModel> = ArrayList()
     var displayList: ArrayList<ProductModel> = ArrayList()
     private val myRetrofit: Api = RetrofitClientProduct.getRetrofitInstance().create(Api::class.java)
@@ -59,6 +60,7 @@ class TablesFragment : Fragment() {
             @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
             override fun onResponse(call: Call<ProductList>, response: Response<ProductList>) {
                 try {
+
                     if (response.code() == Constants.SUCESS_CODE) {
                         val handler = Handler()
                         handler.postDelayed({
@@ -67,6 +69,7 @@ class TablesFragment : Fragment() {
                             displayList.addAll(listData)
                             //setRecycler list
                             setRecycler()
+
                         }, Constants.DELAY_TIME.toLong())
                     } else if (response.code() == Constants.NOT_FOUND) {
                         loadingDialog.isDismiss()
@@ -103,7 +106,7 @@ class TablesFragment : Fragment() {
                     if (newText!!.isNotEmpty()) {
                         displayList.clear()
                         val search = newText.toLowerCase(Locale.getDefault())
-                        listData.forEach {
+                          listData.forEach {
                             if (it.name.toLowerCase(Locale.getDefault()).contains(search)) {
                                 displayList.add(it)
                             }

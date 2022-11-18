@@ -67,5 +67,9 @@ interface Api {
     @POST(ApiEndPoints.EDIT_CART)
     fun editCart(@Header("access_token")access_token:String,@Field("product_id")product_id:String,@Field("quantity")quantity:Int):Call<EditCartmodel>
 
+    @GET(ApiEndPoints.PRODUCT_LIST)
+    fun getSofasList(@Query("product_category_id")product_category_id:Int,@Query("limit")limit:Int,@Query("page")page:Int):Call<SofaListModel>
+
+
 }
 
